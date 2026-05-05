@@ -27,6 +27,28 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
+    <!-- Primary Color Palette -->
+    <Color x:Key="Primary50">#FDECEC</Color>
+    <Color x:Key="Primary100">#F9D0D0</Color>
+    <Color x:Key="Primary500">#E06060</Color>
+    <Color x:Key="Primary700">#A83535</Color>
+    <Color x:Key="Primary900">#5C2323</Color>
+
+    <!-- Neutral Color Palette -->
+    <Color x:Key="Neutral50">#F7F4F4</Color>
+    <Color x:Key="NeutralBase">#393939</Color>
+    <Color x:Key="Neutral200">#E0D8D8</Color>
+    <Color x:Key="Neutral400">#9E9090</Color>
+    <Color x:Key="Neutral600">#665A5A</Color>
+    <Color x:Key="Neutral950">#1A1A1A</Color>
+    <Color x:Key="NeutralWhite">#FFFFFF</Color>
+
+    <!-- Semantic Color Palette -->
+    <Color x:Key="SemanticSuccess">#7FD9B8</Color>
+    <Color x:Key="SemanticWarning">#FFCC90</Color>
+    <Color x:Key="SemanticError">#F42E55</Color>
+    <Color x:Key="SemanticInfo">#9CACFF</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
@@ -41,4 +63,10 @@
     <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
     <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
     <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+
+    <!-- Semantic Color Brushes -->
+    <SolidColorBrush x:Key="SemanticSuccessBrush" Color="{StaticResource SemanticSuccess}"/>
+    <SolidColorBrush x:Key="SemanticWarningBrush" Color="{StaticResource SemanticWarning}"/>
+    <SolidColorBrush x:Key="SemanticErrorBrush" Color="{StaticResource SemanticError}"/>
+    <SolidColorBrush x:Key="SemanticInfoBrush" Color="{StaticResource SemanticInfo}"/>
 </ResourceDictionary>
