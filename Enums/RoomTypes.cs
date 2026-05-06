@@ -1,6 +1,6 @@
 ﻿namespace CatHotel.Models;
 
-public enum RoomSizes
+public enum RoomTypes
 {
     Unknown,
     Small,
