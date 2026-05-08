@@ -6,9 +6,16 @@
     xmlns:local="clr-namespace:CatHotel"
     Title="CatHotel">
 
-    <ShellContent
+    <TabBar>
+        <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+
+        <ShellContent
+        Title="📊  Sales" 
+        ContentTemplate="{DataTemplate local:Sales}" 
+        Route="Sales" />
+    </TabBar>
 
 </Shell>
