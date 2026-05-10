@@ -13,6 +13,11 @@ public class BookingItem
 
     [NotNull]
     public int ItemId { get; set; }
+    [NotNull]
+    public int Quantity { get; set; } = 1;
+
+    [NotNull]
+    public double UnitPrice { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
@@ -24,10 +29,11 @@ public class BookingItem
     public BookingItem()
     {
     }
-    public BookingItem(int bookingId, int itemId)
+    public BookingItem(int bookingId, int itemId, int quantity = 1)
     {
         BookingId = bookingId;
         ItemId = itemId;
+        Quantity = quantity <= 0 ? 1 : quantity;
         CreatedAt = DateTime.Now;
     }
 }

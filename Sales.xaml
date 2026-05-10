@@ -5,11 +5,155 @@
              x:Class="CatHotel.Sales"
              Shell.NavBarIsVisible="False" 
              Title="Sales">
-    
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#F7D7D7" Offset="0.0" />
+            <GradientStop Color="#FBEAEA" Offset="0.25" />
+            <GradientStop Color="#FFF7EF" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- HEADER -->
+        <Border Grid.Row="0"
+                Margin="14"
+                BackgroundColor="White"
+                Padding="14"
+                StrokeThickness="0"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="0,0,40,40" />
+            </Border.StrokeShape>
+
+            <Border.Shadow>
+                <Shadow Brush="#40000000"
+                        Offset="0,10"
+                        Radius="18"
+                        Opacity="0.25" />
+            </Border.Shadow>
+
+            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                <Label Text="  Sales Dashboard"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       TextColor="#222" />
+
+                <Image Grid.Column="1"
+                       Source="paw.png"
+                       HeightRequest="44"
+                       WidthRequest="44" />
+            </Grid>
+        </Border>
+
+        <!-- ตัวกราฟ -->
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout Padding="16" Spacing="12">
+                <!-- ตัวกราฟแท่ง -->
+                <Label Text="รายได้ปัจจุบัน" FontSize="14" FontAttributes="Bold" />
+                <Border Padding="12"
+                StrokeShape="RoundRectangle 8"
+                StrokeThickness="1"
+                HeightRequest="280"
+                BackgroundColor="White">
+                    <microcharts:ChartView x:Name="Income7MonthsChart"
+                                   HorizontalOptions="FillAndExpand"
+                                   VerticalOptions="FillAndExpand" />
+                </Border>
+
+                <!-- ตัวกราฟโดนัท -->
+                <Label Text="ประเภทสินค้าขายดี (รายเดือน)"
+                       FontSize="14"
+                       FontAttributes="Bold" />
+                <Grid>
+                    <Border Stroke="#6B3A3A"
+                    StrokeThickness="1"
+                    BackgroundColor="#F3A7A7"
+                    Padding="14,10"
+                    StrokeShape="RoundRectangle 999"
+                    HorizontalOptions="Start">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalOptions="Center">
+                            <Label Text="˅"
+                           FontSize="18"
+                           TextColor="#4A2A2A"
+                           VerticalTextAlignment="Center" />
+
+                            <Label x:Name="MonthDisplayLabel"
+                           Grid.Column="1"
+                           Text="Month: -"
+                           FontSize="14"
+                           TextColor="#4A2A2A"
+                           VerticalTextAlignment="Center" />
+                        </Grid>
+                    </Border>
+
+                    <Picker x:Name="MonthPicker"
+                    Opacity="0.01"
+                    BackgroundColor="Transparent"
+                    Title="เลือกเดือน"
+                    SelectedIndexChanged="MonthPicker_SelectedIndexChanged" />
+                </Grid>
+
+                <Border Padding="6"
+                StrokeShape="RoundRectangle 8"
+                StrokeThickness="1"
+                HeightRequest="280"
+                BackgroundColor="White">
+                    <microcharts:ChartView x:Name="BestCategoryDonutChart"
+                                   HorizontalOptions="FillAndExpand"
+                                   VerticalOptions="FillAndExpand" />
+                </Border>
+
+                <!-- กราฟแท่งแสดงห้องที่มีการใช้ -->
+                <Label Text="การใช้งานห้อง (รายเดือน)"
+                       FontSize="14"
+                       FontAttributes="Bold" />
+
+                <Grid>
+                    <Border Stroke="#6B3A3A"
+                            StrokeThickness="1"
+                            BackgroundColor="#F3A7A7"
+                            Padding="14,10"
+                            StrokeShape="RoundRectangle 999"
+                            HorizontalOptions="Start">
+
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalOptions="Center">
+                            <Label Text="˅"
+                                   FontSize="18"
+                                   TextColor="#4A2A2A"
+                                   VerticalTextAlignment="Center"/>
+
+                            <Label x:Name="RoomMonthDisplayLabel"
+                                   Grid.Column="1"
+                                   Text="Month: -"
+                                   FontSize="14"
+                                   TextColor="#4A2A2A"
+                                   VerticalTextAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <Picker x:Name="RoomMonthPicker"
+                            Opacity="0.01"
+                            BackgroundColor="Transparent"
+                            Title="เลือกเดือน"
+                            SelectedIndexChanged="RoomMonthPicker_SelectedIndexChanged"/>
+                </Grid>
+                <Border Padding="12"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1"
+                        HeightRequest="260"
+                        BackgroundColor="White">
+                    <microcharts:ChartView x:Name="RoomUsageBarChart"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="FillAndExpand" />
+                </Border>
+
+            </VerticalStackLayout>
+        
+        </ScrollView>
+
+    </Grid>
 </ContentPage>

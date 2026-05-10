@@ -14,8 +14,11 @@ public class Booking
     [NotNull]
     public int CustomerId { get; set; }
 
-    [NotNull]
+    [Ignore]//[NotNull]
     public List<Cat> Cats { get; set; } = new List<Cat>();
+
+    [NotNull]
+    public double TotalPrice { get; set; }
 
     [Indexed]
     public int? DiscountId { get; set; } // nullable since discount is optional
