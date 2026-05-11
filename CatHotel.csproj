@@ -70,20 +70,21 @@
 		<PackageReference Include="Microcharts.Maui" Version="1.0.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.60" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.7" />
+		<PackageReference Include="Sharpnado.Tabs.Maui" Version="4.0.1" />
 		<PackageReference Include="SkiaSharp" Version="3.119.2" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Views\" />
-	  <Folder Include="ViewModels\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <MauiXaml Update="Sales.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ViewModels\" />
+	  <Folder Include="Views\" />
 	</ItemGroup>
 
 </Project>
