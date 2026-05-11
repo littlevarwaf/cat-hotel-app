@@ -4,9 +4,11 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:CatHotel"
+    xmlns:views="clr-namespace:CatHotel.Views"
+    Shell.NavBarIsVisible="False"
     Title="CatHotel">
 
-    <TabBar>
+    <TabBar Shell.TabBarIsVisible="False">
         <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
@@ -14,7 +16,7 @@
 
         <ShellContent
         Title="📊  Sales" 
-        ContentTemplate="{DataTemplate local:Sales}" 
+        ContentTemplate="{DataTemplate views:Sales}" 
         Route="Sales" />
     </TabBar>
 

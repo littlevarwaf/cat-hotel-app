@@ -1,6 +1,8 @@
 ﻿using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
 
+using Sharpnado.Tabs;
+
 namespace CatHotel
 {
     public static class MauiProgram
@@ -10,6 +12,7 @@ namespace CatHotel
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseSharpnadoTabs(loggerEnable: false)
                 .UseMicrocharts()
                 .ConfigureFonts(fonts =>
                 {

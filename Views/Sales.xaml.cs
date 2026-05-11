@@ -7,10 +7,12 @@ using System.Linq;
 using CatHotel.Models;
 using SQLite;
 
-namespace CatHotel;
+namespace CatHotel.Views;
 
-public partial class Sales : ContentPage
+public partial class Sales : ContentView
 {
+    private bool _isInitialized = false;
+
     public Sales()
     {
         InitializeComponent();
@@ -31,6 +33,28 @@ public partial class Sales : ContentPage
         };
         RoomMonthPicker.SelectedIndex = DateTime.Now.Month - 1;
         UpdateRoomMonthDisplay();
+
+        // Call initialization when the view is loaded
+        this.Loaded += OnViewLoaded;
+    }
+
+    private async void OnViewLoaded(object sender, EventArgs e)
+    {
+        if (_isInitialized) return;
+        _isInitialized = true;
+
+        try
+        {
+            await App.Database.InitializeAsync();
+            await RenderIncome7MonthsBarChartFromDbAsync();
+            await RenderBestCategoryDonut(MonthPicker.SelectedIndex);
+            await LoadRoomUsageFromDbAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("[SALES][FATAL] " + ex);
+            throw;
+        }
     }
 
     private async Task RenderIncome7MonthsBarChartFromDbAsync()
@@ -177,22 +201,6 @@ public partial class Sales : ContentPage
         await RenderBestCategoryDonut(MonthPicker.SelectedIndex);
     }
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        try
-        {
-            await App.Database.InitializeAsync();
-            await RenderIncome7MonthsBarChartFromDbAsync();
-            await RenderBestCategoryDonut(MonthPicker.SelectedIndex);
-            await LoadRoomUsageFromDbAsync();
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine("[SALES][FATAL] " + ex);
-            throw;
-        }
-    }
     private async Task LoadRoomUsageFromDbAsync()
     {
         var (large, medium, small) =
