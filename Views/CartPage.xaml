@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-namespace:CatHotel.Services"
+             x:Class="CatHotel.Views.CartPage"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="#FFF5F5"
+             Title="Shopping Cart">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <Border Grid.Row="0" BackgroundColor="White" Padding="12"
+                StrokeThickness="0" Margin="0">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
+            </Border.Shadow>
+            <Grid ColumnDefinitions="Auto,*">
+                <Button Text="‹" BackgroundColor="Transparent" TextColor="#212121"
+                        FontSize="24" Padding="0" Clicked="OnBackClicked"/>
+                <Label Grid.Column="1" Text="Shopping Cart" FontSize="18"
+                       FontAttributes="Bold" TextColor="#212121" VerticalOptions="Center"/>
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1">
+            <StackLayout Padding="12,8" Spacing="8">
+                <Label x:Name="TotalItemsLabel" Text="Total Items: 0"
+                       FontSize="13" TextColor="#757575" HorizontalOptions="End"/>
+
+                <CollectionView x:Name="CartCollection" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="services:CartEntry">
+                            <Border BackgroundColor="White" StrokeThickness="0"
+                                    Padding="12" Margin="0,4">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12"/>
+                                </Border.StrokeShape>
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                                </Border.Shadow>
+                                <Grid ColumnDefinitions="60,*,Auto" ColumnSpacing="10">
+                                    <Border BackgroundColor="#FFCDD2" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="8"/>
+                                        </Border.StrokeShape>
+                                        <Label Text="🐟" FontSize="28"
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                    <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                        <Label Text="{Binding Item.Name}" FontSize="14"
+                                               FontAttributes="Bold" TextColor="#212121"/>
+                                        <Label Text="{Binding Item.Description}"
+                                               FontSize="11" TextColor="#757575"/>
+                                        <Label Text="{Binding PriceDisplay}"
+                                               FontSize="13" TextColor="#E91E63" FontAttributes="Bold"/>
+                                        <Button Text="Remove" BackgroundColor="Transparent"
+                                                TextColor="#F44336" FontSize="12" Padding="0"
+                                                HorizontalOptions="Start"
+                                                CommandParameter="{Binding .}"
+                                                Clicked="OnRemoveClicked"/>
+                                    </StackLayout>
+                                    <Border Grid.Column="2" BackgroundColor="#E91E63"
+                                            StrokeThickness="0" WidthRequest="32" HeightRequest="32"
+                                            VerticalOptions="Center">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="16"/>
+                                        </Border.StrokeShape>
+                                        <Label Text="{Binding Quantity}" TextColor="White"
+                                               FontSize="13" FontAttributes="Bold"
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.EmptyView>
+                        <StackLayout HorizontalOptions="Center" Padding="40">
+                            <Label Text="🛒" FontSize="48" HorizontalOptions="Center"/>
+                            <Label Text="Cart is empty" FontSize="14"
+                                   TextColor="#757575" HorizontalOptions="Center"/>
+                        </StackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </StackLayout>
+        </ScrollView>
+
+        <Border Grid.Row="2" BackgroundColor="White" StrokeThickness="0" Padding="16">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,-2" Radius="4" Opacity="0.08"/>
+            </Border.Shadow>
+            <StackLayout Spacing="8">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Total" FontSize="18" FontAttributes="Bold" TextColor="#212121"/>
+                    <Label x:Name="TotalLabel" Grid.Column="1" Text="฿0"
+                           FontSize="18" FontAttributes="Bold" TextColor="#E91E63"/>
+                </Grid>
+                <Label x:Name="SummaryLabel" Text="" FontSize="12" TextColor="#757575"/>
+                <Button Text="Place Order" BackgroundColor="#E91E63" TextColor="White"
+                        CornerRadius="12" FontSize="16" HeightRequest="50"
+                        Clicked="OnPlaceOrder"/>
+            </StackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

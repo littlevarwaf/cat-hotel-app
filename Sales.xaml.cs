@@ -190,7 +190,6 @@ public partial class Sales : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine("[SALES][FATAL] " + ex);
-            throw;
         }
     }
     private async Task LoadRoomUsageFromDbAsync()

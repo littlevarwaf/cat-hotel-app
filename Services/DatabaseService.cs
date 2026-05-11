@@ -41,6 +41,7 @@ namespace CatHotel.Services
 
                 await EnsureColumnExistsAsync("Bookings", "TotalPrice", "REAL", "0");
                 await EnsureColumnExistsAsync("BookingItems", "UnitPrice", "REAL", "0");
+                await EnsureColumnExistsAsync("BookingItems", "Quantity", "INTEGER", "1");
 
                 // ถ้าจะเทสให้เอาcommentออก
                 //await SeedTestDataIfEmptyAsync();
