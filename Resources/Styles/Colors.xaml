@@ -5,7 +5,6 @@
 
     <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->
 
-    <Color x:Key="Primary">#512BD4</Color>
     <Color x:Key="PrimaryDark">#ac99ea</Color>
     <Color x:Key="PrimaryDarkText">#242424</Color>
     <Color x:Key="Secondary">#DFD8F7</Color>
@@ -28,6 +27,7 @@
     <Color x:Key="Gray950">#141414</Color>
 
     <!-- Primary Color Palette -->
+    <Color x:Key="Primary">#F5A1A1</Color>
     <Color x:Key="Primary50">#FDECEC</Color>
     <Color x:Key="Primary100">#F9D0D0</Color>
     <Color x:Key="Primary500">#E06060</Color>

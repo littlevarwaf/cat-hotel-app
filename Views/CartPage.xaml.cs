@@ -1,16 +1,66 @@
+using CatHotel.Models;
 using CatHotel.Services;
+using System.ComponentModel;
 
 namespace CatHotel.Views;
 
-public partial class CartPage : ContentPage
+public partial class CartPage : ContentPage, INavigationAware
 {
+    private bool _isInitialized = false;
     private readonly CartService _cart = CartService.Instance;
+    private Room? _room;
 
-    public CartPage() => InitializeComponent();
-
-    protected override void OnAppearing()
+    public Room? Room
     {
-        base.OnAppearing();
+        get => _room;
+        set
+        {
+            if (_room != value)
+            {
+                _room = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public CartPage()
+    {
+        InitializeComponent();
+        BindingContext = this;
+        this.Loaded += OnViewLoaded;
+        
+        // Subscribe to cart changes to update in real-time
+        if (_cart is INotifyPropertyChanged notifyPropertyChanged)
+        {
+            notifyPropertyChanged.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(_cart.Count) || e.PropertyName == nameof(_cart.Total))
+                {
+                    Refresh();
+                }
+            };
+        }
+    }
+
+    public void OnNavigatedTo(IDictionary<string, object> parameters)
+    {
+        // Extract room data if passed
+        if (parameters.TryGetValue("room", out var roomObj) && roomObj is Room room)
+        {
+            Room = room;
+            System.Diagnostics.Debug.WriteLine($"[CART] Received Room: {room.Name} (ID: {room.Id})");
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("[CART] No room data received");
+        }
+    }
+
+    private async void OnViewLoaded(object sender, EventArgs e)
+    {
+        if (_isInitialized) return;
+        _isInitialized = true;
+
         Refresh();
     }
 
@@ -37,10 +87,8 @@ public partial class CartPage : ContentPage
     {
         if (!_cart.Items.Any())
         {
-            await DisplayAlertAsync("Cart Empty", "Please add items first.", "OK");
             return;
         }
-        await DisplayAlertAsync("Order Placed! 🐾", $"Total: ฿{_cart.Total:N0}", "OK");
         _cart.Clear();
         Refresh();
         await NavigationService.GoBackAsync();

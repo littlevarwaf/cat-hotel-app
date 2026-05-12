@@ -1,11 +1,13 @@
 using CatHotel.Models;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace CatHotel.Services;
 
 /// <summary>
 /// Local cart ที่อยู่ใน memory ระหว่าง session
 /// </summary>
-public class CartService
+public class CartService : INotifyPropertyChanged
 {
     private static CartService? _instance;
     public static CartService Instance => _instance ??= new CartService();
@@ -22,11 +24,31 @@ public class CartService
             existing.Quantity += qty;
         else
             Items.Add(new CartEntry { Item = item, Quantity = qty });
+        
+        OnPropertyChanged(nameof(Count));
+        OnPropertyChanged(nameof(Total));
     }
 
-    public void Remove(CartEntry entry) => Items.Remove(entry);
+    public void Remove(CartEntry entry)
+    {
+        Items.Remove(entry);
+        OnPropertyChanged(nameof(Count));
+        OnPropertyChanged(nameof(Total));
+    }
 
-    public void Clear() => Items.Clear();
+    public void Clear()
+    {
+        Items.Clear();
+        OnPropertyChanged(nameof(Count));
+        OnPropertyChanged(nameof(Total));
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }
 
 public class CartEntry

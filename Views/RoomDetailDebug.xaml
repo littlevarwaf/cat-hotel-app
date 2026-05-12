@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.RoomDetailDebug">
+
+    <StackLayout Padding="64" Spacing="12">
+
+        <!-- DEBUG INFO -->
+        <Border BackgroundColor="#E3F2FD" Padding="12" StrokeThickness="1">
+            <StackLayout Spacing="4">
+                <Label Text="🔍 RoomDetailPage DEBUG" FontAttributes="Bold" FontSize="12"/>
+                <Label Text="{Binding ., StringFormat='BindingContext Type: {0}'}" FontSize="10" TextColor="#1976D2"/>
+                <Label Text="{Binding Name, StringFormat='Name: {0}'}" FontSize="10" TextColor="#1976D2"/>
+                <Label Text="{Binding BasePrice, StringFormat='Price: ฿{0}'}" FontSize="10" TextColor="#1976D2"/>
+                <Label Text="{Binding RoomType, StringFormat='Type: {0}'}" FontSize="10" TextColor="#1976D2"/>
+            </StackLayout>
+        </Border>
+
+        <!-- ACTUAL CONTENT -->
+        <Label Text="{Binding Name, StringFormat='Room: {0}'}" FontSize="24" FontAttributes="Bold"/>
+        <Label Text="{Binding RoomType, StringFormat='Type: {0}'}" FontSize="16" TextColor="#757575"/>
+        <Label Text="{Binding BasePrice, StringFormat='฿{0:N0} / night'}" FontSize="18" TextColor="#E91E63"/>
+
+        <Button Text="Go to Shop" Command="{Binding GoToShopCommand}"/>
+        <Button Text="Go to Cart" Command="{Binding GoToCartCommand}"/>
+        <Button Text="Back" Command="{Binding GoBackCommand}"/>
+    </StackLayout>
+</ContentView>

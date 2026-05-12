@@ -12,7 +12,7 @@
             <Border.Shadow>
                 <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
             </Border.Shadow>
-            <Grid ColumnDefinitions="*,Auto,Auto">
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                 <Label Text="Welcome!" FontSize="22" FontAttributes="Bold"
                        TextColor="#212121" VerticalOptions="Center"/>
                 <Button x:Name="EditButton" Grid.Column="1"
@@ -20,7 +20,7 @@
                         FontSize="20" Padding="4,0"
                         Clicked="OnEditClicked"
                         IsVisible="False"/>
-                <Label Grid.Column="2" Text="🐾" FontSize="28" VerticalOptions="Center"/>
+                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
             </Grid>
         </Border>
 

@@ -70,8 +70,8 @@ public partial class HomePage : ContentView
         if (e.Parameter is RoomViewModel vm)
         {
             await NavigationService.GoToAsync(
-                NavigationService.RoomDetail,
-                new Dictionary<string, object> { ["Room"] = vm.Room });
+                "RoomWrapper",
+                new Dictionary<string, object> { ["roomId"] = vm.Room.Id });
         }
     }
 

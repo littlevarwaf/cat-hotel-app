@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:tabs="http://sharpnado.com"
+             xmlns:views="clr-namespace:CatHotel.Views"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             x:Class="CatHotel.Views.RoomWrapperPage">
+    <Grid RowDefinitions="*, Auto">
+
+        <!-- DEBUG INFO -->
+        <Border Grid.Row="0" BackgroundColor="#FFEBEE" Padding="12" StrokeThickness="1">
+            <StackLayout Spacing="4">
+                <Label Text="🔍 DEBUG INFO" FontAttributes="Bold" FontSize="12"/>
+                <Label Text="{Binding Room, StringFormat='Room: {0}'}" FontSize="10" TextColor="#D32F2F"/>
+                <Label Text="{Binding Room.Name, StringFormat='Name: {0}'}" FontSize="10" TextColor="#D32F2F"/>
+                <Label Text="{Binding Room.Id, StringFormat='ID: {0}'}" FontSize="10" TextColor="#D32F2F"/>
+                <Label Text="{Binding IsLoading, StringFormat='Loading: {0}'}" FontSize="10" TextColor="#D32F2F"/>
+            </StackLayout>
+        </Border>
+
+        <tabs:ViewSwitcher Grid.Row="0" 
+                       SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+            <views:RoomDetailPage />
+            <views:ShopPage />
+        </tabs:ViewSwitcher>
+
+        <!-- BOTTOM TABBAR CONTAINER -->
+        <Grid Grid.Row="1" Margin="30,10,30,40" ColumnDefinitions="*, Auto" ColumnSpacing="16">
+
+            <!-- GROUP 1: Tab Navigation with white background -->
+            <Border Grid.Column="0" HeightRequest="70" BackgroundColor="White" StrokeThickness="0" Padding="8">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="35" />
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="4,4" Radius="10" Opacity="0.1" />
+                </Border.Shadow>
+
+                <tabs:TabHostView
+                    SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
+                    BackgroundColor="Transparent"
+                    TabType="Fixed">
+
+                    <tabs:BottomTabItem Label="Room Details" IconImageSource="building_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
+                    <tabs:BottomTabItem Label="Shop" IconImageSource="shopping_bag_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
+
+                </tabs:TabHostView>
+            </Border>
+
+            <!-- GROUP 2: Circular Button with pink background and badge -->
+            <Grid Grid.Column="1" WidthRequest="70" HeightRequest="70">
+                <Border BackgroundColor="{StaticResource Primary}" StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <Ellipse />
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="4,4" Radius="10" Opacity="0.1" />
+                    </Border.Shadow>
+
+                    <Button
+                        WidthRequest="70"
+                        HeightRequest="70"
+                        CornerRadius="35"
+                        BackgroundColor="{StaticResource NeutralWhite}"
+                        ImageSource="shopping_cart_icon.svg"
+                        Command="{Binding GoToCartCommand}">
+                    </Button>
+                </Border>
+
+                <!-- Badge -->
+                <Border
+                    WidthRequest="28"
+                    HeightRequest="28"
+                    BackgroundColor="{StaticResource Primary}"
+                    StrokeThickness="0"
+                    Padding="0"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+                    Margin="0,-8,-8,0"
+                    IsVisible="{Binding ShowCartBadge}">
+                    <Border.StrokeShape>
+                        <Ellipse />
+                    </Border.StrokeShape>
+
+                    <Label
+                        Text="{Binding CartItemCount}"
+                        TextColor="{StaticResource Primary900}"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+                </Border>
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+</ContentPage>

@@ -3,8 +3,9 @@ using CatHotel.Services;
 
 namespace CatHotel.Views;
 
-public partial class ShopPage : ContentPage
+public partial class ShopPage : ContentView
 {
+    private bool _isInitialized = false;
     private readonly CartService _cart = CartService.Instance;
     private ShopItem? _selectedItem;
     private int _qty = 1;
@@ -19,34 +20,34 @@ public partial class ShopPage : ContentPage
         _                   => "🐾"
     };
 
-    public ShopPage() => InitializeComponent();
+    public ShopPage()
+    { 
+        InitializeComponent();
 
-    protected override void OnAppearing()
+        // Call initialization when the view is loaded
+        this.Loaded += OnViewLoaded;
+    }
+
+    private async void OnViewLoaded(object sender, EventArgs e)
     {
-        base.OnAppearing();
-        ShopCollection.ItemsSource = GetMockItems();
-        UpdateCartBadge();
+        if (_isInitialized) return;
+        _isInitialized = true;
+
+        if (ShopCollection.ItemsSource == null)
+        {
+            ShopCollection.ItemsSource = GetMockItems();
+        }
     }
 
     private static List<ShopItem> GetMockItems() => new()
     {
-        new ShopItem("Me-O Tuna",      "Wet food for cats",   35,  ItemType.Food,       ""),
-        new ShopItem("Royal Canin",    "Dry food premium",   399,  ItemType.Food,       ""),
-        new ShopItem("Whiskas Sachet", "Pouch meal",          25,  ItemType.Food,       ""),
-        new ShopItem("Cat Treat",      "Snack & reward",      89,  ItemType.Food,       ""),
-        new ShopItem("Kitty Litter",   "Clumping sand",      199,  ItemType.Necessity,  ""),
-        new ShopItem("Cat Shampoo",    "Gentle formula",     149,  ItemType.Accessory,  ""),
+        new ShopItem("Me-O Tuna",      "Wet food for cats",   35,  ItemType.Food,       "") { Id = 1 },
+        new ShopItem("Royal Canin",    "Dry food premium",   399,  ItemType.Food,       "") { Id = 2 },
+        new ShopItem("Whiskas Sachet", "Pouch meal",          25,  ItemType.Food,       "") { Id = 3 },
+        new ShopItem("Cat Treat",      "Snack & reward",      89,  ItemType.Food,       "") { Id = 4 },
+        new ShopItem("Kitty Litter",   "Clumping sand",      199,  ItemType.Necessity,  "") { Id = 5 },
+        new ShopItem("Cat Shampoo",    "Gentle formula",     149,  ItemType.Accessory,  "") { Id = 6 },
     };
-
-    private void UpdateCartBadge()
-    {
-        var count = _cart.Count;
-        CartCountLabel.Text = count.ToString();
-        CartBadge.IsVisible = count > 0;
-    }
-
-    private async void OnCartClicked(object sender, EventArgs e)
-        => await NavigationService.GoToAsync(NavigationService.Cart);
 
     private async void OnItemTapped(object sender, TappedEventArgs e)
     {
@@ -96,8 +97,7 @@ public partial class ShopPage : ContentPage
         if (_selectedItem == null) return;
         var name = _selectedItem.Name;
         _cart.Add(_selectedItem, _qty);
-        UpdateCartBadge();
         await ClosePopup();
-        await DisplayAlertAsync("Added! 🛒", $"{_qty}× {name} added to cart.", "OK");
+        //await DisplayAlertAsync("Added! 🛒", $"{_qty}× {name} added to cart.", "OK");
     }
 }

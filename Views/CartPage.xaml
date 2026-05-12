@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:services="clr-namespace:CatHotel.Services"
              x:Class="CatHotel.Views.CartPage"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False"
-             BackgroundColor="#FFF5F5"
-             Title="Shopping Cart">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#FFF5F5">
 
     <Grid RowDefinitions="Auto,*,Auto">
 
@@ -82,6 +82,16 @@
                         </StackLayout>
                     </CollectionView.EmptyView>
                 </CollectionView>
+
+                <!-- DEBUG INFO -->
+                <Border Grid.Row="0" BackgroundColor="#FFEBEE" Padding="12" StrokeThickness="1" Margin="0">
+                    <StackLayout Spacing="4">
+                        <Label Text="🔍 DEBUG INFO (CartPage)" FontAttributes="Bold" FontSize="12"/>
+                        <Label Text="{Binding Room, StringFormat='Room: {0}'}" FontSize="10" TextColor="#D32F2F"/>
+                        <Label Text="{Binding Room.Name, StringFormat='Room Name: {0}'}" FontSize="10" TextColor="#D32F2F"/>
+                        <Label Text="{Binding Room.Id, StringFormat='Room ID: {0}'}" FontSize="10" TextColor="#D32F2F"/>
+                    </StackLayout>
+                </Border>
             </StackLayout>
         </ScrollView>
 

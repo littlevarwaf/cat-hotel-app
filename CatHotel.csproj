@@ -78,13 +78,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\RoomPage.xaml">
+	  <MauiXaml Update="Views\RoomDetailDebug.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\TestView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\TestView2.xaml">
+	  <MauiXaml Update="Views\RoomWrapperPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\HomePage.xaml">
@@ -114,6 +111,11 @@
 		<MauiXaml Remove="Resources\**\*.xaml" />
 		<MauiXaml Include="Resources\Styles\Colors.xaml" />
 		<MauiXaml Include="Resources\Styles\Styles.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Views\RoomWrapperPage.xaml.cs">
+	    <DependentUpon>RoomWrapperPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

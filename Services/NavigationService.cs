@@ -4,9 +4,8 @@ namespace CatHotel.Services;
 
 public static class NavigationService
 {
-    public const string RoomDetail = "RoomDetailPage";
-    public const string Cart = "CartPage";
-    public const string Shop = nameof(ShopPage);
+    public const string RoomWrapper = "RoomWrapper";
+    public const string CartPage = "CartPage";
 
     public static async Task GoToAsync(string route)
     {
@@ -36,9 +35,8 @@ public static class NavigationService
     {
         return route switch
         {
-            nameof(RoomDetailPage) => new RoomDetailPage(),
+            nameof(RoomWrapper) => new RoomWrapperPage(),
             nameof(CartPage) => new CartPage(),
-            nameof(ShopPage) => new ShopPage(),
             _ => null
         };
     }
@@ -47,4 +45,4 @@ public static class NavigationService
 public interface INavigationAware
 {
     void OnNavigatedTo(IDictionary<string, object> parameters);
-} 
+}
