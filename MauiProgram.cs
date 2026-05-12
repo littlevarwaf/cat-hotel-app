@@ -1,4 +1,6 @@
-﻿using Microcharts.Maui;
+﻿using CatHotel.Services;
+using CatHotel.Views;
+using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
 
 using Sharpnado.Tabs;
@@ -21,10 +23,18 @@ namespace CatHotel
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
-        }
+        builder.Services.AddSingleton<IRoomRepository, MockRoomRepository>();
+
+        builder.Services.AddTransient<HomePage>();
+        builder.Services.AddTransient<CalendarPage>();
+        builder.Services.AddTransient<Sales>();
+        builder.Services.AddTransient<ShopPage>();
+        builder.Services.AddTransient<RoomDetailPage>();
+        builder.Services.AddTransient<CartPage>();
+
+        return builder.Build();
     }
 }

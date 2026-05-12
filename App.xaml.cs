@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using CatHotel.Services;
+﻿using CatHotel.Services;
 
 namespace CatHotel
 {

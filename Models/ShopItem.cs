@@ -23,6 +23,9 @@ public class ShopItem
     [NotNull]
     public string ImgUrl { get; set; }
 
+    [Ignore]
+    public bool IsNew => false;
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     // ---- Constructors ----

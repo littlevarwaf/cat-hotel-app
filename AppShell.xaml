@@ -10,14 +10,18 @@
 
     <TabBar Shell.TabBarIsVisible="False">
         <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+            Title="Home"
+            ContentTemplate="{DataTemplate views:HomePage}"
+            Route="HomePage" />
+
+        <ShellContent
+            Title="Calendar"
+            ContentTemplate="{DataTemplate views:CalendarPage}"
+            Route="CalendarPage" />
 
         <ShellContent
         Title="📊  Sales" 
         ContentTemplate="{DataTemplate views:Sales}" 
         Route="Sales" />
     </TabBar>
-
 </Shell>

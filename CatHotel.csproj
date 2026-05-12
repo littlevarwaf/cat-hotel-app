@@ -84,6 +84,33 @@
 	  <MauiXaml Update="Views\TestView2.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\HomePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\CalendarPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ShopPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\RoomDetailPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\CartPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<!-- โฟลเดอร์ Resources/ มีสำเนาโค้ดทั้งโปรเจกต์ (App, Shell, Views, Models, …) ซ้อนกับไฟล์ราก
+	     SDK รวม **/*.cs และ **/*.xaml ทั้งหมด → เกิด duplicate type / duplicate assembly attributes / .sg.cs ซ้ำ
+	     ยกเว้นเฉพาะ Styles ที่ App.xaml merge อยู่ -->
+	<ItemGroup>
+		<Compile Remove="Resources\**\*.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<MauiXaml Remove="Resources\**\*.xaml" />
+		<MauiXaml Include="Resources\Styles\Colors.xaml" />
+		<MauiXaml Include="Resources\Styles\Styles.xaml" />
 	</ItemGroup>
 
 </Project>
