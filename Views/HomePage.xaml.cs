@@ -3,22 +3,40 @@ using CatHotel.Services;
 
 namespace CatHotel.Views;
 
-public partial class HomePage : ContentPage
+public partial class HomePage : ContentView
 {
+    private bool _isInitialized = false;
     private readonly IRoomRepository _roomRepo;
+
+    public HomePage() : this(
+        IPlatformApplication.Current!.Services.GetRequiredService<IRoomRepository>())
+    { }
 
     public HomePage(IRoomRepository roomRepo)
     {
         InitializeComponent();
         _roomRepo = roomRepo;
+
+        // Call initialization when the view is loaded
+        this.Loaded += OnViewLoaded;
     }
 
-    protected override async void OnAppearing()
+    private async void OnViewLoaded(object sender, EventArgs e)
     {
-        base.OnAppearing();
-        DateLabel.Text = DateTime.Now.ToString("dd/MM/yyyy");
-        EditButton.IsVisible = true;
-        await LoadRoomsAsync();
+        if (_isInitialized) return;
+        _isInitialized = true;
+
+        try
+        {
+            DateLabel.Text = DateTime.Now.ToString("dd/MM/yyyy");
+            EditButton.IsVisible = true;
+            await LoadRoomsAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("[HOME][FATAL] " + ex);
+            throw;
+        }
     }
 
     private async Task LoadRoomsAsync()
@@ -37,7 +55,8 @@ public partial class HomePage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Cannot load rooms: {ex.Message}", "OK");
+            //await DisplayAlert("Error", $"Cannot load rooms: {ex.Message}", "OK");
+            throw;
         }
         finally
         {

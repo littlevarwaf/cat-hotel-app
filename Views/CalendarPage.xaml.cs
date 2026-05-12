@@ -35,26 +35,44 @@ public class CalendarDay
     }
 }
 
-public partial class CalendarPage : ContentPage
+public partial class CalendarPage : ContentView
 {
+    private bool _isInitialized = false;
     private readonly IRoomRepository _roomRepo;
     private DateTime _currentMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
     private DateTime? _selectedDate;
     private readonly List<int> _bookedDays = new() { 11, 12 };
     private List<CalendarDay> _calendarDays = new();
 
+    public CalendarPage() : this(
+        IPlatformApplication.Current!.Services.GetRequiredService<IRoomRepository>())
+    { }
+
     public CalendarPage(IRoomRepository roomRepo)
     {
         InitializeComponent();
         _roomRepo = roomRepo;
         BuildCalendarGrid();
+
+        // Call initialization when the view is loaded
+        this.Loaded += OnViewLoaded;
     }
 
-    protected override async void OnAppearing()
+    private async void OnViewLoaded(object sender, EventArgs e)
     {
-        base.OnAppearing();
-        RefreshCalendar();
-        await LoadAvailableRoomsAsync();
+        if (_isInitialized) return;
+        _isInitialized = true;
+
+        try
+        {
+            RefreshCalendar();
+            await LoadAvailableRoomsAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("[CALENDAR][FATAL] " + ex);
+            throw;
+        }
     }
 
     private void RefreshCalendar()

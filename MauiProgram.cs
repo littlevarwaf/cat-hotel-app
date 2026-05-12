@@ -23,18 +23,24 @@ namespace CatHotel
                 });
 
 #if DEBUG
-        builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
-        builder.Services.AddSingleton<IRoomRepository, MockRoomRepository>();
+            builder
+                .Services
+                .AddSingleton<IRoomRepository, MockRoomRepository>()
+                .AddSingleton<HomePage>()
+                .AddSingleton<CalendarPage>()
+                .AddSingleton<Sales>();
 
-        builder.Services.AddTransient<HomePage>();
-        builder.Services.AddTransient<CalendarPage>();
-        builder.Services.AddTransient<Sales>();
-        builder.Services.AddTransient<ShopPage>();
-        builder.Services.AddTransient<RoomDetailPage>();
-        builder.Services.AddTransient<CartPage>();
+            builder.Services.AddTransient<HomePage>();
+            builder.Services.AddTransient<CalendarPage>();
+            builder.Services.AddTransient<Sales>();
+            builder.Services.AddTransient<ShopPage>();
+            builder.Services.AddTransient<RoomDetailPage>();
+            builder.Services.AddTransient<CartPage>();
 
-        return builder.Build();
+            return builder.Build();
+        }
     }
 }

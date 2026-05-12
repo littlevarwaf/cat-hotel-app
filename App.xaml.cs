@@ -17,7 +17,7 @@ namespace CatHotel
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            var window = new Window(new AppShell());
+            var window = new Window(new NavigationPage(new MainPage()));
 
             // init DB หลังสร้าง UI แล้ว (ไม่ block UI thread)
             if (!_dbInitialized)

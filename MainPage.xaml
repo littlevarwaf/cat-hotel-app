@@ -4,6 +4,7 @@
              xmlns:controls="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:tabs="http://sharpnado.com"
              xmlns:views="clr-namespace:CatHotel.Views"
+             NavigationPage.HasNavigationBar="False"
              Shell.NavBarIsVisible="False"
              x:Class="CatHotel.MainPage">
 
@@ -11,8 +12,8 @@
 
         <tabs:ViewSwitcher Grid.Row="0" 
                            SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
-            <views:TestView />
-            <views:TestView2 />
+            <views:HomePage />
+            <views:CalendarPage />
             <views:Sales />
         </tabs:ViewSwitcher>
 

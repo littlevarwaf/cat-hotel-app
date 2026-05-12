@@ -5,15 +5,46 @@ namespace CatHotel.Services;
 public static class NavigationService
 {
     public const string RoomDetail = "RoomDetailPage";
-    public const string Cart       = "CartPage";
-    public const string Shop       = nameof(ShopPage);
+    public const string Cart = "CartPage";
+    public const string Shop = nameof(ShopPage);
 
-    public static Task GoToAsync(string route) =>
-        Shell.Current.GoToAsync(route);
+    public static async Task GoToAsync(string route)
+    {
+        var page = GetPageByRoute(route);
+        if (page != null)
+        {
+            await Application.Current!.MainPage!.Navigation.PushAsync(page);
+        }
+    }
 
-    public static Task GoToAsync(string route, IDictionary<string, object> parameters) =>
-        Shell.Current.GoToAsync(route, parameters);
+    public static async Task GoToAsync(string route, IDictionary<string, object> parameters)
+    {
+        var page = GetPageByRoute(route);
+        if (page != null && page.BindingContext is INavigationAware navigationAware)
+        {
+            navigationAware.OnNavigatedTo(parameters);
+        }
+        await Application.Current!.MainPage!.Navigation.PushAsync(page);
+    }
 
-    public static Task GoBackAsync() =>
-        Shell.Current.GoToAsync("..");
+    public static async Task GoBackAsync()
+    {
+        await Application.Current!.MainPage!.Navigation.PopAsync();
+    }
+
+    private static ContentPage? GetPageByRoute(string route)
+    {
+        return route switch
+        {
+            nameof(RoomDetailPage) => new RoomDetailPage(),
+            nameof(CartPage) => new CartPage(),
+            nameof(ShopPage) => new ShopPage(),
+            _ => null
+        };
+    }
 }
+
+public interface INavigationAware
+{
+    void OnNavigatedTo(IDictionary<string, object> parameters);
+} 
