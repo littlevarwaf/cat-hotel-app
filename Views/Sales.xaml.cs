@@ -38,7 +38,7 @@ public partial class Sales : ContentView
         this.Loaded += OnViewLoaded;
     }
 
-    private async void OnViewLoaded(object sender, EventArgs e)
+    private async void OnViewLoaded(object? sender, EventArgs e)
     {
         if (_isInitialized) return;
         _isInitialized = true;
@@ -194,7 +194,7 @@ public partial class Sales : ContentView
         MonthDisplayLabel.Text = $"Month : {monthName}";
     }
 
-    private async void MonthPicker_SelectedIndexChanged(object sender, EventArgs e)
+    private async void MonthPicker_SelectedIndexChanged(object? sender, EventArgs e)
     {
         if (MonthPicker.SelectedIndex < 0) return;
         UpdateMonthDisplay();
@@ -239,7 +239,7 @@ public partial class Sales : ContentView
         };
     }
 
-    private async void RoomMonthPicker_SelectedIndexChanged(object sender, EventArgs e)
+    private async void RoomMonthPicker_SelectedIndexChanged(object? sender, EventArgs e)
     {
         if (RoomMonthPicker.SelectedIndex < 0) return;
 

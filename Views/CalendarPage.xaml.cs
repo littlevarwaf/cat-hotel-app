@@ -58,7 +58,7 @@ public partial class CalendarPage : ContentView
         this.Loaded += OnViewLoaded;
     }
 
-    private async void OnViewLoaded(object sender, EventArgs e)
+    private async void OnViewLoaded(object? sender, EventArgs e)
     {
         if (_isInitialized) return;
         _isInitialized = true;
@@ -206,7 +206,7 @@ public partial class CalendarPage : ContentView
             .ToList();
     }
 
-    private void OnPrevMonth(object sender, EventArgs e)
+    private void OnPrevMonth(object? sender, EventArgs e)
     {
         _currentMonth = _currentMonth.AddMonths(-1);
         _selectedDate = null;
@@ -214,7 +214,7 @@ public partial class CalendarPage : ContentView
         _ = LoadAvailableRoomsAsync();
     }
 
-    private void OnNextMonth(object sender, EventArgs e)
+    private void OnNextMonth(object? sender, EventArgs e)
     {
         _currentMonth = _currentMonth.AddMonths(1);
         _selectedDate = null;

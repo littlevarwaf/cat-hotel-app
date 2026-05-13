@@ -28,28 +28,53 @@ public partial class ShopPage : ContentView
         this.Loaded += OnViewLoaded;
     }
 
-    private async void OnViewLoaded(object sender, EventArgs e)
+    private async void OnViewLoaded(object? sender, EventArgs e)
     {
         if (_isInitialized) return;
         _isInitialized = true;
 
-        if (ShopCollection.ItemsSource == null)
+        await LoadShopItemsAsync();
+    }
+
+    private async Task LoadShopItemsAsync()
+    {
+        try
         {
-            ShopCollection.ItemsSource = GetMockItems();
+            await App.Database.InitializeAsync();
+            var items = await App.Database.Db.Table<ShopItem>().ToListAsync();
+
+            // ถ้า DB ว่างให้ seed ข้อมูลตั้งต้นไว้ก่อน
+            if (items.Count == 0)
+            {
+                items = GetDefaultItems();
+                foreach (var item in items)
+                    await App.Database.Db.InsertAsync(item);
+
+                // reload เพื่อให้ได้ Id จริงจาก DB
+                items = await App.Database.Db.Table<ShopItem>().ToListAsync();
+            }
+
+            ShopCollection.ItemsSource = items;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("[SHOP] LoadShopItemsAsync error: " + ex);
+            // fallback ใช้ default list ถ้า DB ยังไม่พร้อม
+            ShopCollection.ItemsSource = GetDefaultItems();
         }
     }
 
-    private static List<ShopItem> GetMockItems() => new()
+    private static List<ShopItem> GetDefaultItems() => new()
     {
-        new ShopItem("Me-O Tuna",      "Wet food for cats",   35,  ItemType.Food,       "") { Id = 1 },
-        new ShopItem("Royal Canin",    "Dry food premium",   399,  ItemType.Food,       "") { Id = 2 },
-        new ShopItem("Whiskas Sachet", "Pouch meal",          25,  ItemType.Food,       "") { Id = 3 },
-        new ShopItem("Cat Treat",      "Snack & reward",      89,  ItemType.Food,       "") { Id = 4 },
-        new ShopItem("Kitty Litter",   "Clumping sand",      199,  ItemType.Necessity,  "") { Id = 5 },
-        new ShopItem("Cat Shampoo",    "Gentle formula",     149,  ItemType.Accessory,  "") { Id = 6 },
+        new ShopItem("Me-O Tuna",      "Wet food for cats",   35,  ItemType.Food,       ""),
+        new ShopItem("Royal Canin",    "Dry food premium",   399,  ItemType.Food,       ""),
+        new ShopItem("Whiskas Sachet", "Pouch meal",          25,  ItemType.Food,       ""),
+        new ShopItem("Cat Treat",      "Snack & reward",      89,  ItemType.Food,       ""),
+        new ShopItem("Kitty Litter",   "Clumping sand",      199,  ItemType.Necessity,  ""),
+        new ShopItem("Cat Shampoo",    "Gentle formula",     149,  ItemType.Accessory,  ""),
     };
 
-    private async void OnItemTapped(object sender, TappedEventArgs e)
+    private async void OnItemTapped(object? sender, TappedEventArgs e)
     {
         if (_isAnimating || e.Parameter is not ShopItem item) return;
         _selectedItem = item;
@@ -86,13 +111,13 @@ public partial class ShopPage : ContentView
         _isAnimating  = false;
     }
 
-    private async void OnClosePopup(object sender, EventArgs e) => await ClosePopup();
-    private async void OnDimTapped(object sender, TappedEventArgs e) => await ClosePopup();
+    private async void OnClosePopup(object? sender, EventArgs e) => await ClosePopup();
+    private async void OnDimTapped(object? sender, TappedEventArgs e) => await ClosePopup();
 
-    private void OnIncrement(object sender, EventArgs e) { _qty++; PopupQty.Text = _qty.ToString(); }
-    private void OnDecrement(object sender, EventArgs e) { if (_qty > 1) _qty--; PopupQty.Text = _qty.ToString(); }
+    private void OnIncrement(object? sender, EventArgs e) { _qty++; PopupQty.Text = _qty.ToString(); }
+    private void OnDecrement(object? sender, EventArgs e) { if (_qty > 1) _qty--; PopupQty.Text = _qty.ToString(); }
 
-    private async void OnAddToCart(object sender, EventArgs e)
+    private async void OnAddToCart(object? sender, EventArgs e)
     {
         if (_selectedItem == null) return;
         var name = _selectedItem.Name;
