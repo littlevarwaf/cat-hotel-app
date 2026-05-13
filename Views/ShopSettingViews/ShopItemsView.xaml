@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.ShopSettingViews.ShopItemsView">
+    <ContentView.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#F7D7D7" Offset="0.0" />
+            <GradientStop Color="#FBEAEA" Offset="0.25" />
+            <GradientStop Color="#FFF7EF" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentView.Background>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- ITEMS GRID -->
+        <CollectionView Grid.Row="2"
+                    x:Name="ItemsCollectionView"
+                    Margin="16,12,16,0"
+                    SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="10" VerticalItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="White" StrokeThickness="0" Padding="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="#20000000" Offset="0,2" Radius="6" Opacity="0.12"/>
+                        </Border.Shadow>
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="0">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                  Tapped="OnItemTapped"/>
+                            </Grid.GestureRecognizers>
+
+                            <Grid Grid.Row="0" HeightRequest="140">
+                                <Border BackgroundColor="#FDECEC" StrokeThickness="0"
+                                    HeightRequest="140">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="12,12,0,0"/>
+                                    </Border.StrokeShape>
+                                    <Image Source="{Binding ImgUrl}" Aspect="AspectFill"
+                                       HeightRequest="140"/>
+                                </Border>
+
+                                <Border BackgroundColor="#1A1A1A" StrokeThickness="0"
+                                    Padding="8,4"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Start"
+                                    Margin="0,8,8,0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="999"/>
+                                    </Border.StrokeShape>
+                                    <Label Text="{Binding ItemPrice, StringFormat='฿{0:N0}'}"
+                                       TextColor="White" FontSize="11" FontAttributes="Bold"/>
+                                </Border>
+                            </Grid>
+
+
+                            <VerticalStackLayout Grid.Row="1" Padding="10,8,10,10" Spacing="2">
+                                <Label Text="{Binding Name}"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#1A1A1A" LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding Description}"
+                                   FontSize="11" TextColor="#9E9090"
+                                   LineBreakMode="TailTruncation"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+        <Border Grid.Row="3" BackgroundColor="White" StrokeThickness="0"
+            Margin="16,8,16,16" Padding="12,10">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="999"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="#20000000" Offset="0,2" Radius="6" Opacity="0.15"/>
+            </Border.Shadow>
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Text="🔍" FontSize="16" VerticalOptions="Center" Margin="0,0,8,0"/>
+                <Entry Grid.Column="1" x:Name="SearchEntry"
+                   Placeholder="Search Room ID..."
+                   PlaceholderColor="#9E9090" FontSize="14"
+                   TextColor="#1A1A1A" BackgroundColor="Transparent"
+                   TextChanged="OnSearchTextChanged"/>
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentView>

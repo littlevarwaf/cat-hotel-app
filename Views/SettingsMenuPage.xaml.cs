@@ -1,0 +1,26 @@
+using CatHotel.Services;
+
+namespace CatHotel.Views;
+
+public partial class SettingsMenuPage : ContentPage
+{
+    public SettingsMenuPage()
+    {
+        InitializeComponent();
+    }
+
+    private async void OnRoomSettingsClicked(object sender, EventArgs e)
+    {
+        await NavigationService.GoToAsync(NavigationService.RoomSettingsWrapperPage);
+    }
+
+    private async void OnShopSettingsClicked(object sender, EventArgs e)
+    {
+        await NavigationService.GoToAsync(NavigationService.ShopSettingsWrapperPage);
+    }
+
+    private async void OnDiscountSettingsClicked(object sender, EventArgs e)
+    {
+        await NavigationService.GoToAsync(NavigationService.DiscountSettingsWrapperPage);
+    }
+}

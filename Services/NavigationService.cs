@@ -1,11 +1,17 @@
 using CatHotel.Views;
+using CatHotel.Views.ShopSettingViews;
 
 namespace CatHotel.Services;
 
 public static class NavigationService
 {
     public const string RoomWrapper = "RoomWrapper";
+    public const string RoomSettingsWrapperPage = "RoomSettingsWrapperPage";
+    public const string ShopSettingsWrapperPage = "ShopSettingsWrapperPage";
+    public const string DiscountSettingsWrapperPage = "DiscountSettingsWrapperPage";
     public const string CartPage = "CartPage";
+    public const string SettingsMenuPage = "SettingsMenuPage";
+    public const string ShopItemEditPage = "ShopItemEditPage";
 
     public static async Task GoToAsync(string route)
     {
@@ -19,7 +25,12 @@ public static class NavigationService
     public static async Task GoToAsync(string route, IDictionary<string, object> parameters)
     {
         var page = GetPageByRoute(route);
-        if (page != null && page.BindingContext is INavigationAware navigationAware)
+        if (page == null)
+        {
+            throw new InvalidOperationException($"Route '{route}' not found in navigation service.");
+        }
+
+        if (page.BindingContext is INavigationAware navigationAware)
         {
             navigationAware.OnNavigatedTo(parameters);
         }
@@ -37,6 +48,11 @@ public static class NavigationService
         {
             nameof(RoomWrapper) => new RoomWrapperPage(),
             nameof(CartPage) => new CartPage(),
+            nameof(SettingsMenuPage) => new SettingsMenuPage(),
+            nameof(RoomSettingsWrapperPage) => new RoomSettingsWrapperPage(),
+            nameof(ShopSettingsWrapperPage) => new ShopSettingsWrapperPage(),
+            nameof(DiscountSettingsWrapperPage) => new DiscountSettingsWrapperPage(),
+            nameof(ShopItemEditPage) => new ShopItemEditPage(),
             _ => null
         };
     }

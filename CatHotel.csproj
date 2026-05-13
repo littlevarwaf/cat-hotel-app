@@ -78,7 +78,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\DiscountSettingsWrapperPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\RoomDetailDebug.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\RoomSettingsWrapperPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\RoomWrapperPage.xaml">
@@ -90,6 +96,9 @@
 	  <MauiXaml Update="Views\CalendarPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\SettingsMenuPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ShopPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -97,6 +106,18 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\CartPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ShopSettingsWrapperPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ShopSettingViews\ShopItemAddView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ShopSettingViews\ShopItemEditPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ShopSettingViews\ShopItemsView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
@@ -113,8 +134,14 @@
 		<MauiXaml Include="Resources\Styles\Styles.xaml" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Update="Views\RoomSettingsWrapperPage.xaml.cs">
+	    <DependentUpon>RoomSettingsWrapperPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\RoomWrapperPage.xaml.cs">
 	    <DependentUpon>RoomWrapperPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\ShopSettingViews\ShopItemEditPage.xaml.cs">
+	    <DependentUpon>ShopItemEditPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 

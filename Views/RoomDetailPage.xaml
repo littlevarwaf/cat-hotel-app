@@ -12,7 +12,7 @@
                 <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
             </Border.Shadow>
             <Grid ColumnDefinitions="Auto,*,Auto">
-                <Button Text="‹" BackgroundColor="Transparent" TextColor="#212121"
+                <Button Grid.Column="0" ImageSource="chevron_left.svg" BackgroundColor="Transparent" TextColor="{StaticResource Neutral950}"
                         FontSize="24" Padding="0" Clicked="OnBackClicked"/>
                 <StackLayout Grid.Column="1" HorizontalOptions="Center">
                     <!-- BIND TO Room.Name -->

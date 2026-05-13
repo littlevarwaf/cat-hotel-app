@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.SettingsMenuPage"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             Title="SettingsMenuPage">
+    <Grid RowDefinitions="Auto,*">
+
+        <Border Grid.Row="0" BackgroundColor="White" Padding="16,12" MinimumHeightRequest="64" MaximumHeightRequest="64"
+            StrokeThickness="0" Margin="0">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
+            </Border.Shadow>
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                <Label Text="Edit Menu" FontSize="22" FontAttributes="Bold"
+                   TextColor="#212121" VerticalOptions="Center"/>
+                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1" Padding="12,8,8,128">
+            <StackLayout Spacing="8">
+                <Button Text="Room Settings" 
+                        Clicked="OnRoomSettingsClicked"
+                        Padding="16,12"
+                        CornerRadius="8"
+                        BackgroundColor="#2196F3"
+                        TextColor="White"
+                        FontAttributes="Bold"/>
+
+                <Button Text="Shop Settings" 
+                        Clicked="OnShopSettingsClicked"
+                        Padding="16,12"
+                        CornerRadius="8"
+                        BackgroundColor="#4CAF50"
+                        TextColor="White"
+                        FontAttributes="Bold"/>
+
+                <Button Text="Discount Settings"
+                        Clicked="OnDiscountSettingsClicked"
+                        Padding="16,12"
+                        CornerRadius="8"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        FontAttributes="Bold"/>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

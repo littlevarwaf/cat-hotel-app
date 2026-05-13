@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.ShopSettingViews.ShopItemAddView">
+    <ContentView.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#F7D7D7" Offset="0.0" />
+            <GradientStop Color="#FBEAEA" Offset="0.25" />
+            <GradientStop Color="#FFF7EF" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentView.Background>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="16,12" Spacing="0">
+
+                <Label Text="Item Details"
+                   FontSize="16" FontAttributes="Bold"
+                   TextColor="#1A1A1A" Margin="0,0,0,12"/>
+
+
+                <Border BackgroundColor="White" StrokeThickness="0"
+                    Padding="16" Margin="0,0,0,16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+                        <Border HeightRequest="180" WidthRequest="180"
+                            StrokeThickness="0" HorizontalOptions="Center">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+                            <Image x:Name="ItemPhotoPreview"
+                               Source="placeholder_item.png"
+                               Aspect="AspectFill"
+                               HeightRequest="180" WidthRequest="180"/>
+                        </Border>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Border Grid.Column="0" StrokeThickness="1" Stroke="#E0D8D8"
+                                BackgroundColor="White" Padding="0,10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999"/>
+                                </Border.StrokeShape>
+                                <Label Text="Remove Image" FontSize="13"
+                                   TextColor="#1A1A1A" HorizontalOptions="Center"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRemoveImageTapped"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border Grid.Column="1" StrokeThickness="0"
+                                BackgroundColor="#E06060" Padding="0,10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999"/>
+                                </Border.StrokeShape>
+                                <Label Text="Upload Image" FontSize="13"
+                                   TextColor="White" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnUploadImageTapped"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+
+                <Border BackgroundColor="White" StrokeThickness="0"
+                    Padding="16" Margin="0,0,0,16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="16">
+
+
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <Label Text="🛍️" FontSize="14"/>
+                                <Label Grid.Column="1" Text="Item Type"
+                                   FontSize="14" FontAttributes="Bold" TextColor="#1A1A1A"/>
+                            </Grid>
+                            <Border StrokeThickness="1" Stroke="#E0D8D8"
+                                BackgroundColor="#F7F4F4" Padding="10,6">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999"/>
+                                </Border.StrokeShape>
+                                <Picker x:Name="ItemTypePicker"
+                                    Title="Select Item Type"
+                                    TitleColor="#9E9090"
+                                    TextColor="#1A1A1A"
+                                    BackgroundColor="Transparent"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <Label Text="🏷️" FontSize="14"/>
+                                <Label Grid.Column="1" Text="Item Name"
+                                   FontSize="14" FontAttributes="Bold" TextColor="#1A1A1A"/>
+                            </Grid>
+                            <Border StrokeThickness="1" Stroke="#E0D8D8"
+                                BackgroundColor="#F7F4F4" Padding="14,12">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999"/>
+                                </Border.StrokeShape>
+                                <Entry x:Name="NameEntry" Placeholder="e.g., 500"
+                                   PlaceholderColor="#9E9090" FontSize="14"
+                                   TextColor="#1A1A1A" BackgroundColor="Transparent"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <Label Text="📋" FontSize="14"/>
+                                <Label Grid.Column="1" Text="Description"
+                                   FontSize="14" FontAttributes="Bold" TextColor="#1A1A1A"/>
+                            </Grid>
+                            <Border StrokeThickness="1" Stroke="#E0D8D8"
+                                BackgroundColor="#F7F4F4" Padding="14,12">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999"/>
+                                </Border.StrokeShape>
+                                <Entry x:Name="DescriptionEntry" Placeholder="Select Room Status"
+                                   PlaceholderColor="#9E9090" FontSize="14"
+                                   TextColor="#1A1A1A" BackgroundColor="Transparent"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <Label Text="$" FontSize="14" FontAttributes="Bold" TextColor="#1A1A1A"/>
+                                <Label Grid.Column="1" Text="Base Price"
+                                   FontSize="14" FontAttributes="Bold" TextColor="#1A1A1A"/>
+                            </Grid>
+                            <Border StrokeThickness="1" Stroke="#E0D8D8"
+                                BackgroundColor="#F7F4F4" Padding="14,12">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999"/>
+                                </Border.StrokeShape>
+                                <Entry x:Name="PriceEntry" Placeholder="e.g., 500"
+                                   PlaceholderColor="#9E9090" FontSize="14"
+                                   TextColor="#1A1A1A" BackgroundColor="Transparent"
+                                   Keyboard="Numeric"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+
+                        <VerticalStackLayout Spacing="8">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <Label Text="?" FontSize="14" FontAttributes="Bold" TextColor="#9E9090"/>
+                                <Label Grid.Column="1" Text="Availability"
+                                   FontSize="14" FontAttributes="Bold" TextColor="#1A1A1A"/>
+                            </Grid>
+                            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="16">
+                                <RadioButton x:Name="UnavailableRadio" Grid.Column="0"
+                                         Value="Unavailable" GroupName="Availability"
+                                         IsChecked="True"
+                                         CheckedChanged="OnAvailabilityChanged">
+                                    <RadioButton.ControlTemplate>
+                                        <ControlTemplate>
+                                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6" VerticalOptions="Center">
+                                                <Ellipse Grid.Column="0"
+                                                     HeightRequest="18" WidthRequest="18"
+                                                     Stroke="#E06060" StrokeThickness="2"
+                                                     Fill="{TemplateBinding IsChecked, Converter={StaticResource BoolToFillConverter}}"/>
+                                                <Label Grid.Column="1" Text="Unavailable"
+                                                   FontSize="13" TextColor="#1A1A1A"
+                                                   VerticalTextAlignment="Center"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </RadioButton.ControlTemplate>
+                                </RadioButton>
+                                <RadioButton x:Name="AvailableRadio" Grid.Column="2"
+                                         Value="Available" GroupName="Availability"
+                                         CheckedChanged="OnAvailabilityChanged">
+                                    <RadioButton.ControlTemplate>
+                                        <ControlTemplate>
+                                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6" VerticalOptions="Center">
+                                                <Ellipse Grid.Column="0"
+                                                     HeightRequest="18" WidthRequest="18"
+                                                     Stroke="#E06060" StrokeThickness="2"/>
+                                                <Label Grid.Column="1" Text="Available"
+                                                   FontSize="13" TextColor="#1A1A1A"
+                                                   VerticalTextAlignment="Center"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </RadioButton.ControlTemplate>
+                                </RadioButton>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+
+        <Border Grid.Row="3" Margin="16,8,16,24"
+            BackgroundColor="#E06060" StrokeThickness="0" Padding="0,16">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="999"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="#E06060" Offset="0,4" Radius="12" Opacity="0.4"/>
+            </Border.Shadow>
+            <Label Text="Add Item" TextColor="White" FontSize="16"
+               FontAttributes="Bold" HorizontalOptions="Center"/>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnAddItemTapped"/>
+            </Border.GestureRecognizers>
+        </Border>
+
+    </Grid>
+</ContentView>

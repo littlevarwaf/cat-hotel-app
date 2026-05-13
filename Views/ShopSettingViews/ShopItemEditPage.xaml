@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.ShopSettingViews.ShopItemEditPage"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False">
+    
+    <ContentPage.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentPage.Background>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Border Grid.Row="0" BackgroundColor="Transparent" Padding="8,0,8,0" MinimumHeightRequest="56"
+                StrokeThickness="0" Margin="0">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="0">
+                <!-- Back Button -->
+                <Button Grid.Column="0"
+                        ImageSource="chevron_left.svg"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Neutral950}"
+                        FontSize="28"
+                        Padding="8,0"
+                        Clicked="OnBackClicked"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center"/>  
+
+                <!-- Title -->
+                <Label Grid.Column="1"
+                       Text="{Binding ItemName, StringFormat='{0} - Edit Details'}"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#1A1A1A"
+                       HorizontalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"/>
+
+                <!-- Paw Icon -->
+                <Image Grid.Column="2"
+                       Source="app_icon.svg"
+                       HeightRequest="28"
+                       WidthRequest="28"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- FORM SCROLL -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16,16,16,120" Spacing="0">
+
+                <Label Text="Item Details"
+                   FontSize="16" FontAttributes="Bold"
+                   TextColor="#1A1A1A" Margin="0,0,0,12"/>
+
+                <!-- Image Card -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                    Padding="16" Margin="0,0,0,16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+                        <Border HeightRequest="180" WidthRequest="240"
+                            StrokeThickness="0" HorizontalOptions="Center">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="6"/>
+                            </Border.StrokeShape>
+                            <Image x:Name="ItemPhotoPreview"
+                               Source="placeholder_item.png"
+                               Aspect="AspectFill"
+                               HeightRequest="180" WidthRequest="180"/>
+                        </Border>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Border Grid.Column="0" StrokeThickness="1" Stroke="{StaticResource Primary100}"
+                                    BackgroundColor="{StaticResource NeutralWhite}" Padding="0,10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999"/>
+                                </Border.StrokeShape>
+                                <Label Text="Remove Image" FontSize="13"
+                                   TextColor="{StaticResource Primary900}" HorizontalOptions="Center"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRemoveImageTapped"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border Grid.Column="1" StrokeThickness="0"
+                                    BackgroundColor="{StaticResource Primary}" Padding="0,10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999"/>
+                                </Border.StrokeShape>
+                                <Label Text="Upload Image" FontSize="13"
+                                   TextColor="{StaticResource Primary900}" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnUploadImageTapped"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Input Fields Card -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                    Padding="16" Margin="0,0,0,24">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="24">
+
+                        <!-- Item Type -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="suitcase_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Item Type"
+                                   FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+
+                            <Border Style="{StaticResource RoundedPickerContainerStyle}">
+                                <Picker 
+                                    x:Name="ItemTypePicker"
+                                    Title="Select Item Type"
+                                    Style="{StaticResource RoundedPickerStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Item Name -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="cupcake_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Item Name"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="NameEntry" 
+                                   Placeholder="e.g., 500"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Description -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="note_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Description"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="DescriptionEntry" 
+                                   Placeholder="Select Room Status"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Base Price -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="dollar_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Base Price"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="PriceEntry" 
+                                   Placeholder="e.g., 500"
+                                   Keyboard="Numeric"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Availability -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="help_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Availability"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <HorizontalStackLayout Spacing="20">
+                                <HorizontalStackLayout Spacing="8">
+                                    <RadioButton x:Name="UnavailableRadio"
+                                             Value="Unavailable" GroupName="AvailEdit"
+                                             IsChecked="True"
+                                             CheckedChanged="OnAvailabilityChanged"/>
+                                    <Label Text="Unavailable" FontSize="13" TextColor="#1A1A1A"
+                                       VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="8">
+                                    <RadioButton x:Name="AvailableRadio"
+                                             Value="Available" GroupName="AvailEdit"
+                                             CheckedChanged="OnAvailabilityChanged"/>
+                                    <Label Text="Available" FontSize="13" TextColor="#1A1A1A"
+                                       VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
+                
+                <!-- Delete Row -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                        Padding="16" Margin="0,0,0,16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Delete Shop Item?"
+                           FontSize="14" TextColor="{StaticResource Neutral950}"
+                           VerticalTextAlignment="Center"/>
+                        <Border Grid.Column="1" BackgroundColor="{StaticResource Primary}" StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <Ellipse />
+                            </Border.StrokeShape>
+
+                            <Button
+                                WidthRequest="32"
+                                HeightRequest="32"
+                                CornerRadius="35"
+                                BackgroundColor="{StaticResource Primary}"
+                                ImageSource="trash_icon.svg"
+                                Clicked="OnDeleteItemClicked">
+                            </Button>
+                        </Border>
+                    </Grid>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Gradient overlay behind save button -->
+        <BoxView Grid.Row="1" ZIndex="0" VerticalOptions="End" HeightRequest="128">
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FFF7EF" Offset="1" />
+                    <GradientStop Color="#00FFF7EF" Offset="0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <!-- Floating Save Button -->
+        <Border Grid.Row="1" ZIndex="1" Margin="30,0,30,40" HeightRequest="64"
+                BackgroundColor="Transparent" StrokeThickness="0"
+                VerticalOptions="End">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="28" />
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="#E06060" Offset="0,4" Radius="12" Opacity="0.4" />
+            </Border.Shadow>
+            <Border BackgroundColor="{StaticResource Primary500}" StrokeThickness="0" Padding="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="38"/>
+                </Border.StrokeShape>
+                <Label Text="Save" TextColor="White" FontSize="16"
+                   FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnSaveTapped"/>
+                </Border.GestureRecognizers>
+            </Border>
+        </Border>
+
+    </Grid>
+</ContentPage>

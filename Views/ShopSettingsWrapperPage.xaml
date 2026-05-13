@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tabs="http://sharpnado.com"
+             xmlns:sviews="clr-namespace:CatHotel.Views.ShopSettingViews"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             x:Class="CatHotel.Views.ShopSettingsWrapperPage">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- Header with back button -->
+        <Border Grid.Row="0" BackgroundColor="White" Padding="16,12" MinimumHeightRequest="64"
+                StrokeThickness="0" Margin="0">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
+            </Border.Shadow>
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <Button Grid.Column="0" ImageSource="chevron_left.svg"
+                        BackgroundColor="Transparent" Clicked="OnBackClicked"
+                        Padding="0"/>
+                <Label Grid.Column="1" Text="Shop Settings" FontSize="22" FontAttributes="Bold"
+                       TextColor="#212121" VerticalOptions="Center"/>
+                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
+            </Grid>
+        </Border>
+
+        <!-- Tab Navigation with Border Styling -->
+        <Border Grid.Row="1" BackgroundColor="Transparent" StrokeThickness="0" Padding="16,12" Margin="0" HeightRequest="64">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
+            </Border.Shadow>
+            <tabs:TabHostView x:Name="TabHost"
+                              SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
+                              BackgroundColor="Transparent"
+                              TabType="Fixed"
+                              Padding="0"
+                              CornerRadius="30">
+
+                <tabs:SegmentedTabItem UnselectedLabelColor="{StaticResource Primary900}" SelectedLabelColor="{StaticResource Primary900}"
+                                       SelectedTabColor="{StaticResource Primary}"
+                                       Label="Edit Shop Items" />
+                <tabs:SegmentedTabItem UnselectedLabelColor="{StaticResource Primary900}" SelectedLabelColor="{StaticResource Primary900}"
+                                       SelectedTabColor="{StaticResource Primary}"
+                                       Label="Add New Shop Item" />
+            </tabs:TabHostView>
+        </Border>
+
+        <!-- Content Switcher -->
+        <tabs:ViewSwitcher Grid.Row="2" 
+                           SelectedIndex="{Binding Source={x:Reference TabHost}, Path=SelectedIndex, Mode=OneWay}"
+                           Padding="0">
+
+            <sviews:ShopItemsView />
+            <sviews:ShopItemAddView />
+
+        </tabs:ViewSwitcher>
+
+    </Grid>
+
+</ContentPage>
