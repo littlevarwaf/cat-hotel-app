@@ -14,16 +14,16 @@ public partial class RoomDetailPage : ContentView
         this.Loaded += OnViewLoaded;
     }
 
-    private void OnViewLoaded(object sender, EventArgs e)
+    private void OnViewLoaded(object? sender, EventArgs e)
     {
         if (_isInitialized) return;
         _isInitialized = true;
     }
 
-    private async void OnBackClicked(object sender, EventArgs e)
+    private async void OnBackClicked(object? sender, EventArgs e)
         => await NavigationService.GoBackAsync();
 
-    private async void OnCheckout(object sender, EventArgs e)
+    private async void OnCheckout(object? sender, EventArgs e)
     {
         await NavigationService.GoBackAsync();
     }

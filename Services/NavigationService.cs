@@ -13,6 +13,10 @@ public static class NavigationService
     public const string SettingsMenuPage = "SettingsMenuPage";
     public const string ShopItemEditPage = "ShopItemEditPage";
 
+    // outcome / outcome history
+    public const string OutcomePage = "OutcomePage";
+    public const string OutcomeHistoryPage = "OutcomeHistoryPage";
+
     public static async Task GoToAsync(string route)
     {
         var page = GetPageByRoute(route);
@@ -53,12 +57,14 @@ public static class NavigationService
             nameof(ShopSettingsWrapperPage) => new ShopSettingsWrapperPage(),
             nameof(DiscountSettingsWrapperPage) => new DiscountSettingsWrapperPage(),
             nameof(ShopItemEditPage) => new ShopItemEditPage(),
+            nameof(OutcomePage) => new outcome(),
+            nameof(OutcomeHistoryPage) => new Outcomehistory(),
             _ => null
         };
     }
 }
 
-public interface INavigationAware
+public interface INavigationAware       
 {
     void OnNavigatedTo(IDictionary<string, object> parameters);
 }

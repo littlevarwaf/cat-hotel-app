@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.Outcomehistory"
+             Title="Outcome History"
+             BackgroundColor="{StaticResource PageBackgroundBrush}">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="0">
+
+        <!-- Header -->
+        <Border Grid.Row="0" BackgroundColor="White" Padding="12,10" StrokeThickness="0">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.08"/>
+            </Border.Shadow>
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Label Text="Outcome History" FontSize="20" FontAttributes="Bold"
+                       TextColor="#212121" VerticalOptions="Center"/>
+                <Image Grid.Column="1" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
+            </Grid>
+        </Border>
+
+        <!-- Tab Buttons (pill style) -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" Padding="16,12,16,0" ColumnSpacing="10">
+
+            <!-- Add Income — INACTIVE -->
+            <Border Grid.Column="0" StrokeThickness="1.5" Stroke="#E0E0E0"
+                    BackgroundColor="White" Padding="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="25"/>
+                </Border.StrokeShape>
+                <Button x:Name="BtnAddIncome"
+                        Text="Add Income"
+                        BackgroundColor="Transparent"
+                        TextColor="Black"
+                        FontAttributes="None"
+                        FontSize="14"
+                        HeightRequest="44"
+                        Clicked="OnAddIncomeClicked"/>
+            </Border>
+
+            <!-- History Income — ACTIVE -->
+            <Border Grid.Column="1" StrokeThickness="0"
+                    BackgroundColor="{StaticResource Primary}" Padding="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="25"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="{StaticResource Primary}" Offset="0,4" Radius="8" Opacity="0.35"/>
+                </Border.Shadow>
+                <Button x:Name="BtnHistoryIncome"
+                        Text="History Income"
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        HeightRequest="44"
+                        Clicked="OnHistoryIncomeClicked"/>
+            </Border>
+        </Grid>
+
+        <!-- Filter Row (ใช้ Pickers แทน Entry) -->
+        <Border Grid.Row="2" BackgroundColor="{StaticResource NeutralWhite}"
+                Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                Padding="12,10" Margin="16,12,16,0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="#20000000" Offset="0,2" Radius="6" Opacity="0.10"/>
+            </Border.Shadow>
+            <Grid ColumnDefinitions="*,*,*,Auto" ColumnSpacing="8">
+
+                <!-- Filter: Day (Picker) -->
+                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="Day" FontSize="11" TextColor="{StaticResource Neutral700}"
+                           HorizontalOptions="Center"/>
+                    <Border Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                            BackgroundColor="{StaticResource PageBackgroundBrush}" Padding="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8"/>
+                        </Border.StrokeShape>
+                        <Picker x:Name="FilterDayPicker"
+                                Title="DD"
+                                FontSize="13"
+                                HeightRequest="36"
+                                Margin="6,0"/>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Filter: Month (Picker) -->
+                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                    <Label Text="Month" FontSize="11" TextColor="{StaticResource Neutral700}"
+                           HorizontalOptions="Center"/>
+                    <Border Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                            BackgroundColor="{StaticResource PageBackgroundBrush}" Padding="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8"/>
+                        </Border.StrokeShape>
+                        <Picker x:Name="FilterMonthPicker"
+                                Title="MM"
+                                FontSize="13"
+                                HeightRequest="36"
+                                Margin="6,0"
+                                SelectedIndexChanged="OnMonthOrYearChanged"/>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Filter: Year (Picker) -->
+                <VerticalStackLayout Grid.Column="2" Spacing="2">
+                    <Label Text="Year" FontSize="11" TextColor="{StaticResource Neutral700}"
+                           HorizontalOptions="Center"/>
+                    <Border Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                            BackgroundColor="{StaticResource PageBackgroundBrush}" Padding="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8"/>
+                        </Border.StrokeShape>
+                        <Picker x:Name="FilterYearPicker"
+                                Title="YYYY"
+                                FontSize="13"
+                                HeightRequest="36"
+                                Margin="6,0"
+                                SelectedIndexChanged="OnMonthOrYearChanged"/>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Search Button -->
+                <Border Grid.Column="3" StrokeThickness="0"
+                        BackgroundColor="{StaticResource Primary}" Padding="0"
+                        VerticalOptions="End" HeightRequest="36" WidthRequest="64">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8"/>
+                    </Border.StrokeShape>
+                    <Label Text="ค้นหา" FontSize="12" FontAttributes="Bold"
+                           TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnFilterTapped"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+            </Grid>
+        </Border>
+
+        <!-- History List -->
+        <Grid Grid.Row="3" Padding="16,12,16,16">
+            <CollectionView x:Name="HistoryList"
+                            EmptyView="ยังไม่มีประวัติรายจ่าย">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BackgroundColor="{StaticResource NeutralWhite}"
+                                Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                                Padding="14,12" Margin="0,0,0,10">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+                            <Border.Shadow>
+                                <Shadow Brush="#20000000" Offset="0,2" Radius="6" Opacity="0.10"/>
+                            </Border.Shadow>
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="4">
+                                <Label Grid.Row="0" Grid.Column="0"
+                                       Text="{Binding NoteDisplay}"
+                                       FontSize="14" TextColor="{StaticResource Neutral950}"
+                                       LineBreakMode="TailTruncation"/>
+                                <Label Grid.Row="0" Grid.Column="1"
+                                       Text="{Binding AmountDisplay}"
+                                       FontSize="15" FontAttributes="Bold"
+                                       TextColor="{StaticResource Primary}"
+                                       HorizontalOptions="End"/>
+                                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                       Text="{Binding DateDisplay}"
+                                       FontSize="12" TextColor="{StaticResource Neutral700}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator x:Name="LoadingIndicator"
+                               IsRunning="False" IsVisible="False"
+                               Color="{StaticResource Primary}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Grid>
+
+    </Grid>
+</ContentPage>
