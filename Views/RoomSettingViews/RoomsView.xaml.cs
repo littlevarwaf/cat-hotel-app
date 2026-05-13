@@ -15,11 +15,10 @@ public partial class RoomsView : ContentView
         InitializeComponent();
         _db = App.Database;
 
-        // Subscribe to room added events
-        RoomService.RoomAdded += async (s, e) =>
-        {
-            await RefreshAsync();
-        };
+        // Subscribe to room events
+        RoomService.RoomAdded += async (s, e) => await RefreshAsync();
+        RoomService.RoomUpdated += async (s, e) => await RefreshAsync();
+        RoomService.RoomDeleted += async (s, e) => await RefreshAsync();
 
         // Call initialization when the view is loaded
         this.Loaded += OnViewLoaded;

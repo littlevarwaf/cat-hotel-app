@@ -1,5 +1,6 @@
 using CatHotel.Views;
 using CatHotel.Views.ShopSettingViews;
+using CatHotel.Views.RoomSettingViews;
 
 namespace CatHotel.Services;
 
@@ -12,6 +13,7 @@ public static class NavigationService
     public const string CartPage = "CartPage";
     public const string SettingsMenuPage = "SettingsMenuPage";
     public const string ShopItemEditPage = "ShopItemEditPage";
+    public const string RoomEditPage = "RoomEditPage";
 
     public static async Task GoToAsync(string route)
     {
@@ -53,6 +55,7 @@ public static class NavigationService
             nameof(ShopSettingsWrapperPage) => new ShopSettingsWrapperPage(),
             nameof(DiscountSettingsWrapperPage) => new DiscountSettingsWrapperPage(),
             nameof(ShopItemEditPage) => new ShopItemEditPage(),
+            nameof(RoomEditPage) => new RoomEditPage(),
             _ => null
         };
     }

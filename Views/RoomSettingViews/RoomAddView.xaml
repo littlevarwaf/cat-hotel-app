@@ -181,7 +181,7 @@
         </BoxView>
 
         <!-- Floating Add Button -->
-        <Border Grid.Row="0" ZIndex="1" Margin="30,0,30,40" HeightRequest="64"
+        <Border Grid.Row="1" ZIndex="1" Margin="30,12,30,24" HeightRequest="56"
                 BackgroundColor="Transparent" StrokeThickness="0"
                 VerticalOptions="End">
             <Border.StrokeShape>
@@ -190,15 +190,22 @@
             <Border.Shadow>
                 <Shadow Brush="#E06060" Offset="0,4" Radius="12" Opacity="0.4" />
             </Border.Shadow>
-            <Border BackgroundColor="{StaticResource Primary500}" StrokeThickness="0" Padding="0">
+            <Border BackgroundColor="{StaticResource Primary500}" StrokeThickness="0" Padding="0"
+                    HorizontalOptions="Fill" VerticalOptions="Fill">
                 <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="38"/>
+                    <RoundRectangle CornerRadius="28"/>
                 </Border.StrokeShape>
-                <Label Text="Add New Room" TextColor="White" FontSize="16"
-                       FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnAddRoomTapped"/>
-                </Border.GestureRecognizers>
+                <Grid>
+                    <Label Text="Add New Room" TextColor="White" FontSize="16"
+                           FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"
+                           IsEnabled="False"/>
+                    <BoxView BackgroundColor="Transparent" 
+                             HorizontalOptions="Fill" VerticalOptions="Fill">
+                        <BoxView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnAddRoomTapped"/>
+                        </BoxView.GestureRecognizers>
+                    </BoxView>
+                </Grid>
             </Border>
         </Border>
 

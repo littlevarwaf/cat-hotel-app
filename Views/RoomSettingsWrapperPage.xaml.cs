@@ -34,7 +34,10 @@ public partial class RoomSettingsWrapperPage : ContentPage, INavigationAware
 
     public async void OnNavigatedTo(IDictionary<string, object> parameters)
     {
-        // Also refresh when navigating back to this wrapper page
+        // Switch to tab 0 (Edit Rooms) when navigating back to this wrapper page
+        SelectedTabIndex = 0;
+
+        // Also refresh RoomsView
         if (this.FindByName("RoomsView") is RoomsView roomsView)
         {
             await roomsView.RefreshAsync();
