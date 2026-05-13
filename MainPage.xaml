@@ -10,31 +10,50 @@
 
     <Grid RowDefinitions="*, Auto">
 
-        <tabs:ViewSwitcher Grid.Row="0" 
+        <tabs:ViewSwitcher Grid.Row="0" Padding="0,0,0,0"
                            SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
             <views:HomePage />
             <views:CalendarPage />
             <views:Sales />
         </tabs:ViewSwitcher>
 
-        <Border Grid.Row="1" Margin="30,10,30,40" HeightRequest="70" BackgroundColor="#F0F0F3" StrokeThickness="0">
+        <!-- Gradient overlay behind tabbar -->
+        <BoxView Grid.Row="0" ZIndex="0" VerticalOptions="End" HeightRequest="128">
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="{StaticResource Primary100}" Offset="1" />
+                    <GradientStop Color="#00F9D0D0" Offset="0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <!-- Floating tabbar -->
+        <Border Grid.Row="0" ZIndex="1" Margin="30,0,30,40" HeightRequest="70" 
+                BackgroundColor="Transparent" StrokeThickness="0"
+                VerticalOptions="End">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="35" />
             </Border.StrokeShape>
             <Border.Shadow>
-                <Shadow Brush="Black" Offset="4,4" Radius="10" Opacity="0.1" />
+                <Shadow Brush="Black" Offset="4,4" Radius="10" Opacity="0.15" />
             </Border.Shadow>
 
-            <tabs:TabHostView
-                SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
-                BackgroundColor="Transparent"
-                TabType="Fixed">
+            <!-- Inner container with actual background -->
+            <Border BackgroundColor="{StaticResource NeutralWhite}" StrokeThickness="0"
+                    Padding="8" HeightRequest="70">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="35" />
+                </Border.StrokeShape>
+                <tabs:TabHostView
+                    SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
+                    BackgroundColor="Transparent"
+                    TabType="Fixed">
 
-                <tabs:BottomTabItem Label="Home" IconImageSource="home_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
-                <tabs:BottomTabItem Label="Calendar" IconImageSource="calendar_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
-                <tabs:BottomTabItem Label="Sales" IconImageSource="chart_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
-
-            </tabs:TabHostView>
+                    <tabs:BottomTabItem Label="Home" IconImageSource="home_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
+                    <tabs:BottomTabItem Label="Calendar" IconImageSource="calendar_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
+                    <tabs:BottomTabItem Label="Sales" IconImageSource="chart_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
+                </tabs:TabHostView>
+            </Border>
         </Border>
     </Grid>
 

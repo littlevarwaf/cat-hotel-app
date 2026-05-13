@@ -23,8 +23,8 @@
             </Grid>
         </Border>
 
-        <ScrollView Grid.Row="1">
-            <StackLayout Padding="12,8" Spacing="8">
+        <ScrollView Grid.Row="1" Padding="12,8,8,128">
+            <StackLayout Spacing="8">
                 <Label x:Name="TotalItemsLabel" Text="Total Items: 0"
                        FontSize="13" TextColor="#757575" HorizontalOptions="End"/>
 

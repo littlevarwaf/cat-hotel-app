@@ -7,7 +7,7 @@
 
     <Grid RowDefinitions="Auto,*">
 
-        <Border Grid.Row="0" BackgroundColor="White" Padding="16,12"
+        <Border Grid.Row="0" BackgroundColor="White" Padding="16,12" MinimumHeightRequest="64" MaximumHeightRequest="64"
                 StrokeThickness="0" Margin="0">
             <Border.Shadow>
                 <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
@@ -15,11 +15,11 @@
             <Grid ColumnDefinitions="*,Auto">
                 <Label Text="Welcome!" FontSize="22" FontAttributes="Bold"
                        TextColor="#212121" VerticalOptions="Center"/>
-                <Label Grid.Column="1" Text="🐾" FontSize="28" VerticalOptions="Center"/>
+                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
             </Grid>
         </Border>
 
-        <ScrollView Grid.Row="1" Padding="12,8">
+        <ScrollView Grid.Row="1" Padding="12,8,8,128">
             <StackLayout Spacing="10">
 
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8" Margin="0,4">

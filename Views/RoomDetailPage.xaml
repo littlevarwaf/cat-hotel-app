@@ -29,11 +29,11 @@
                                TextColor="#E91E63" FontSize="12"/>
                     </Border>
                 </StackLayout>
-                <Label Grid.Column="2" Text="🐾" FontSize="24" VerticalOptions="Center"/>
+                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
             </Grid>
         </Border>
 
-        <ScrollView Grid.Row="1" Padding="12,8">
+        <ScrollView Grid.Row="1" Padding="12,8,8,128">
             <StackLayout Spacing="12">
 
                 <Border BackgroundColor="White" StrokeThickness="0" Padding="16">
