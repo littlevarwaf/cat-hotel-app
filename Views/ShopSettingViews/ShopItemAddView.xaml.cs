@@ -79,7 +79,6 @@ public partial class ShopItemAddView : ContentView
 
         var itemType = (ItemType)Enum.Parse(typeof(ItemType), ItemTypePicker.Items[ItemTypePicker.SelectedIndex]);
 
-
         string savedImgPath = string.Empty;
         if (!string.IsNullOrEmpty(_selectedImagePath))
         {
@@ -101,16 +100,28 @@ public partial class ShopItemAddView : ContentView
 
         await _db.Db.InsertAsync(item);
         //await DisplayAlert("Success", "Shop item added successfully!", "OK");
-        await Navigation.PopAsync();
+        
+        // Clear form after successful addition
+        ClearForm();
+    }
+
+    private void ClearForm()
+    {
+        NameEntry.Text = string.Empty;
+        DescriptionEntry.Text = string.Empty;
+        PriceEntry.Text = string.Empty;
+        ItemTypePicker.SelectedIndex = -1;
+        _selectedImagePath = string.Empty;
+        ItemPhotoPreview.Source = "placeholder_item.png";
     }
 
     private async void OnEditRoomTabTapped(object sender, TappedEventArgs e)
     {
-        await Navigation.PopAsync();
+        await NavigationService.GoBackAsync();
     }
 
     private async void OnBackClicked(object sender, EventArgs e)
     {
-        await Navigation.PopAsync();
+        await NavigationService.GoBackAsync();
     }
 }

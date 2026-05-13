@@ -8,6 +8,7 @@ public partial class ShopItemsView : ContentView
     private bool _isInitialized = false;
     private readonly DatabaseService _db;
     private List<ShopItem> _allItems = new();
+    private CancellationTokenSource _searchCancellationTokenSource;
 
     public ShopItemsView()
     {
@@ -34,20 +35,45 @@ public partial class ShopItemsView : ContentView
         }
     }
 
+    // Public method to refresh data
+    public async Task RefreshAsync()
+    {
+        if (_isInitialized)
+        {
+            await LoadItemsAsync();
+        }
+    }
+
     private async Task LoadItemsAsync()
     {
         _allItems = await _db.Db.Table<ShopItem>().ToListAsync();
-        ItemsCollectionView.ItemsSource = _allItems;
+        ItemsCollectionView.ItemsSource = new List<ShopItem>(_allItems);
+        SearchEntry.Text = string.Empty;
     }
 
-    private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+    private async void OnSearchTextChanged(object sender, TextChangedEventArgs e)
     {
-        var query = e.NewTextValue?.ToLower() ?? string.Empty;
-        var filtered = string.IsNullOrWhiteSpace(query)
-            ? _allItems
-            : _allItems.Where(i => i.Name.ToLower().Contains(query)
-                               || i.Description.ToLower().Contains(query)).ToList();
-        ItemsCollectionView.ItemsSource = filtered;
+        // Cancel previous search task
+        _searchCancellationTokenSource?.Cancel();
+        _searchCancellationTokenSource = new CancellationTokenSource();
+
+        try
+        {
+            // Wait 300ms before searching (debounce)
+            await Task.Delay(300, _searchCancellationTokenSource.Token);
+
+            var query = e.NewTextValue?.ToLower() ?? string.Empty;
+            var filtered = string.IsNullOrWhiteSpace(query)
+                ? _allItems
+                : _allItems.Where(i => i.Name.ToLower().Contains(query)
+                                   || i.Description.ToLower().Contains(query)).ToList();
+
+            ItemsCollectionView.ItemsSource = filtered;
+        }
+        catch (OperationCanceledException)
+        {
+            // Search was cancelled, ignore
+        }
     }
 
     private void OnEditTabTapped(object sender, TappedEventArgs e) { }

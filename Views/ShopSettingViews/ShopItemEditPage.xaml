@@ -11,7 +11,7 @@
 
     <Grid RowDefinitions="Auto,*">
 
-        <Border Grid.Row="0" BackgroundColor="Transparent" Padding="8,0,8,0" MinimumHeightRequest="56"
+        <Border Grid.Row="0" BackgroundColor="Transparent" Padding="16,0,32,0" MinimumHeightRequest="56"
                 StrokeThickness="0" Margin="0">
             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="0">
                 <!-- Back Button -->
@@ -136,7 +136,7 @@
                             </Grid>
                             <Border Style="{StaticResource RoundedInputContainerStyle}">
                                 <Entry x:Name="NameEntry" 
-                                   Placeholder="e.g., 500"
+                                   Placeholder="MeowMix, Whiskas, etc."
                                    Style="{StaticResource RoundedEntryStyle}"/>
                             </Border>
                         </VerticalStackLayout>
@@ -150,7 +150,7 @@
                             </Grid>
                             <Border Style="{StaticResource RoundedInputContainerStyle}">
                                 <Entry x:Name="DescriptionEntry" 
-                                   Placeholder="Select Room Status"
+                                   Placeholder="Short Item Description"
                                    Style="{StaticResource RoundedEntryStyle}"/>
                             </Border>
                         </VerticalStackLayout>

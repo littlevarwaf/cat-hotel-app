@@ -9,19 +9,37 @@
 
     <Grid RowDefinitions="Auto,Auto,*">
 
-        <!-- Header with back button -->
-        <Border Grid.Row="0" BackgroundColor="White" Padding="16,12" MinimumHeightRequest="64"
-                StrokeThickness="0" Margin="0">
-            <Border.Shadow>
-                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
-            </Border.Shadow>
-            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                <Button Grid.Column="0" ImageSource="chevron_left.svg"
-                        BackgroundColor="Transparent" Clicked="OnBackClicked"
-                        Padding="0"/>
-                <Label Grid.Column="1" Text="Shop Settings" FontSize="22" FontAttributes="Bold"
-                       TextColor="#212121" VerticalOptions="Center"/>
-                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
+        <Border Grid.Row="0" BackgroundColor="Transparent" Padding="16,0,32,0" MinimumHeightRequest="56"
+        StrokeThickness="0" Margin="0">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="0">
+                <!-- Back Button -->
+                <Button Grid.Column="0"
+                        ImageSource="chevron_left.svg"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Neutral950}"
+                        FontSize="28"
+                        Padding="8,0"
+                        Clicked="OnBackClicked"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center"/>
+
+                <!-- Title -->
+                <Label Grid.Column="1"
+                       Text="Edit/Add Shop Items"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Neutral950}"
+                       HorizontalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"/>
+
+                <!-- Paw Icon -->
+                <Image Grid.Column="2"
+                       Source="app_icon.svg"
+                       HeightRequest="28"
+                       WidthRequest="28"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"/>
             </Grid>
         </Border>
 
@@ -51,7 +69,7 @@
                            SelectedIndex="{Binding Source={x:Reference TabHost}, Path=SelectedIndex, Mode=OneWay}"
                            Padding="0">
 
-            <sviews:ShopItemsView />
+            <sviews:ShopItemsView x:Name="ItemsView" />
             <sviews:ShopItemAddView />
 
         </tabs:ViewSwitcher>

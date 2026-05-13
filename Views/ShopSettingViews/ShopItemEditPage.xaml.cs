@@ -78,7 +78,7 @@ public partial class ShopItemEditPage : ContentPage, INavigationAware
         }
         catch (Exception ex)
         {
-            //await DisplayAlert("Error", $"Cannot pick photo: {ex.Message}", "OK");
+            await DisplayAlertAsync("Error", $"Cannot pick photo: {ex.Message}", "OK");
         }
     }
 
@@ -103,17 +103,17 @@ public partial class ShopItemEditPage : ContentPage, INavigationAware
 
         if (string.IsNullOrWhiteSpace(name))
         {
-            //await DisplayAlert("Validation", "Please enter item name.", "OK");
+            await DisplayAlertAsync("Validation", "Please enter item name.", "OK");
             return;
         }
         if (ItemTypePicker.SelectedIndex < 0)
         {
-            //await DisplayAlert("Validation", "Please select item type.", "OK");
+            await DisplayAlertAsync("Validation", "Please select item type.", "OK");
             return;
         }
         if (!double.TryParse(priceText, out double price) || price < 0)
         {
-            //await DisplayAlert("Validation", "Please enter a valid price.", "OK");
+            await DisplayAlertAsync("Validation", "Please enter a valid price.", "OK");
             return;
         }
 
@@ -132,18 +132,18 @@ public partial class ShopItemEditPage : ContentPage, INavigationAware
         _item.ItemType = (ItemType)Enum.Parse(typeof(ItemType), ItemTypePicker.Items[ItemTypePicker.SelectedIndex]);
 
         await _db.Db.UpdateAsync(_item);
-        //await DisplayAlert("Success", "Shop item updated successfully!", "OK");
+        await DisplayAlertAsync("Success", "Shop item updated successfully!", "OK");
         await Navigation.PopAsync();
     }
 
     private async void OnDeleteItemClicked(object sender, EventArgs e)
     {
-        //bool confirm = await DisplayAlert("Delete",
-            //$"Delete '{_item.Name}'? This cannot be undone.", "Delete", "Cancel");
-        //if (!confirm) return;
+        bool confirm = await DisplayAlertAsync("Delete",
+            $"Delete '{_item.Name}'? This cannot be undone.", "Delete", "Cancel");
+        if (!confirm) return;
 
         await _db.Db.DeleteAsync(_item);
-        //await DisplayAlert("Deleted", "Shop item deleted.", "OK");
+        await DisplayAlertAsync("Deleted", "Shop item deleted.", "OK");
         await Navigation.PopAsync();
     }
 

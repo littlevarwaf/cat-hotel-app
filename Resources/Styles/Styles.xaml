@@ -522,7 +522,7 @@
     <Style x:Key="RoundedPickerStyle" TargetType="Picker">
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="TextColor" Value="{StaticResource Neutral950}" />
-        <Setter Property="TitleColor" Value="{StaticResource Neutral950}" />
+        <Setter Property="TitleColor" Value="{StaticResource Neutral400}" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="VerticalOptions" Value="Center" />
         <Setter Property="HorizontalOptions" Value="FillAndExpand" />
