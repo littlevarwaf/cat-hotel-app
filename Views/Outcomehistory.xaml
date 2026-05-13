@@ -72,7 +72,7 @@
 
                 <!-- Filter: Day (Picker) -->
                 <VerticalStackLayout Grid.Column="0" Spacing="2">
-                    <Label Text="Day" FontSize="11" TextColor="{StaticResource Neutral700}"
+                    <Label Text="Day" FontSize="11" TextColor="{StaticResource Neutral600}"
                            HorizontalOptions="Center"/>
                     <Border Stroke="{StaticResource Primary100}" StrokeThickness="1"
                             BackgroundColor="{StaticResource PageBackgroundBrush}" Padding="0">
@@ -89,7 +89,7 @@
 
                 <!-- Filter: Month (Picker) -->
                 <VerticalStackLayout Grid.Column="1" Spacing="2">
-                    <Label Text="Month" FontSize="11" TextColor="{StaticResource Neutral700}"
+                    <Label Text="Month" FontSize="11" TextColor="{StaticResource Neutral600}"
                            HorizontalOptions="Center"/>
                     <Border Stroke="{StaticResource Primary100}" StrokeThickness="1"
                             BackgroundColor="{StaticResource PageBackgroundBrush}" Padding="0">
@@ -107,7 +107,7 @@
 
                 <!-- Filter: Year (Picker) -->
                 <VerticalStackLayout Grid.Column="2" Spacing="2">
-                    <Label Text="Year" FontSize="11" TextColor="{StaticResource Neutral700}"
+                    <Label Text="Year" FontSize="11" TextColor="{StaticResource Neutral600}"
                            HorizontalOptions="Center"/>
                     <Border Stroke="{StaticResource Primary100}" StrokeThickness="1"
                             BackgroundColor="{StaticResource PageBackgroundBrush}" Padding="0">
@@ -167,7 +167,7 @@
                                        HorizontalOptions="End"/>
                                 <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                                        Text="{Binding DateDisplay}"
-                                       FontSize="12" TextColor="{StaticResource Neutral700}"/>
+                                       FontSize="12" TextColor="{StaticResource Neutral600}"/>
                             </Grid>
                         </Border>
                     </DataTemplate>

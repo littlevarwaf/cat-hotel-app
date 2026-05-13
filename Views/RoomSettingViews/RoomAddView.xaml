@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.RoomSettingViews.RoomAddView">
+    <ContentView.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentView.Background>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- FORM SCROLL -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16,16,16,120" Spacing="0">
+
+                <Label Text="Room Details"
+                   FontSize="16" FontAttributes="Bold"
+                   TextColor="#1A1A1A" Margin="0,0,0,12"/>
+
+                <!-- Image Card -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                    Padding="16" Margin="0,0,0,16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+                        <Border HeightRequest="180" WidthRequest="240"
+                            StrokeThickness="0" HorizontalOptions="Center">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="6"/>
+                            </Border.StrokeShape>
+                            <Image x:Name="RoomPhotoPreview"
+                               Source="placeholder_item.png"
+                               Aspect="AspectFill"
+                               HeightRequest="180" WidthRequest="180"/>
+                        </Border>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Border Grid.Column="0" StrokeThickness="1" Stroke="{StaticResource Primary100}"
+                                    BackgroundColor="{StaticResource NeutralWhite}" Padding="0,10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999"/>
+                                </Border.StrokeShape>
+                                <Label Text="Remove Image" FontSize="13"
+                                   TextColor="{StaticResource Primary900}" HorizontalOptions="Center"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRemoveImageTapped"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border Grid.Column="1" StrokeThickness="0"
+                                    BackgroundColor="{StaticResource Primary}" Padding="0,10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999"/>
+                                </Border.StrokeShape>
+                                <Label Text="Upload Image" FontSize="13"
+                                   TextColor="{StaticResource Primary900}" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnUploadImageTapped"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Input Fields Card -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                    Padding="16" Margin="0,0,0,24">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="24">
+
+                        <!-- Room Name -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="building_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Room Name"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="RoomNameEntry" 
+                                   Placeholder="e.g., Deluxe Room 101"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Room Type -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="star_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Room Type"
+                                   FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <HorizontalStackLayout Spacing="20">
+                                <HorizontalStackLayout Spacing="8">
+                                    <RadioButton x:Name="SmallRadio"
+                                             Value="Small" GroupName="RoomType"
+                                             IsChecked="True"
+                                             CheckedChanged="OnRoomTypeChanged"/>
+                                    <Label Text="Small" FontSize="13" TextColor="#1A1A1A"
+                                       VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="8">
+                                    <RadioButton Value="Medium" GroupName="RoomType"
+                                             CheckedChanged="OnRoomTypeChanged"/>
+                                    <Label Text="Medium" FontSize="13" TextColor="#1A1A1A"
+                                       VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="8">
+                                    <RadioButton Value="Large" GroupName="RoomType"
+                                             CheckedChanged="OnRoomTypeChanged"/>
+                                    <Label Text="Large" FontSize="13" TextColor="#1A1A1A"
+                                       VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+
+                        <!-- Room Status -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="help_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Room Status"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedPickerContainerStyle}">
+                                <Picker 
+                                    x:Name="RoomStatusPicker"
+                                    Title="Select Room Status"
+                                    Style="{StaticResource RoundedPickerStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Max Occupants -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="group_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Max Occupants"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="MaxOccupantsEntry" 
+                                   Placeholder="0-99"
+                                   Keyboard="Numeric"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Base Price -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="dollar_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Base Price"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="BasePriceEntry" 
+                                   Placeholder="e.g., 1500"
+                                   Keyboard="Numeric"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Gradient overlay behind add button -->
+        <BoxView Grid.Row="0" ZIndex="0" VerticalOptions="End" HeightRequest="128">
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FFF7EF" Offset="1" />
+                    <GradientStop Color="#00FFF7EF" Offset="0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <!-- Floating Add Button -->
+        <Border Grid.Row="0" ZIndex="1" Margin="30,0,30,40" HeightRequest="64"
+                BackgroundColor="Transparent" StrokeThickness="0"
+                VerticalOptions="End">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="28" />
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="#E06060" Offset="0,4" Radius="12" Opacity="0.4" />
+            </Border.Shadow>
+            <Border BackgroundColor="{StaticResource Primary500}" StrokeThickness="0" Padding="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="38"/>
+                </Border.StrokeShape>
+                <Label Text="Add New Room" TextColor="White" FontSize="16"
+                       FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAddRoomTapped"/>
+                </Border.GestureRecognizers>
+            </Border>
+        </Border>
+
+    </Grid>
+</ContentView>

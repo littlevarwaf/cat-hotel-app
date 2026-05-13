@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.RoomSettingViews.RoomsView">
+    <ContentView.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#F7D7D7" Offset="0.0" />
+            <GradientStop Color="#FBEAEA" Offset="0.25" />
+            <GradientStop Color="#FFF7EF" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentView.Background>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- ROOMS GRID -->
+        <CollectionView Grid.Row="0"
+                    x:Name="RoomsCollectionView"
+                    Margin="16,12,16,0"
+                    SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="10" VerticalItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="White" StrokeThickness="0" Padding="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="#20000000" Offset="0,2" Radius="6" Opacity="0.12"/>
+                        </Border.Shadow>
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="0">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                  Tapped="OnRoomTapped"/>
+                            </Grid.GestureRecognizers>
+
+                            <!-- Image Section -->
+                            <Grid Grid.Row="0" HeightRequest="140">
+                                <Border BackgroundColor="#FDECEC" StrokeThickness="0"
+                                    HeightRequest="140">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="12,12,0,0"/>
+                                    </Border.StrokeShape>
+                                    <Image Source="{Binding ImgUrl}" Aspect="AspectFill"
+                                       HeightRequest="140"/>
+                                </Border>
+
+                                <!-- Status Badge -->
+                                <Border BackgroundColor="#1A1A1A" StrokeThickness="0"
+                                    Padding="8,4"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Start"
+                                    Margin="0,8,8,0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="999"/>
+                                    </Border.StrokeShape>
+                                    <Label Text="{Binding Status}"
+                                       TextColor="White" FontSize="11" FontAttributes="Bold"/>
+                                </Border>
+                            </Grid>
+
+                            <!-- Info Section -->
+                            <VerticalStackLayout Grid.Row="1" Padding="10,8,10,10" Spacing="4">
+                                <Label Text="{Binding Name}"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#1A1A1A" LineBreakMode="TailTruncation"/>
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+                                    <Label Grid.Column="0"
+                                       Text="{Binding RoomType}"
+                                       FontSize="11" TextColor="#9E9090"
+                                       LineBreakMode="TailTruncation"/>
+                                    <Label Grid.Column="1"
+                                       Text="{Binding BasePrice, StringFormat='฿{0:N0}'}"
+                                       FontSize="11" TextColor="#9E9090"
+                                       LineBreakMode="TailTruncation"/>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <!-- Footer spacing -->
+            <CollectionView.Footer>
+                <BoxView HeightRequest="80" BackgroundColor="Transparent" />
+            </CollectionView.Footer>
+        </CollectionView>
+
+        <!-- Gradient overlay behind search bar -->
+        <BoxView Grid.Row="0" ZIndex="0" VerticalOptions="End" HeightRequest="96">
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FFF7EF" Offset="1" />
+                    <GradientStop Color="#00FFF7EF" Offset="0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <!-- Floating Search Bar -->
+        <Border Grid.Row="0" 
+                ZIndex="1"
+                Style="{StaticResource RoundedInputContainerStyle}"
+                Margin="16,0,16,16" 
+                Padding="12,0,12,0"
+                VerticalOptions="End"
+                HeightRequest="56">
+            <Grid ColumnDefinitions="Auto,*">
+                <Image Grid.Column="0" Source="search_icon.svg" HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
+                <Border Grid.Column="1" BackgroundColor="Transparent" Stroke="Transparent">
+                    <Entry x:Name="SearchEntry" Style="{StaticResource RoundedEntryStyle}"
+                           Placeholder="Search rooms..." TextChanged="OnSearchTextChanged" />
+                </Border>
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentView>
