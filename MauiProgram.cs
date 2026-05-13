@@ -28,7 +28,7 @@ namespace CatHotel
 
             builder
                 .Services
-                .AddSingleton<IRoomRepository, MockRoomRepository>()
+                .AddSingleton<IRoomRepository, DatabaseRoomRepository>()
                 .AddSingleton<HomePage>()
                 .AddSingleton<CalendarPage>()
                 .AddSingleton<Sales>();

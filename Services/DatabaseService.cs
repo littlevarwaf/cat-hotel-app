@@ -35,6 +35,8 @@ namespace CatHotel.Services
 
                 await _db.CreateTableAsync<Room>();
                 await _db.CreateTableAsync<Customer>();
+                await _db.CreateTableAsync<Cat>();
+                await _db.CreateTableAsync<Discount>();
                 await _db.CreateTableAsync<Booking>();
                 await _db.CreateTableAsync<BookingItem>();
                 await _db.CreateTableAsync<ShopItem>();

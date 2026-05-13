@@ -21,7 +21,7 @@ public partial class HomePage : ContentView
         this.Loaded += OnViewLoaded;
     }
 
-    private async void OnViewLoaded(object sender, EventArgs e)
+    private async void OnViewLoaded(object? sender, EventArgs e)
     {
         if (_isInitialized) return;
         _isInitialized = true;
@@ -65,7 +65,7 @@ public partial class HomePage : ContentView
         }
     }
 
-    private async void OnRoomTapped(object sender, TappedEventArgs e)
+    private async void OnRoomTapped(object? sender, TappedEventArgs e)
     {
         if (e.Parameter is RoomViewModel vm)
         {
@@ -75,7 +75,7 @@ public partial class HomePage : ContentView
         }
     }
 
-    private async void OnEditClicked(object sender, EventArgs e)
+    private async void OnEditClicked(object? sender, EventArgs e)
     {
         await NavigationService.GoToAsync("EditRoomPage");
     }

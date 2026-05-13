@@ -68,8 +68,7 @@
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="Microcharts.Maui" Version="1.0.1" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.60" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" />
 		<PackageReference Include="Sharpnado.Tabs.Maui" Version="4.0.1" />
 		<PackageReference Include="SkiaSharp" Version="3.119.2" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="3.0.0" />
@@ -116,6 +115,9 @@
 	  <Compile Update="Views\RoomWrapperPage.xaml.cs">
 	    <DependentUpon>RoomWrapperPage.xaml</DependentUpon>
 	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Maui.Controls" Version="10.0.60" />
 	</ItemGroup>
 
 </Project>
