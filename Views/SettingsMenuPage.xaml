@@ -44,6 +44,15 @@
                         BackgroundColor="#FF9800"
                         TextColor="White"
                         FontAttributes="Bold"/>
+
+                <Button Text="Income"
+                        Clicked="OnIncomeClicked"
+                        Padding="16,12"
+                        CornerRadius="8"
+                        BackgroundColor="pink"
+                        TextColor="White"
+                        FontAttributes="Bold"/>
+                
             </StackLayout>
         </ScrollView>
     </Grid>

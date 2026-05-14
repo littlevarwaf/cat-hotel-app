@@ -23,4 +23,10 @@ public partial class SettingsMenuPage : ContentPage
     {
         await NavigationService.GoToAsync(NavigationService.DiscountSettingsWrapperPage);
     }
+
+    // ปุ่ม Income -> ไปหน้า outcome โดยตรง
+    private async void OnIncomeClicked(object sender, EventArgs e)
+    {
+        await NavigationService.GoToAsync(NavigationService.OutcomeSettingsWrapperPage);
+    }
 }

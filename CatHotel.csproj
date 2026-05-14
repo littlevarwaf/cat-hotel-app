@@ -89,6 +89,9 @@
 	  <MauiXaml Update="Views\DiscountSettingViews\DiscountsView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\OutcomeSettingsWrapperPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\RoomDetailDebug.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -151,6 +154,12 @@
 		<MauiXaml Include="Resources\Styles\Styles.xaml" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Update="Views\OutcomeSettingViews\OutcomeHistoryView.xaml.cs">
+	    <DependentUpon>OutcomeHistoryView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\OutcomeSettingViews\OutcomeView.xaml.cs">
+	    <DependentUpon>OutcomeView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\RoomSettingsWrapperPage.xaml.cs">
 	    <DependentUpon>RoomSettingsWrapperPage.xaml</DependentUpon>
 	  </Compile>

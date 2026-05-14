@@ -2,6 +2,7 @@ using CatHotel.Views;
 using CatHotel.Views.ShopSettingViews;
 using CatHotel.Views.RoomSettingViews;
 using CatHotel.Views.DiscountSettingViews;
+using CatHotel.Views.OutcomeSettingViews;
 
 namespace CatHotel.Services;
 
@@ -11,10 +12,15 @@ public static class NavigationService
     public const string RoomSettingsWrapperPage = "RoomSettingsWrapperPage";
     public const string ShopSettingsWrapperPage = "ShopSettingsWrapperPage";
     public const string DiscountSettingsWrapperPage = "DiscountSettingsWrapperPage";
+    public const string OutcomeSettingsWrapperPage = "OutcomeSettingsWrapperPage";
     public const string CartPage = "CartPage";
     public const string SettingsMenuPage = "SettingsMenuPage";
     public const string ShopItemEditPage = "ShopItemEditPage";
     public const string RoomEditPage = "RoomEditPage";
+
+    // outcome / outcome history
+    public const string OutcomePage = "OutcomePage";
+    public const string OutcomeHistoryPage = "OutcomeHistoryPage";
 
     public static async Task GoToAsync(string route)
     {
@@ -55,6 +61,7 @@ public static class NavigationService
             nameof(RoomSettingsWrapperPage) => new RoomSettingsWrapperPage(),
             nameof(ShopSettingsWrapperPage) => new ShopSettingsWrapperPage(),
             nameof(DiscountSettingsWrapperPage) => new DiscountSettingsWrapperPage(),
+            nameof(OutcomeSettingsWrapperPage) => new OutcomeSettingsWrapperPage(),
             nameof(ShopItemEditPage) => new ShopItemEditPage(),
             nameof(RoomEditPage) => new RoomEditPage(),
             nameof(DiscountEditPage) => new DiscountEditPage(),
@@ -63,7 +70,7 @@ public static class NavigationService
     }
 }
 
-public interface INavigationAware
+public interface INavigationAware       
 {
     void OnNavigatedTo(IDictionary<string, object> parameters);
 }

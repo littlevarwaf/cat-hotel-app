@@ -80,13 +80,6 @@ public partial class RoomsView : ContentView
         }
     }
 
-    private async void OnEditTabTapped(object sender, TappedEventArgs e) { }
-
-    private async void OnAddNewTabTapped(object sender, TappedEventArgs e)
-    {
-        await NavigationService.GoToAsync("RoomAddView");
-    }
-
     private async void OnRoomTapped(object sender, TappedEventArgs e)
     {
         if (e.Parameter is Room room)
@@ -94,10 +87,5 @@ public partial class RoomsView : ContentView
             await NavigationService.GoToAsync("RoomEditPage",
                 new Dictionary<string, object> { ["roomId"] = room.Id });
         }
-    }
-
-    private async void OnBackClicked(object sender, EventArgs e)
-    {
-        await NavigationService.GoBackAsync();
     }
 }

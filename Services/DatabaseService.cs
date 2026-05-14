@@ -40,6 +40,7 @@ namespace CatHotel.Services
                 await _db.CreateTableAsync<Booking>();
                 await _db.CreateTableAsync<BookingItem>();
                 await _db.CreateTableAsync<ShopItem>();
+                await _db.CreateTableAsync<OutcomeRecord>();
 
                 await EnsureColumnExistsAsync("Bookings", "TotalPrice", "REAL", "0");
                 await EnsureColumnExistsAsync("BookingItems", "UnitPrice", "REAL", "0");
@@ -189,6 +190,44 @@ namespace CatHotel.Services
 
             return result;
         }
+
+        // ---- OutcomeRecord CRUD ----
+
+        public async Task<int> AddOutcomeRecordAsync(OutcomeRecord record)
+        {
+            await InitializeAsync();
+            record.CreatedAt = DateTime.Now;
+            return await _db.InsertAsync(record);
+        }
+
+        public async Task<List<OutcomeRecord>> GetAllOutcomeRecordsAsync()
+        {
+            await InitializeAsync();
+            return await _db.Table<OutcomeRecord>()
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<List<OutcomeRecord>> GetOutcomeRecordsByFilterAsync(int? year, int? month, int? day)
+        {
+            await InitializeAsync();
+            var all = await _db.Table<OutcomeRecord>().ToListAsync();
+
+            var filtered = all.AsEnumerable();
+            if (year.HasValue)  filtered = filtered.Where(r => r.CreatedAt.Year  == year.Value);
+            if (month.HasValue) filtered = filtered.Where(r => r.CreatedAt.Month == month.Value);
+            if (day.HasValue)   filtered = filtered.Where(r => r.CreatedAt.Day   == day.Value);
+
+            return filtered.OrderByDescending(r => r.CreatedAt).ToList();
+        }
+
+        public async Task<int> DeleteOutcomeRecordAsync(int id)
+        {
+            await InitializeAsync();
+            return await _db.DeleteAsync<OutcomeRecord>(id);
+        }
+
+        // ---- End OutcomeRecord CRUD ----
 
         //เทสข้อมูลอย่าลืมเอาออก
         private async Task SeedTestDataIfEmptyAsync()
