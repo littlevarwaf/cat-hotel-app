@@ -16,9 +16,12 @@ public partial class HomePage : ContentView
     {
         InitializeComponent();
         _roomRepo = roomRepo;
-
-        // Call initialization when the view is loaded
         this.Loaded += OnViewLoaded;
+
+        // ✅ subscribe เหมือน RoomsView เลย
+        RoomService.RoomAdded += async (s, e) => await MainThread.InvokeOnMainThreadAsync(LoadRoomsAsync);
+        RoomService.RoomUpdated += async (s, e) => await MainThread.InvokeOnMainThreadAsync(LoadRoomsAsync);
+        RoomService.RoomDeleted += async (s, e) => await MainThread.InvokeOnMainThreadAsync(LoadRoomsAsync);
     }
 
     private async void OnViewLoaded(object? sender, EventArgs e)
@@ -55,8 +58,7 @@ public partial class HomePage : ContentView
         }
         catch (Exception ex)
         {
-            //await DisplayAlert("Error", $"Cannot load rooms: {ex.Message}", "OK");
-            throw;
+            System.Diagnostics.Debug.WriteLine("[HOME] LoadRooms error: " + ex);
         }
         finally
         {
@@ -84,11 +86,8 @@ public partial class HomePage : ContentView
 public class RoomViewModel
 {
     public Room Room { get; }
-
     public RoomViewModel(Room room) => Room = room;
-
     public string Name => Room.Name;
-
     public string? ImgUrl => Room.ImgUrl;
     public RoomStatus Status => Room.Status;
     public RoomTypes RoomType => Room.RoomType;

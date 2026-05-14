@@ -26,19 +26,18 @@ namespace CatHotel
             builder.Logging.AddDebug();
 #endif
 
-            builder
-                .Services
+            builder.Services
+                // เพิ่ม DatabaseService
+                .AddSingleton<DatabaseService>(sp =>
+                    new DatabaseService(Path.Combine(FileSystem.AppDataDirectory, "cathotel3.db3")))
                 .AddSingleton<IRoomRepository, DatabaseRoomRepository>()
-                .AddSingleton<HomePage>()
-                .AddSingleton<CalendarPage>()
-                .AddSingleton<Sales>();
-
-            builder.Services.AddTransient<HomePage>();
-            builder.Services.AddTransient<CalendarPage>();
-            builder.Services.AddTransient<Sales>();
-            builder.Services.AddTransient<ShopPage>();
-            builder.Services.AddTransient<RoomDetailPage>();
-            builder.Services.AddTransient<CartPage>();
+                // Pages — เลือกแค่ Singleton หรือ Transient อย่างใดอย่างหนึ่ง
+                .AddTransient<HomePage>()
+                .AddTransient<CalendarPage>()
+                .AddTransient<Sales>()
+                .AddTransient<ShopPage>()
+                .AddTransient<RoomDetailPage>()
+                .AddTransient<CartPage>();
 
             return builder.Build();
         }
