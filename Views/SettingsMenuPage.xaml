@@ -5,55 +5,160 @@
              NavigationPage.HasNavigationBar="False"
              Shell.NavBarIsVisible="False"
              Title="SettingsMenuPage">
+    <ContentPage.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentPage.Background>
+
     <Grid RowDefinitions="Auto,*">
 
-        <Border Grid.Row="0" BackgroundColor="White" Padding="16,12" MinimumHeightRequest="64" MaximumHeightRequest="64"
-            StrokeThickness="0" Margin="0">
-            <Border.Shadow>
-                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
-            </Border.Shadow>
-            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-                <Label Text="Edit Menu" FontSize="22" FontAttributes="Bold"
-                   TextColor="#212121" VerticalOptions="Center"/>
-                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
+        <Border Grid.Row="0" BackgroundColor="Transparent" Padding="16,0,32,0" MinimumHeightRequest="56"
+                StrokeThickness="0" Margin="0">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="0">
+                <!-- Back Button -->
+                <Button Grid.Column="0"
+                        ImageSource="chevron_left.svg"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Neutral950}"
+                        FontSize="28"
+                        Padding="8,0"
+                        Clicked="OnBackClicked"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center"/>
+
+                <!-- Title -->
+                <Label Grid.Column="1"
+                       Text="Settings Menu"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Neutral950}"
+                       HorizontalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"/>
+
+                <!-- Paw Icon -->
+                <Image Grid.Column="2"
+                       Source="app_icon.svg"
+                       HeightRequest="28"
+                       WidthRequest="28"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"/>
             </Grid>
         </Border>
 
-        <ScrollView Grid.Row="1" Padding="12,8,8,128">
-            <StackLayout Spacing="8">
-                <Button Text="Room Settings" 
-                        Clicked="OnRoomSettingsClicked"
-                        Padding="16,12"
-                        CornerRadius="8"
-                        BackgroundColor="#2196F3"
-                        TextColor="White"
-                        FontAttributes="Bold"/>
+        <!-- Menu Items Grid -->
+        <ScrollView Grid.Row="1" Padding="16,16,16,16">
+            <VerticalStackLayout Spacing="16">
 
-                <Button Text="Shop Settings" 
-                        Clicked="OnShopSettingsClicked"
-                        Padding="16,12"
-                        CornerRadius="8"
-                        BackgroundColor="#4CAF50"
-                        TextColor="White"
-                        FontAttributes="Bold"/>
+                <!-- Room Settings -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" 
+                        Stroke="{StaticResource Primary100}" 
+                        StrokeThickness="1"
+                        Padding="20,24">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+                        <Image Source="building_icon.svg" 
+                               HeightRequest="40" 
+                               WidthRequest="40" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Room Settings"
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Neutral950}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRoomSettingsClicked"/>
+                    </Border.GestureRecognizers>
+                </Border>
 
-                <Button Text="Discount Settings"
-                        Clicked="OnDiscountSettingsClicked"
-                        Padding="16,12"
-                        CornerRadius="8"
-                        BackgroundColor="#FF9800"
-                        TextColor="White"
-                        FontAttributes="Bold"/>
+                <!-- Shop Settings -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" 
+                        Stroke="{StaticResource Primary100}" 
+                        StrokeThickness="1"
+                        Padding="20,24">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+                        <Image Source="shopping_bag_icon.svg" 
+                               HeightRequest="40" 
+                               WidthRequest="40" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Shop Settings"
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Neutral950}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnShopSettingsClicked"/>
+                    </Border.GestureRecognizers>
+                </Border>
 
-                <Button Text="Income"
-                        Clicked="OnIncomeClicked"
-                        Padding="16,12"
-                        CornerRadius="8"
-                        BackgroundColor="pink"
-                        TextColor="White"
-                        FontAttributes="Bold"/>
-                
-            </StackLayout>
+                <!-- Discount Settings -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" 
+                        Stroke="{StaticResource Primary100}" 
+                        StrokeThickness="1"
+                        Padding="20,24">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+                        <Image Source="price_tag_icon.svg" 
+                               HeightRequest="40" 
+                               WidthRequest="40" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Discount Settings"
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Neutral950}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDiscountSettingsClicked"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <!-- Income -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" 
+                        Stroke="{StaticResource Primary100}" 
+                        StrokeThickness="1"
+                        Padding="20,24">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+                        <Image Source="dollar_icon.svg" 
+                               HeightRequest="40" 
+                               WidthRequest="40" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Income"
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Neutral950}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnIncomeClicked"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+            </VerticalStackLayout>
         </ScrollView>
+
     </Grid>
 </ContentPage>

@@ -88,28 +88,9 @@ public class RoomViewModel
     public RoomViewModel(Room room) => Room = room;
 
     public string Name => Room.Name;
-    public string RoomTypeDisplay => Room.RoomType switch
-    {
-        RoomTypes.Small  => "Small room",
-        RoomTypes.Medium => "Mid-sized room",
-        RoomTypes.Large  => "Large room",
-        _                => "Unknown"
-    };
-    public string BasePriceDisplay => $"฿{Room.BasePrice:N0} / night";
 
-    public string StatusBadgeText => Room.Status switch
-    {
-        RoomStatus.Available   => "Available ●",
-        RoomStatus.Unavailable => "Not Available ●",
-        RoomStatus.Occupied    => "Occupied ●",
-        _                      => "Unknown"
-    };
-
-    public Color StatusBadgeColor => Room.Status switch
-    {
-        RoomStatus.Available   => Color.FromArgb("#4CAF50"),
-        RoomStatus.Unavailable => Color.FromArgb("#F44336"),
-        RoomStatus.Occupied    => Color.FromArgb("#FF9800"),
-        _                      => Color.FromArgb("#9E9E9E")
-    };
+    public string? ImgUrl => Room.ImgUrl;
+    public RoomStatus Status => Room.Status;
+    public RoomTypes RoomType => Room.RoomType;
+    public double BasePrice => Room.BasePrice;
 }

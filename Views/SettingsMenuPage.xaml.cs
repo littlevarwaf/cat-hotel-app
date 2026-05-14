@@ -9,6 +9,11 @@ public partial class SettingsMenuPage : ContentPage
         InitializeComponent();
     }
 
+    private async void OnBackClicked(object sender, EventArgs e)
+    {
+        await NavigationService.GoBackAsync();
+    }
+
     private async void OnRoomSettingsClicked(object sender, EventArgs e)
     {
         await NavigationService.GoToAsync(NavigationService.RoomSettingsWrapperPage);
