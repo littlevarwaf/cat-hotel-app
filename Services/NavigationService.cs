@@ -1,6 +1,7 @@
 using CatHotel.Views;
 using CatHotel.Views.ShopSettingViews;
 using CatHotel.Views.RoomSettingViews;
+using CatHotel.Views.DiscountSettingViews;
 
 namespace CatHotel.Services;
 
@@ -56,6 +57,7 @@ public static class NavigationService
             nameof(DiscountSettingsWrapperPage) => new DiscountSettingsWrapperPage(),
             nameof(ShopItemEditPage) => new ShopItemEditPage(),
             nameof(RoomEditPage) => new RoomEditPage(),
+            nameof(DiscountEditPage) => new DiscountEditPage(),
             _ => null
         };
     }

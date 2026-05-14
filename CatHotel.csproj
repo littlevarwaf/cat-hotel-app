@@ -80,6 +80,15 @@
 	  <MauiXaml Update="Views\DiscountSettingsWrapperPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\DiscountSettingViews\DiscountAddView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DiscountSettingViews\DiscountEditPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DiscountSettingViews\DiscountsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\RoomDetailDebug.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

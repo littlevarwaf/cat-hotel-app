@@ -8,7 +8,7 @@ namespace CatHotel
         private static bool _dbInitialized;
 
         public static DatabaseService Database =>
-            _database ??= new DatabaseService(Path.Combine(FileSystem.AppDataDirectory, "cathotel.db3"));
+            _database ??= new DatabaseService(Path.Combine(FileSystem.AppDataDirectory, "cathotel2.db3"));
 
         public App()
         {

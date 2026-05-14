@@ -9,13 +9,16 @@ public class Discount
     public int Id { get; set; }
 
     [NotNull]
-    public string Name { get; set; }
+    public string Code { get; set; }
 
-    [NotNull]
-    public double Percentage { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     [NotNull]
     public int Amount { get; set; }
+
+    public int Quantity { get; set; }
+
+    public int UsedCount { get; set; } = 0;
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
@@ -27,10 +30,12 @@ public class Discount
     {
     }
 
-    public Discount(string name, double percentage, int amount, DateTime expirationDate)
+    public Discount(string code, string description, int amount, int quantity, DateTime expirationDate)
     {
-        Name = name;
-        Percentage = percentage;
+        Code = code;
+        Description = description;
+        Amount = amount;
+        Quantity = quantity;
         ExpirationDate = expirationDate;
         CreatedAt = DateTime.Now;
     }

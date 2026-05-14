@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.DiscountSettingViews.DiscountAddView">
+    <ContentView.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentView.Background>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- FORM SCROLL -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16,16,16,120" Spacing="0">
+
+                <Label Text="Discount Details"
+                   FontSize="16" FontAttributes="Bold"
+                   TextColor="#1A1A1A" Margin="0,0,0,12"/>
+
+                <!-- Input Fields Card -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                    Padding="16" Margin="0,0,0,24">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,3" Radius="8" Opacity="0.15"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="24">
+
+                        <!-- Discount Code -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="building_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Discount Code"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="DiscountCodeEntry" 
+                                   Placeholder="e.g., SUMMER20"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Description -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="star_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Description"
+                                   FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="DiscountDescriptionEntry" 
+                                   Placeholder="e.g., Summer 20% off"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Discount Amount -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="dollar_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Discount Amount"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="DiscountAmountEntry" 
+                                   Placeholder="e.g., 100"
+                                   Keyboard="Numeric"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Quantity -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="group_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Quantity"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="DiscountQuantityEntry" 
+                                   Placeholder="e.g., 50"
+                                   Keyboard="Numeric"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Expiration Date -->
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="help_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Expiration Date"
+                                       FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            </Grid>
+                            <Border Style="{StaticResource RoundedPickerContainerStyle}">
+                                <DatePicker x:Name="ExpirationDatePicker"
+                                    Style="{StaticResource RoundedPickerStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Bottom Action Button -->
+        <Border Grid.Row="1" 
+                BackgroundColor="Transparent" 
+                Stroke="Transparent" 
+                Padding="16,16,16,32"
+                StrokeThickness="0">
+            <Border BackgroundColor="{StaticResource Primary}" 
+                    StrokeThickness="0" 
+                    Padding="0,12">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="999"/>
+                </Border.StrokeShape>
+                <Label Text="Add Discount"
+                       FontSize="14" FontAttributes="Bold"
+                       TextColor="{StaticResource Primary900}" 
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAddDiscountTapped"/>
+                </Border.GestureRecognizers>
+            </Border>
+        </Border>
+
+    </Grid>
+</ContentView>
