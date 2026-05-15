@@ -1,5 +1,6 @@
 ﻿using CatHotel.Services;
 using CatHotel.Views;
+using CommunityToolkit.Maui;
 using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
 
@@ -14,6 +15,7 @@ namespace CatHotel
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .UseSharpnadoTabs(loggerEnable: false)
                 .UseMicrocharts()
                 .ConfigureFonts(fonts =>
@@ -31,6 +33,11 @@ namespace CatHotel
                 .AddSingleton<DatabaseService>(sp =>
                     new DatabaseService(Path.Combine(FileSystem.AppDataDirectory, "cathotel3.db3")))
                 .AddSingleton<IRoomRepository, DatabaseRoomRepository>()
+                .AddSingleton<IBookingRepository, DatabaseBookingRepository>()
+                .AddSingleton<ICustomerRepository, DatabaseCustomerRepository>()
+                .AddSingleton<ICatRepository, DatabaseCatRepository>()
+                .AddSingleton<IBookingCatRepository, DatabaseBookingCatRepository>()
+
                 // Pages — เลือกแค่ Singleton หรือ Transient อย่างใดอย่างหนึ่ง
                 .AddTransient<HomePage>()
                 .AddTransient<CalendarPage>()

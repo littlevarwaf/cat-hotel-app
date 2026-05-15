@@ -29,6 +29,8 @@ namespace CatHotel
                 }
             };
 
+            NavigationPage.SetHasNavigationBar(loadingPage, false);
+
             var window = new Window(new NavigationPage(loadingPage));
 
             // init DB แล้วค่อย navigate ไป MainPage
@@ -42,6 +44,7 @@ namespace CatHotel
             try
             {
                 await Database.InitializeAsync(); // รอ DB init เสร็จก่อน
+                //await Database.SeedMockDataAsync();
             }
             catch (Exception ex)
             {

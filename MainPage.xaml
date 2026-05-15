@@ -1,12 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:controls="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:tabs="http://sharpnado.com"
              xmlns:views="clr-namespace:CatHotel.Views"
              NavigationPage.HasNavigationBar="False"
              Shell.NavBarIsVisible="False"
              x:Class="CatHotel.MainPage">
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Primary50}" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
 
     <Grid RowDefinitions="*, Auto">
 
