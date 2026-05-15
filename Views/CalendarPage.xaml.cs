@@ -54,9 +54,15 @@ public partial class CalendarPage : ContentView
         _roomRepo = roomRepo;
         BuildCalendarGrid();
 
-        // Call initialization when the view is loaded
-        this.Loaded += OnViewLoaded;
+        RoomService.RoomAdded += OnRoomsChanged;
+        RoomService.RoomUpdated += OnRoomsChanged;
+        RoomService.RoomDeleted += OnRoomsChanged;
+
+        Loaded += OnViewLoaded;
     }
+
+    private void OnRoomsChanged(object? sender, RoomEventArgs e) =>
+        _ = MainThread.InvokeOnMainThreadAsync(RefreshRoomsAsync);
 
     private async void OnViewLoaded(object? sender, EventArgs e)
     {
@@ -66,7 +72,7 @@ public partial class CalendarPage : ContentView
         try
         {
             RefreshCalendar();
-            await LoadAvailableRoomsAsync();
+            await RefreshRoomsAsync();
         }
         catch (Exception ex)
         {
@@ -74,6 +80,8 @@ public partial class CalendarPage : ContentView
             throw;
         }
     }
+
+    public async Task RefreshRoomsAsync() => await LoadAvailableRoomsAsync();
 
     private void RefreshCalendar()
     {
