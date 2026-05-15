@@ -1,12 +1,5 @@
 ﻿using CatHotel.Models;
-using Microcharts;
-using SkiaSharp;
 using SQLite;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 
 namespace CatHotel.Services
 {
@@ -39,7 +32,9 @@ namespace CatHotel.Services
                 await _db.CreateTableAsync<Discount>();
                 await _db.CreateTableAsync<Booking>();
                 await _db.CreateTableAsync<BookingItem>();
+                await _db.CreateTableAsync<BookingCat>();
                 await _db.CreateTableAsync<ShopItem>();
+                await _db.CreateTableAsync<Sale>();
                 await _db.CreateTableAsync<OutcomeRecord>();
 
                 await EnsureColumnExistsAsync("Bookings", "TotalPrice", "REAL", "0");
@@ -84,7 +79,7 @@ namespace CatHotel.Services
             await _db.ExecuteAsync("UPDATE Bookings SET TotalPrice = ? WHERE Id = ?", total, bookingId);
         }
 
-        public async Task<List<(DateTime Month, double Total)>> GetMonthlySalesLast7MonthsAsync()
+        public async Task<List<(DateTime Month, double Income, double Expense)>> GetMonthlySalesLast7MonthsAsync()
         {
             var thisMonthStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             var start = thisMonthStart.AddMonths(-6);
@@ -94,15 +89,23 @@ namespace CatHotel.Services
                 .Where(b => b.EndDate >= start && b.EndDate < end)
                 .ToListAsync();
 
-            var result = new List<(DateTime Month, double Total)>();
+            var outcomes = await _db.Table<OutcomeRecord>()
+                .Where(o => o.CreatedAt >= start && o.CreatedAt < end)
+                .ToListAsync();
+
+            var result = new List<(DateTime Month, double Total, double Expense)>();
             for (int i = 0; i < 7; i++)
             {
                 var m = start.AddMonths(i);
-                var sum = bookings
+                var income = bookings
                     .Where(b => b.EndDate.Year == m.Year && b.EndDate.Month == m.Month)
                     .Sum(b => b.TotalPrice);
 
-                result.Add((m, sum));
+                double expense = outcomes
+                    .Where(o => o.CreatedAt.Year == m.Year && o.CreatedAt.Month == m.Month)
+                    .Sum(o => o.Amount);
+
+                result.Add((m, income, expense));
             }
             return result;
         }
@@ -112,28 +115,29 @@ namespace CatHotel.Services
             var monthStart = new DateTime(year, month, 1);
             var monthEnd = monthStart.AddMonths(1);
 
-            var bookings = await _db.Table<Booking>()
-                .Where(b => b.EndDate >= monthStart && b.EndDate < monthEnd)
+            var sales = await _db.Table<Sale>()
+                .Where(s => s.CompletedAt >= monthStart && s.CompletedAt < monthEnd)
                 .ToListAsync();
 
-            if (bookings.Count == 0) return (0, 0, 0);
+            if (sales.Count == 0) return (0, 0, 0);
 
-            var roomIds = bookings.Select(b => b.RoomId).Distinct().ToList();
+            var roomIdList = sales.Select(s => int.Parse(s.RoomId)).Distinct().ToList();
 
             // ถ้า Contains แปลเป็น SQL ไม่ได้ในบางเครื่อง ให้เปลี่ยนเป็นดึง Room ทั้งหมดแล้วกรองใน memory
             var rooms = await _db.Table<Room>()
-                .Where(r => roomIds.Contains(r.Id))
+                .Where(r => roomIdList.Contains(r.Id))
                 .ToListAsync();
 
             var roomTypeById = rooms.ToDictionary(r => r.Id, r => r.RoomType);
 
             int large = 0, medium = 0, small = 0;
 
-            foreach (var b in bookings)
+            foreach (var s in sales)
             {
-                if (!roomTypeById.TryGetValue(b.RoomId, out var type)) continue;
+                if (!int.TryParse(s.RoomId, out int roomId)) continue;
+                if (!roomTypeById.TryGetValue(roomId, out var roomType)) continue;
 
-                switch (type.ToString())
+                switch (roomType.ToString())
                 {
                     case "Large": large++; break;
                     case "Medium": medium++; break;
@@ -149,11 +153,11 @@ namespace CatHotel.Services
             var monthStart = new DateTime(year, month, 1);
             var monthEnd = monthStart.AddMonths(1);
 
-            var bookings = await _db.Table<Booking>()
-                .Where(b => b.EndDate >= monthStart && b.EndDate < monthEnd)
+            var sales = await _db.Table<Sale>()
+                .Where(s => s.CompletedAt >= monthStart && s.CompletedAt < monthEnd)
                 .ToListAsync();
 
-            var bookingIds = bookings.Select(b => b.Id).ToList();
+            var bookingIds = sales.Select(s => int.Parse(s.BookingId)).ToList();
             if (bookingIds.Count == 0)
                 return new Dictionary<string, float>();
 
@@ -190,6 +194,7 @@ namespace CatHotel.Services
 
             return result;
         }
+
 
         // ---- OutcomeRecord CRUD ----
 
@@ -401,5 +406,180 @@ namespace CatHotel.Services
         }
         //เทสข้อมูลอย่าลืมเอาออก
 
+        // ---- Separate Seeding Method for Mock Data ----
+        public async Task SeedMockDataAsync()
+        {
+            await InitializeAsync();
+
+            // Clear existing data
+            await _db.DeleteAllAsync<BookingCat>();
+            await _db.DeleteAllAsync<BookingItem>();
+            await _db.DeleteAllAsync<Booking>();
+            await _db.DeleteAllAsync<Cat>();
+            await _db.DeleteAllAsync<Customer>();
+            await _db.DeleteAllAsync<Room>();
+
+            // 1) Create Mock Rooms (3 different types)
+            var rooms = new List<Room>
+            {
+                new Room
+                {
+                    Name = "Deluxe Suite",
+                    Status = RoomStatus.Available,
+                    RoomType = RoomTypes.Large,
+                    MaxOccupants = 3,
+                    BasePrice = 1500,
+                    EndDate = new DateTime(2026, 12, 31),
+                    ImgUrl = ""
+                },
+                new Room
+                {
+                    Name = "Standard Room",
+                    Status = RoomStatus.Available,
+                    RoomType = RoomTypes.Medium,
+                    MaxOccupants = 2,
+                    BasePrice = 1000,
+                    EndDate = new DateTime(2026, 12, 31),
+                    ImgUrl = ""
+                },
+                new Room
+                {
+                    Name = "Cozy Corner",
+                    Status = RoomStatus.Available,
+                    RoomType = RoomTypes.Small,
+                    MaxOccupants = 1,
+                    BasePrice = 600,
+                    EndDate = new DateTime(2026, 12, 31),
+                    ImgUrl = ""
+                }
+            };
+
+            foreach (var room in rooms)
+            {
+                await _db.InsertAsync(room);
+            }
+
+            // 2) Create Mock Customers (3 customers)
+            var customers = new List<Customer>
+            {
+                new Customer
+                {
+                    Name = "John Smith",
+                    TelephoneNum = "0812345678",
+                    Email = "john.smith@email.com",
+                    ImgUrl = ""
+                },
+                new Customer
+                {
+                    Name = "Emily Johnson",
+                    TelephoneNum = "0823456789",
+                    Email = "emily.johnson@email.com",
+                    ImgUrl = ""
+                },
+                new Customer
+                {
+                    Name = "Michael Chen",
+                    TelephoneNum = "0834567890",
+                    Email = "michael.chen@email.com",
+                    ImgUrl = ""
+                }
+            };
+
+            foreach (var customer in customers)
+            {
+                await _db.InsertAsync(customer);
+            }
+
+            // 3) Create Mock Cats (3 cats)
+            var cats = new List<Cat>
+            {
+                new Cat
+                {
+                    Name = "Whiskers",
+                    Breed = "Persian",
+                    Age = 3,
+                    Gender = Gender.Male,
+                    ImgUrl = ""
+                },
+                new Cat
+                {
+                    Name = "Luna",
+                    Breed = "Siamese",
+                    Age = 2,
+                    Gender = Gender.Female,
+                    ImgUrl = ""
+                },
+                new Cat
+                {
+                    Name = "Tiger",
+                    Breed = "Bengal",
+                    Age = 5,
+                    Gender = Gender.Male,
+                    ImgUrl = ""
+                }
+            };
+
+            foreach (var cat in cats)
+            {
+                await _db.InsertAsync(cat);
+            }
+
+            // 4) Create Mock Bookings (3 bookings with different customers, cats, and rooms)
+            // Date range: 15/05/2026 to 25/05/2026
+            var bookings = new List<Booking>
+            {
+                new Booking
+                {
+                    RoomId = rooms[0].Id, // Deluxe Suite
+                    CustomerId = customers[0].Id, // John Smith
+                    StartDate = new DateTime(2026, 5, 15),
+                    EndDate = new DateTime(2026, 5, 20),
+                    DiscountId = null,
+                    TotalPrice = 7500 // 5 nights * 1500
+                },
+                new Booking
+                {
+                    RoomId = rooms[1].Id, // Standard Room
+                    CustomerId = customers[1].Id, // Emily Johnson
+                    StartDate = new DateTime(2026, 5, 16),
+                    EndDate = new DateTime(2026, 5, 23),
+                    DiscountId = null,
+                    TotalPrice = 7000 // 7 nights * 1000
+                },
+                new Booking
+                {
+                    RoomId = rooms[2].Id, // Cozy Corner
+                    CustomerId = customers[2].Id, // Michael Chen
+                    StartDate = new DateTime(2026, 5, 18),
+                    EndDate = new DateTime(2026, 5, 25),
+                    DiscountId = null,
+                    TotalPrice = 4200 // 7 nights * 600
+                }
+            };
+
+            foreach (var booking in bookings)
+            {
+                await _db.InsertAsync(booking);
+            }
+
+            // 5) Link Cats to Bookings using BookingCat table
+            var bookingCatLinks = new List<BookingCat>
+            {
+                new BookingCat { BookingId = bookings[0].Id, CatId = cats[0].Id }, // John + Whiskers
+                new BookingCat { BookingId = bookings[1].Id, CatId = cats[1].Id }, // Emily + Luna
+                new BookingCat { BookingId = bookings[2].Id, CatId = cats[2].Id }  // Michael + Tiger
+            };
+
+            foreach (var link in bookingCatLinks)
+            {
+                await _db.InsertAsync(link);
+            }
+
+            System.Diagnostics.Debug.WriteLine("[SEED] Mock data created successfully!");
+            System.Diagnostics.Debug.WriteLine($"[SEED] Rooms: {await _db.Table<Room>().CountAsync()}");
+            System.Diagnostics.Debug.WriteLine($"[SEED] Customers: {await _db.Table<Customer>().CountAsync()}");
+            System.Diagnostics.Debug.WriteLine($"[SEED] Cats: {await _db.Table<Cat>().CountAsync()}");
+            System.Diagnostics.Debug.WriteLine($"[SEED] Bookings: {await _db.Table<Booking>().CountAsync()}");
+        }
     }
 }

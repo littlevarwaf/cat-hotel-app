@@ -2,63 +2,332 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CatHotel.Views.RoomDetailPage"
-             BackgroundColor="#FFF5F5">
+             BackgroundColor="{StaticResource Primary50}">
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*">
 
-        <Border Grid.Row="0" BackgroundColor="White" Padding="12"
-                StrokeThickness="0" Margin="0">
-            <Border.Shadow>
-                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
-            </Border.Shadow>
+        <!-- Header -->
+        <Border Grid.Row="0" BackgroundColor="Transparent" Padding="12" StrokeThickness="0" Margin="0">
             <Grid ColumnDefinitions="Auto,*,Auto">
-                <Button Grid.Column="0" ImageSource="chevron_left.svg" BackgroundColor="Transparent" TextColor="{StaticResource Neutral950}"
-                        FontSize="24" Padding="0" Clicked="OnBackClicked"/>
-                <StackLayout Grid.Column="1" HorizontalOptions="Center">
-                    <!-- BIND TO Room.Name -->
-                    <Label Text="{Binding Room.Name, StringFormat='{0} - Booking Details'}"
-                           FontSize="15" FontAttributes="Bold" TextColor="#212121"
+                <Button Grid.Column="0" 
+                        ImageSource="chevron_left.svg" 
+                        BackgroundColor="Transparent" 
+                        TextColor="{StaticResource Neutral950}"
+                        FontSize="24" Padding="0" 
+                        Clicked="OnBackClicked"/>
+
+                <StackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="8">
+                    <Label Text="{Binding Booking.Room.Name, StringFormat='{0} - Booking Details'}"
+                           FontSize="15" FontAttributes="Bold" 
+                           TextColor="{StaticResource Neutral950}"
                            HorizontalOptions="Center"/>
-                    <Border BackgroundColor="#FCE4EC" StrokeThickness="0"
-                            Padding="8,4" HorizontalOptions="Center">
+                    <Border BackgroundColor="{StaticResource Primary}" StrokeThickness="0" Padding="16,6" HorizontalOptions="Center">
                         <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="10"/>
+                            <RoundRectangle Stroke="{StaticResource Primary900}" CornerRadius="999"/>
                         </Border.StrokeShape>
-                        <!-- BIND TO Room.RoomType -->
-                        <Label Text="{Binding Room.RoomType, StringFormat='{0}'}" 
-                               TextColor="#E91E63" FontSize="12"/>
+                        <Label Text="{Binding DateRangeDisplay}"
+                               TextColor="{StaticResource Primary900}" FontSize="12" FontAttributes="Bold"/>
                     </Border>
                 </StackLayout>
-                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
+
+                <Image Grid.Column="2" 
+                       Source="app_icon.svg" 
+                       HeightRequest="32" WidthRequest="32"/>
             </Grid>
         </Border>
 
-        <ScrollView Grid.Row="1" Padding="12,8,8,128">
-            <StackLayout Spacing="12">
+        <!-- Main Content -->
+        <ScrollView Grid.Row="1" Padding="12,8,12,128">
+            <StackLayout Spacing="16">
 
-                <Border BackgroundColor="White" StrokeThickness="0" Padding="16">
+                <!-- Customer Details Section -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" StrokeThickness="0" Padding="16">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="12"/>
                     </Border.StrokeShape>
                     <Border.Shadow>
                         <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
                     </Border.Shadow>
-                    <StackLayout Spacing="8">
-                        <Label Text="Room Info" FontSize="15" FontAttributes="Bold" TextColor="#212121"/>
-                        <!-- BIND TO Room.BasePrice -->
-                        <Label Text="{Binding Room.BasePrice, StringFormat='Base Price: ฿{0:N0} / night'}" 
-                               FontSize="13" TextColor="#E91E63"/>
-                        <Label Text="(Customer &amp; Cat info will appear here)"
-                               FontSize="12" TextColor="#BDBDBD" FontAttributes="Italic"/>
+                    <StackLayout Spacing="12">
+                        <Label Text="Customer Details" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+
+                        <!-- Customer Card or Add Button -->
+                        <StackLayout Spacing="8">
+                            <Frame x:Name="CustomerFrame" 
+                                   Padding="12" CornerRadius="8" 
+                                   HasShadow="False" 
+                                   BorderColor="{StaticResource Neutral200}"
+                                   BackgroundColor="{StaticResource NeutralWhite}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding EditCustomerCommand}"/>
+                                </Frame.GestureRecognizers>
+                                <Grid ColumnDefinitions="128,*" ColumnSpacing="12" HorizontalOptions="Fill">
+                                    <!-- Customer Photo -->
+                                    <Frame Grid.Column="0" 
+                                           Padding="0"
+                                           CornerRadius="8" 
+                                           HasShadow="False"
+                                           WidthRequest="128"
+                                           HeightRequest="128">
+                                        <Image Source="{Binding Customer.ImgUrl}" Aspect="AspectFit" WidthRequest="128" HeightRequest="128" BackgroundColor="{StaticResource Neutral200}" />
+                                    </Frame>
+
+                                    <!-- Customer Info -->
+                                    <StackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center" HorizontalOptions="Fill">
+                                        <Label Text="{Binding Customer.Name}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+
+                                        <!-- Tel Row -->
+                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                            <Image Grid.Column="0" Source="phone_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                            <Label Grid.Column="1" Text="Tel" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                            <Label Grid.Column="3" Text="{Binding Customer.TelephoneNum}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="108" LineBreakMode="TailTruncation"/>
+                                        </Grid>
+
+                                        <!-- Email Row -->
+                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                            <Image Grid.Column="0" Source="mail_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                            <Label Grid.Column="1" Text="Email" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                            <Label Grid.Column="3" Text="{Binding Customer.Email}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="108" LineBreakMode="TailTruncation"/>
+                                        </Grid>
+
+                                        <!-- Line ID Row -->
+                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                            <Image Grid.Column="0" Source="chat_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                            <Label Grid.Column="1" Text="Line ID" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                            <Label Grid.Column="3" Text="{Binding Customer.LineId}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="108" LineBreakMode="TailTruncation"/>
+                                        </Grid>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </StackLayout>
                     </StackLayout>
                 </Border>
 
-                <Button Text="✓  Check Out and Pay"
-                        BackgroundColor="#E91E63" TextColor="White"
-                        CornerRadius="12" FontSize="16" HeightRequest="52"
-                        Margin="0,4,0,8" Clicked="OnCheckout"/>
+                <!-- Cat Details Section -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" StrokeThickness="0" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                    </Border.Shadow>
+                    <StackLayout Spacing="12">
+                        <Label Text="Cat Details" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+
+                        <!-- Cats List -->
+                        <StackLayout Spacing="12" BindableLayout.ItemsSource="{Binding Cats}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="{StaticResource NeutralWhite}"
+                                            StrokeThickness="1" 
+                                            Stroke="{StaticResource Neutral200}"
+                                            Padding="12" 
+                                            HorizontalOptions="FillAndExpand">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="12"/>
+                                        </Border.StrokeShape>
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                                        </Border.Shadow>
+                                        <StackLayout Spacing="8">
+                                            <!-- Cat Card Content -->
+                                            <Grid ColumnDefinitions="128,*" ColumnSpacing="12" HorizontalOptions="Fill">
+                                                <!-- Cat Photo -->
+                                                <Frame Grid.Column="0" 
+                                                       Padding="0"
+                                                       CornerRadius="8" 
+                                                       HasShadow="False"
+                                                       WidthRequest="128"
+                                                       HeightRequest="128"
+                                                       BackgroundColor="{StaticResource Neutral200}">
+                                                    <Image Source="{Binding ImgUrl}" Aspect="AspectFill" WidthRequest="128" HeightRequest="128" />
+                                                </Frame>
+
+                                                <!-- Cat Info -->
+                                                <StackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                    <Label Text="{Binding Name}" 
+                                                           FontSize="16" 
+                                                           FontAttributes="Bold" 
+                                                           TextColor="{StaticResource Neutral950}"/>
+
+                                                    <!-- Age Row -->
+                                                    <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                        <Image Grid.Column="0" Source="calendar_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                                        <Label Grid.Column="1" Text="Age" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                                        <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                                        <Label Grid.Column="3" Text="{Binding Age, StringFormat='{0} years'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center"/>
+                                                    </Grid>
+
+                                                    <!-- Gender Row -->
+                                                    <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                        <Image Grid.Column="0" Source="heart_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                                        <Label Grid.Column="1" Text="Gender" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                                        <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                                        <Label Grid.Column="3" Text="{Binding Gender}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center"/>
+                                                    </Grid>
+
+                                                    <!-- Breed Row -->
+                                                    <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                        <Image Grid.Column="0" Source="star_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                                        <Label Grid.Column="1" Text="Breed" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                                        <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                                        <Label Grid.Column="3" Text="{Binding Breed}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="108" LineBreakMode="TailTruncation"/>
+                                                    </Grid>
+                                                </StackLayout>
+                                            </Grid>
+
+                                            <!-- Action Buttons Row -->
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                                <!-- Edit Button -->
+                                                <Border Grid.Column="0" 
+                                                        StrokeThickness="1" 
+                                                        Stroke="{StaticResource Primary100}"
+                                                        BackgroundColor="{StaticResource NeutralWhite}" 
+                                                        Padding="0,8"
+                                                        HorizontalOptions="Fill">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="8"/>
+                                                    </Border.StrokeShape>
+                                                    <Label Text="Edit" 
+                                                           FontSize="12"
+                                                           TextColor="{StaticResource Primary700}" 
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center"/>
+                                                    <Border.GestureRecognizers>
+                                                        <TapGestureRecognizer 
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.EditCatCommand}" 
+                                                            CommandParameter="{Binding .}"/>
+                                                    </Border.GestureRecognizers>
+                                                </Border>
+
+                                                <!-- Remove Button -->
+                                                <Border Grid.Column="1" 
+                                                        StrokeThickness="1" 
+                                                        Stroke="{StaticResource Neutral200}"
+                                                        BackgroundColor="{StaticResource Neutral100}" 
+                                                        Padding="0,8"
+                                                        WidthRequest="80">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="8"/>
+                                                    </Border.StrokeShape>
+                                                    <Label Text="Remove" 
+                                                           FontSize="12"
+                                                           TextColor="{StaticResource Neutral600}" 
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center"/>
+                                                    <Border.GestureRecognizers>
+                                                        <TapGestureRecognizer 
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.RemoveCatCommand}" 
+                                                            CommandParameter="{Binding .}"/>
+                                                    </Border.GestureRecognizers>
+                                                </Border>
+                                            </Grid>
+                                        </StackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+
+                        <!-- Add More Cats Button -->
+                        <Button x:Name="AddMoreCatsButton"
+                                Text="+ Add More Cats"
+                                BackgroundColor="{StaticResource Primary50}"
+                                TextColor="{StaticResource Primary700}"
+                                CornerRadius="8"
+                                FontSize="14"
+                                HeightRequest="48"
+                                Command="{Binding AddMoreCatsCommand}"
+                                IsVisible="{Binding CanAddMoreCats}"/>
+                    </StackLayout>
+                </Border>
+
+                <!-- Booking Charges & Payments Section -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" StrokeThickness="0" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                    </Border.Shadow>
+                    <StackLayout Spacing="12">
+                        <Label Text="Booking Charges &amp; Payments" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+
+                        <!-- Pre-paid Items (Room Charge) -->
+                        <StackLayout Spacing="8">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackLayout Grid.Column="0" Spacing="2">
+                                    <Label Text="⭕ Pre-paid Items" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                                    <Label Text="{Binding Booking.Room.Name, StringFormat='{0} room charge'}" 
+                                           FontSize="12" TextColor="{StaticResource Neutral600}"/>
+                                </StackLayout>
+                                <Label Grid.Column="1" 
+                                       Text="{Binding Booking.TotalPrice, StringFormat='฿ {0:N0}'}" 
+                                       FontSize="13" FontAttributes="Bold" TextColor="{StaticResource Primary700}"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+                        </StackLayout>
+
+                        <!-- Shop Items -->
+                        <StackLayout Spacing="8">
+                            <Label Text="🏷️ Added from Shop" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            <StackLayout BindableLayout.ItemsSource="{Binding BookingItems}" Spacing="6">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label Grid.Column="0" 
+                                                   Text="{Binding ItemId, StringFormat='Item #{0} (x{1})', ConverterParameter=Quantity}" 
+                                                   FontSize="12" TextColor="{StaticResource Neutral600}"/>
+                                            <Label Grid.Column="1" 
+                                                   Text="{Binding UnitPrice, StringFormat='฿ {0:N0}'}" 
+                                                   FontSize="12" TextColor="{StaticResource Neutral600}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
+
+                            <!-- Empty State -->
+                            <Label Text="No items added from shop" 
+                                   FontSize="12" TextColor="{StaticResource Neutral400}"
+                                   FontAttributes="Italic"
+                                   IsVisible="{Binding BookingItems.Count, Converter={StaticResource IsZeroConverter}}"/>
+                        </StackLayout>
+
+                        <!-- Total -->
+                        <Border BackgroundColor="{StaticResource Primary50}" StrokeThickness="0" Padding="12,8">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8"/>
+                            </Border.StrokeShape>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" 
+                                       Text="Total" 
+                                       FontSize="15" FontAttributes="Bold" 
+                                       TextColor="{StaticResource Neutral950}"
+                                       VerticalOptions="Center"/>
+                                <Label Grid.Column="1" 
+                                       Text="{Binding TotalPrice, StringFormat='฿{0:N0}'}" 
+                                       FontSize="18" FontAttributes="Bold" 
+                                       TextColor="{StaticResource Primary700}"/>
+                            </Grid>
+                        </Border>
+                    </StackLayout>
+                </Border>
+
+        <!-- Checkout Button -->
+                <Border BackgroundColor="Transparent" StrokeThickness="0" Padding="12,8">
+                    <Button Text="✓ Check Out and Pay"
+                            BackgroundColor="{StaticResource Primary500}" 
+                            TextColor="{StaticResource NeutralWhite}"
+                            CornerRadius="38" 
+                            FontSize="16" 
+                            HeightRequest="64"
+                            Command="{Binding CheckoutCommand}"/>
+        </Border>
             </StackLayout>
         </ScrollView>
+
 
     </Grid>
 </ContentView>

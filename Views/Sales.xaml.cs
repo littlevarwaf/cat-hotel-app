@@ -27,7 +27,7 @@ public partial class Sales : ContentView
         UpdateMonthDisplay();
 
         RoomMonthPicker.ItemsSource = new List<string>
-        {   
+        {
             "January","February","March","April","May","June",
             "July","August","September","October","November","December"
         };
@@ -62,24 +62,31 @@ public partial class Sales : ContentView
         var culture = new CultureInfo("en-US");
         var data = await App.Database.GetMonthlySalesLast7MonthsAsync();
 
-        var entries = data.Select((x, idx) =>
-        {
-            var label = x.Month.ToString("MMM", culture);
-            var value = (float)x.Total;
-            var color = (idx == data.Count - 1) ? SKColor.Parse("#FF6B6B") : SKColor.Parse("#4ECDC4");
+        var entries = new List<ChartEntry>();
 
-            return new ChartEntry(value)
+        foreach (var item in data)
+        {
+            var label = item.Month.ToString("MMM", culture);
+
+            entries.Add(new ChartEntry((float)item.Income)
             {
-                Label = label,
-                ValueLabel = x.Total.ToString("0"),
-                Color = color
-            };
-        }).ToList();
+                Label = label + "\nรายรับ",
+                ValueLabel = item.Income.ToString("0"),
+                Color = SKColor.Parse("#4caf50")
+            });
+
+            entries.Add(new ChartEntry((float)item.Expense)
+            {
+                Label = label + "\nรายจ่าย",
+                ValueLabel = item.Expense.ToString("0"),
+                Color = SKColor.Parse("#f44336")
+            });
+        }
 
         Income7MonthsChart.Chart = new BarChart
         {
             Entries = entries,
-            LabelTextSize = 28,
+            LabelTextSize = 20,
             ValueLabelOrientation = Orientation.Horizontal,
             LabelOrientation = Orientation.Horizontal,
             BackgroundColor = SKColors.White,
@@ -206,7 +213,7 @@ public partial class Sales : ContentView
         var (large, medium, small) =
             await App.Database.GetRoomUsageCountByTypeAsync(DateTime.Now.Year, RoomMonthPicker.SelectedIndex + 1);
 
-        SetRoomUsageChart(large, medium, small); 
+        SetRoomUsageChart(large, medium, small);
     }
 
     //กราฟ 3

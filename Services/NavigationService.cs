@@ -3,6 +3,7 @@ using CatHotel.Views.ShopSettingViews;
 using CatHotel.Views.RoomSettingViews;
 using CatHotel.Views.DiscountSettingViews;
 using CatHotel.Views.OutcomeSettingViews;
+using CatHotel.Views.CustomerViews;
 
 namespace CatHotel.Services;
 
@@ -13,10 +14,13 @@ public static class NavigationService
     public const string ShopSettingsWrapperPage = "ShopSettingsWrapperPage";
     public const string DiscountSettingsWrapperPage = "DiscountSettingsWrapperPage";
     public const string OutcomeSettingsWrapperPage = "OutcomeSettingsWrapperPage";
+    public const string CustomerWrapperPage = "CustomerWrapperPage";
+    public const string CatWrapperPage = "CatWrapperPage";
     public const string CartPage = "CartPage";
     public const string SettingsMenuPage = "SettingsMenuPage";
     public const string ShopItemEditPage = "ShopItemEditPage";
     public const string RoomEditPage = "RoomEditPage";
+    public const string CustomerEditPage = "CustomerEditPage";
 
     // outcome / outcome history
     public const string OutcomePage = "OutcomePage";
@@ -62,15 +66,17 @@ public static class NavigationService
             nameof(ShopSettingsWrapperPage) => new ShopSettingsWrapperPage(),
             nameof(DiscountSettingsWrapperPage) => new DiscountSettingsWrapperPage(),
             nameof(OutcomeSettingsWrapperPage) => new OutcomeSettingsWrapperPage(),
+            nameof(CustomerWrapperPage) => new CustomerWrapperPage(), // Placeholder
+            nameof(CatWrapperPage) => new CatWrapperPage(), // Placeholder
             nameof(ShopItemEditPage) => new ShopItemEditPage(),
             nameof(RoomEditPage) => new RoomEditPage(),
-            nameof(DiscountEditPage) => new DiscountEditPage(),
+            nameof(CustomerEditPage) => new CustomerEditPage(),
             _ => null
         };
     }
 }
 
-public interface INavigationAware       
+public interface INavigationAware
 {
     void OnNavigatedTo(IDictionary<string, object> parameters);
 }

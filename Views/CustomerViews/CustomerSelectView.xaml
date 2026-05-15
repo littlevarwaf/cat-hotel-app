@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.CustomerViews.CustomerSelectView"
+             BackgroundColor="{StaticResource Primary50}">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- Customers List -->
+        <CollectionView x:Name="CustomersCollectionView"
+                           ItemsSource="{Binding Customers}"
+                           SelectionMode="Single"
+                           SelectionChanged="OnCustomerSelected"
+                           Margin="16,12,16,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="{StaticResource NeutralWhite}"
+                            StrokeThickness="1" 
+                            Stroke="{StaticResource Neutral200}"
+                            Padding="12" 
+                            Margin="0,0,0,12"
+                            HorizontalOptions="FillAndExpand">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                        </Border.Shadow>
+                        <Grid ColumnDefinitions="128,*" ColumnSpacing="12" HorizontalOptions="Fill">
+                            <!-- Customer Photo -->
+                            <Frame Grid.Column="0" 
+                                   Padding="0"
+                                   CornerRadius="8" 
+                                   HasShadow="False"
+                                   WidthRequest="128"
+                                   HeightRequest="148">
+                                <Image Source="{Binding ImgUrl}" Aspect="AspectFit" WidthRequest="128" HeightRequest="128" BackgroundColor="{StaticResource Neutral200}" />
+                            </Frame>
+
+                            <!-- Customer Info -->
+                            <StackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center" HorizontalOptions="Fill">
+                                <Label Text="{Binding Name}" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{StaticResource Neutral950}"/>
+
+                                <!-- Tel Row -->
+                                <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                    <Image Grid.Column="0" Source="phone_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="Tel" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                    <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                    <Label Grid.Column="3" Text="{Binding TelephoneNum}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="148" LineBreakMode="TailTruncation"/>
+                                </Grid>
+
+                                <!-- Email Row -->
+                                <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                    <Image Grid.Column="0" Source="mail_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="Email" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                    <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                    <Label Grid.Column="3" Text="{Binding Email}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="148" LineBreakMode="TailTruncation"/>
+                                </Grid>
+
+                                <!-- Line ID Row -->
+                                <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                    <Image Grid.Column="0" Source="chat_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="Line ID" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                    <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                    <Label Grid.Column="3" Text="{Binding LineId}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="148" LineBreakMode="TailTruncation"/>
+                                </Grid>
+                                <Frame
+                                    HorizontalOptions="EndAndExpand"
+                                    Padding="0"
+                                    HasShadow="False">
+                                    <Button
+                                        WidthRequest="16"
+                                        HeightRequest="16"
+                                        CornerRadius="35"
+                                        BackgroundColor="{StaticResource Primary}"
+                                        FontSize="1"
+                                        ImageSource="edit_pencil_icon.svg"
+                                        BindingContext="{Binding .}"
+                                        Clicked="OnEditButtonClicked">
+                                    </Button>
+                                </Frame>
+                            </StackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <!-- Empty State -->
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Spacing="12" 
+                                        Padding="12" 
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Center">
+                    <Label Text="No Customers Found" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               TextColor="{StaticResource Neutral600}"
+                               HorizontalTextAlignment="Center"/>
+                    <Label Text="Add a new customer to get started" 
+                               FontSize="12" 
+                               TextColor="{StaticResource Neutral400}"
+                               HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <!-- Footer spacing -->
+            <CollectionView.Footer>
+                <BoxView HeightRequest="80" BackgroundColor="Transparent" />
+            </CollectionView.Footer>
+        </CollectionView>
+
+        <!-- Gradient overlay behind search bar -->
+        <BoxView Grid.Row="0" ZIndex="0" VerticalOptions="End" HeightRequest="96">
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="{StaticResource Primary50}" Offset="1" />
+                    <GradientStop Color="#00FFF7EF" Offset="0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <!-- Floating Search Bar -->
+        <Border Grid.Row="0" 
+                ZIndex="1"
+                Style="{StaticResource RoundedInputContainerStyle}"
+                Margin="16,0,16,16" 
+                Padding="12,0,12,0"
+                VerticalOptions="End"
+                HeightRequest="56">
+            <Grid ColumnDefinitions="Auto,*">
+                <Image Grid.Column="0" Source="search_icon.svg" HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
+                <Border Grid.Column="1" BackgroundColor="Transparent" Stroke="Transparent">
+                    <Entry x:Name="SearchEntry" 
+                           Style="{StaticResource RoundedEntryStyle}"
+                           Placeholder="Search by name or email..." 
+                           TextChanged="OnSearchTextChanged" />
+                </Border>
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentView>

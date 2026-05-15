@@ -13,6 +13,7 @@ public class Customer
     public string TelephoneNum { get; set; }
     [NotNull]
     public string Email { get; set; }
+    public string LineId { get; set; }
     [NotNull]
     public string ImgUrl { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -22,11 +23,12 @@ public class Customer
     {
     }
 
-    public Customer(string name, string telephoneNum, string email, string imgUrl)
+    public Customer(string name, string telephoneNum, string email, string lineid, string imgUrl)
     {
         Name = name;
         TelephoneNum = telephoneNum;
         Email = email;
+        LineId = lineid;
         ImgUrl = imgUrl;
         CreatedAt = DateTime.Now;
     }

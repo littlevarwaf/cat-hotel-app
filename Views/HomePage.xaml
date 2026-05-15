@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:CatHotel.Views"
              xmlns:conv="clr-namespace:CatHotel.Converters"
-             x:Class="CatHotel.Views.HomePage"
-             BackgroundColor="#FFF5F5">
+             x:Class="CatHotel.Views.HomePage">
 
     <ContentView.Resources>
         <conv:RoomStatusToColorConverter x:Key="StatusToColorConverter" />
@@ -23,11 +22,11 @@
                 <Label Text="Welcome!" FontSize="22" FontAttributes="Bold"
                        TextColor="#212121" VerticalOptions="Center"/>
                 <Button x:Name="EditButton" Grid.Column="1"
-                        Text="✏️" BackgroundColor="Transparent"
+                        ImageSource="edit_pencil_icon.svg" BackgroundColor="Transparent"
                         FontSize="20" Padding="4,0"
                         Clicked="OnEditClicked"
                         IsVisible="False"/>
-                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
+                <Image Grid.Column="2" Source="app_icon.svg" BackgroundColor="Transparent" HeightRequest="32" WidthRequest="32"/>
             </Grid>
         </Border>
 

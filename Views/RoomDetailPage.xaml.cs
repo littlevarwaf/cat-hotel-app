@@ -1,12 +1,10 @@
 using CatHotel.Services;
-using System.ComponentModel;
 
 namespace CatHotel.Views;
 
 public partial class RoomDetailPage : ContentView
 {
     private bool _isInitialized = false;
-    private readonly CartService _cart = CartService.Instance;
 
     public RoomDetailPage()
     {
@@ -18,13 +16,16 @@ public partial class RoomDetailPage : ContentView
     {
         if (_isInitialized) return;
         _isInitialized = true;
+
+        System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Loaded. BindingContext type: {this.BindingContext?.GetType().Name ?? "NULL"}");
+        if (this.BindingContext != null)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Booking: {((dynamic)this.BindingContext).Booking}");
+            System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Room: {((dynamic)this.BindingContext).Room}");
+            System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] DateRangeDisplay: {((dynamic)this.BindingContext).DateRangeDisplay}");
+        }
     }
 
     private async void OnBackClicked(object? sender, EventArgs e)
         => await NavigationService.GoBackAsync();
-
-    private async void OnCheckout(object? sender, EventArgs e)
-    {
-        await NavigationService.GoBackAsync();
-    }
 }

@@ -12,7 +12,7 @@
 
         <tabs:ViewSwitcher Grid.Row="0" Padding="0,0,0,0"
                            SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
-            <views:RoomDetailPage />
+            <views:RoomDetailPage x:Name="RoomDetailPageInstance" />
             <views:ShopPage />
         </tabs:ViewSwitcher>
 
