@@ -221,4 +221,19 @@ public partial class CalendarPage : ContentView
         RefreshCalendar();
         _ = LoadAvailableRoomsAsync();
     }
+
+    private async void OnRoomTapped(object? sender, TappedEventArgs e)
+    {
+        if (e.Parameter is not RoomViewModel vm)
+            return;
+
+        var checkIn = _selectedDate ?? DateTime.Today;
+        await NavigationService.GoToAsync(
+            NavigationService.BookingPage,
+            new Dictionary<string, object>
+            {
+                ["roomId"] = vm.Room.Id,
+                ["checkIn"] = checkIn
+            });
+    }
 }

@@ -3,6 +3,8 @@ using CatHotel.Views.ShopSettingViews;
 using CatHotel.Views.RoomSettingViews;
 using CatHotel.Views.DiscountSettingViews;
 using CatHotel.Views.OutcomeSettingViews;
+using CatHotel.Views.CustomerViews;
+using CatHotel.Views.CatViews;
 
 namespace CatHotel.Services;
 
@@ -17,6 +19,11 @@ public static class NavigationService
     public const string SettingsMenuPage = "SettingsMenuPage";
     public const string ShopItemEditPage = "ShopItemEditPage";
     public const string RoomEditPage = "RoomEditPage";
+    public const string BookingPage = "BookingPage";
+    public const string CustomerPickerWrapperPage = "CustomerPickerWrapperPage";
+    public const string CustomerEditPage = "CustomerEditPage";
+    public const string CatPickerWrapperPage = "CatPickerWrapperPage";
+    public const string CatEditPage = "CatEditPage";
 
     // outcome / outcome history
     public const string OutcomePage = "OutcomePage";
@@ -65,6 +72,11 @@ public static class NavigationService
             nameof(ShopItemEditPage) => new ShopItemEditPage(),
             nameof(RoomEditPage) => new RoomEditPage(),
             nameof(DiscountEditPage) => new DiscountEditPage(),
+            nameof(BookingPage) => new BookingPage(),
+            nameof(CustomerPickerWrapperPage) => new CustomerPickerWrapperPage(),
+            nameof(CustomerEditPage) => new CustomerEditPage(),
+            nameof(CatPickerWrapperPage) => new CatPickerWrapperPage(),
+            nameof(CatEditPage) => new CatEditPage(),
             _ => null
         };
     }

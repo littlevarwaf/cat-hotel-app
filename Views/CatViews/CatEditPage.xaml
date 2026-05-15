@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.CatViews.CatEditPage"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False">
+    <ContentPage.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentPage.Background>
+
+    <Grid RowDefinitions="Auto,*">
+        <Border Grid.Row="0" Padding="16,0,32,0" MinimumHeightRequest="56" StrokeThickness="0">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Button Grid.Column="0" ImageSource="chevron_left.svg" BackgroundColor="Transparent"
+                        Clicked="OnBackClicked"/>
+                <Label Grid.Column="1" Text="แก้ไขแมว" FontSize="18" FontAttributes="Bold"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="16">
+                <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="16">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="ชื่อแมว" FontAttributes="Bold"/>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="NameEntry" Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="พันธุ์" FontAttributes="Bold"/>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="BreedEntry" Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="อายุ" FontAttributes="Bold"/>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="AgeEntry" Keyboard="Numeric" Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+                <Button Text="บันทึก" BackgroundColor="#E91E63" TextColor="White"
+                        CornerRadius="12" HeightRequest="52" Clicked="OnSaveClicked"/>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

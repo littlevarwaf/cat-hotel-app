@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:CatHotel.Views.Controls"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             x:Class="CatHotel.Views.BookingPage">
+    <ContentPage.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentPage.Background>
+
+    <Grid RowDefinitions="Auto,*">
+        <Border Grid.Row="0" Padding="12" BackgroundColor="White" StrokeThickness="0">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
+            </Border.Shadow>
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Button Grid.Column="0" ImageSource="chevron_left.svg" BackgroundColor="Transparent"
+                        Clicked="OnBackClicked"/>
+                <StackLayout Grid.Column="1" HorizontalOptions="Center">
+                    <Label x:Name="RoomTitleLabel" Text="จองห้อง" FontSize="15" FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+                    <Label x:Name="RoomTypeLabel" TextColor="#E91E63" FontSize="12" HorizontalOptions="Center"/>
+                </StackLayout>
+                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="32" WidthRequest="32"/>
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1" Padding="12,8,12,24">
+            <VerticalStackLayout Spacing="12">
+
+                <Border BackgroundColor="White" Padding="16" StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="ลูกค้า" FontSize="15" FontAttributes="Bold"/>
+                        <Label x:Name="CustomerSummaryLabel" FontSize="13" TextColor="#757575"/>
+                        <Button Text="เลือก / เพิ่มลูกค้า" BackgroundColor="#FCE4EC" TextColor="#E91E63"
+                                CornerRadius="10" Clicked="OnPickCustomerClicked"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Padding="16" StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="แมว" FontSize="15" FontAttributes="Bold"/>
+                        <Label x:Name="CatsSummaryLabel" FontSize="13" TextColor="#757575"/>
+                        <Button Text="เลือก / เพิ่มแมว" BackgroundColor="#FCE4EC" TextColor="#E91E63"
+                                CornerRadius="10" Clicked="OnPickCatsClicked"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Padding="16" StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="วันเวลาเข้าพัก" FontSize="15" FontAttributes="Bold"/>
+                        <controls:DateTimePickerField x:Name="FromDateField" Title="FromDate (เช็คอิน)"/>
+                        <controls:DateTimePickerField x:Name="ToDateField" Title="ToDate (เช็คเอาท์)"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button Text="ยืนยันการจอง" BackgroundColor="#E91E63" TextColor="White"
+                        CornerRadius="12" FontSize="16" HeightRequest="52"
+                        Clicked="OnConfirmBookingClicked"/>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

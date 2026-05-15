@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.CatViews.CatSelectView">
+    <ContentView.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentView.Background>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Label Grid.Row="0" x:Name="HintLabel" Margin="16,8"
+               Text="เลือกแมวของลูกค้า (แตะเพื่อเลือก/ยกเลิก)"
+               FontSize="13" TextColor="#757575"/>
+
+        <CollectionView Grid.Row="1" x:Name="CatsCollection" Margin="16,0,16,8">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border x:Name="ItemBorder" BackgroundColor="{StaticResource NeutralWhite}"
+                            Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                            Margin="0,0,0,10" Padding="14">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12"/>
+                        </Border.StrokeShape>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding Name}" FontSize="15" FontAttributes="Bold"/>
+                                <Label Text="{Binding Breed}" FontSize="12" TextColor="#757575"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1" x:Name="CheckMark" Text="○" FontSize="20"
+                                   TextColor="#E91E63" VerticalOptions="Center"/>
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCatTapped" CommandParameter="{Binding .}"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="2" Text="ยืนยันการเลือกแมว" Margin="16,0,16,16"
+                BackgroundColor="#E91E63" TextColor="White" CornerRadius="12"
+                HeightRequest="48" Clicked="OnConfirmClicked"/>
+    </Grid>
+</ContentView>

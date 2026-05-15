@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tabs="http://sharpnado.com"
+             xmlns:cviews="clr-namespace:CatHotel.Views.CustomerViews"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             x:Class="CatHotel.Views.CustomerPickerWrapperPage">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+        <Border Grid.Row="0" Padding="16,0,32,0" MinimumHeightRequest="56" StrokeThickness="0">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Button Grid.Column="0" ImageSource="chevron_left.svg" BackgroundColor="Transparent"
+                        Clicked="OnBackClicked"/>
+                <Label Grid.Column="1" Text="เลือกลูกค้า" FontSize="18" FontAttributes="Bold"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Image Grid.Column="2" Source="app_icon.svg" HeightRequest="28" WidthRequest="28"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Padding="16,12" HeightRequest="64" StrokeThickness="0">
+            <tabs:TabHostView x:Name="TabHost"
+                              SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
+                              TabType="Fixed" CornerRadius="30">
+                <tabs:SegmentedTabItem Label="เลือกลูกค้า"
+                                       UnselectedLabelColor="{StaticResource Primary900}"
+                                       SelectedLabelColor="{StaticResource Primary900}"
+                                       SelectedTabColor="{StaticResource Primary}"/>
+                <tabs:SegmentedTabItem Label="เพิ่มลูกค้า"
+                                       UnselectedLabelColor="{StaticResource Primary900}"
+                                       SelectedLabelColor="{StaticResource Primary900}"
+                                       SelectedTabColor="{StaticResource Primary}"/>
+            </tabs:TabHostView>
+        </Border>
+
+        <tabs:ViewSwitcher Grid.Row="2"
+                           SelectedIndex="{Binding Source={x:Reference TabHost}, Path=SelectedIndex}">
+            <cviews:CustomerSelectView x:Name="CustomerSelect"/>
+            <cviews:CustomerAddView />
+        </tabs:ViewSwitcher>
+    </Grid>
+</ContentPage>

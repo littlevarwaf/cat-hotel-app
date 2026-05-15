@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.CustomerViews.CustomerAddView">
+    <ContentView.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentView.Background>
+
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16,16,16,120" Spacing="0">
+                <Label Text="ข้อมูลลูกค้า" FontSize="16" FontAttributes="Bold" TextColor="#1A1A1A" Margin="0,0,0,12"/>
+                <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" StrokeThickness="1" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="20">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="ชื่อ" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="NameEntry" Placeholder="ชื่อลูกค้า" Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="เบอร์โทร" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="PhoneEntry" Placeholder="0999999999" Keyboard="Telephone" Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="อีเมล" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="EmailEntry" Placeholder="email@example.com" Keyboard="Email" Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Border Grid.Row="0" ZIndex="1" Margin="30,0,30,40" HeightRequest="64"
+                BackgroundColor="{StaticResource Primary500}" StrokeThickness="0" VerticalOptions="End">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="28"/>
+            </Border.StrokeShape>
+            <Label Text="บันทึกลูกค้า" TextColor="White" FontSize="16" FontAttributes="Bold"
+                   HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnSaveTapped"/>
+            </Border.GestureRecognizers>
+        </Border>
+    </Grid>
+</ContentView>

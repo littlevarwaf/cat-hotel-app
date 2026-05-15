@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.CustomerViews.CustomerSelectView">
+    <ContentView.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentView.Background>
+
+    <Grid RowDefinitions="Auto,*">
+        <Border Grid.Row="0" Margin="16,8" Style="{StaticResource RoundedInputContainerStyle}">
+            <SearchBar x:Name="SearchEntry"
+                       Placeholder="ค้นหาชื่อ / เบอร์ / อีเมล"
+                       TextChanged="OnSearchTextChanged"/>
+        </Border>
+
+        <CollectionView Grid.Row="1" x:Name="CustomersCollection" Margin="16,0,16,16">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="{StaticResource NeutralWhite}"
+                            Stroke="{StaticResource Primary100}" StrokeThickness="1"
+                            Margin="0,0,0,10" Padding="14">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12"/>
+                        </Border.StrokeShape>
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="{Binding Name}" FontSize="15" FontAttributes="Bold" TextColor="#212121"/>
+                                <Label Text="{Binding TelephoneNum}" FontSize="12" TextColor="#757575"/>
+                                <Label Text="{Binding Email}" FontSize="11" TextColor="#9E9E9E"/>
+                            </VerticalStackLayout>
+                            <Button Grid.Column="1" Text="แก้ไข" FontSize="12"
+                                    BackgroundColor="Transparent" TextColor="#E91E63"
+                                    VerticalOptions="Center"
+                                    Clicked="OnEditClicked"
+                                    CommandParameter="{Binding .}"/>
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCustomerTapped" CommandParameter="{Binding .}"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentView>

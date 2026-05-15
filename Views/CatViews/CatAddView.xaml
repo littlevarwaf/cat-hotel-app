@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.CatViews.CatAddView">
+    <ContentView.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentView.Background>
+
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16,16,16,120" Spacing="0">
+                <Label Text="ข้อมูลแมว" FontSize="16" FontAttributes="Bold" Margin="0,0,0,12"/>
+                <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="20">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="ชื่อแมว" FontAttributes="Bold"/>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="NameEntry" Placeholder="ชื่อแมว" Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="พันธุ์" FontAttributes="Bold"/>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="BreedEntry" Placeholder="พันธุ์" Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="อายุ (ปี)" FontAttributes="Bold"/>
+                            <Border Style="{StaticResource RoundedInputContainerStyle}">
+                                <Entry x:Name="AgeEntry" Placeholder="1" Keyboard="Numeric" Style="{StaticResource RoundedEntryStyle}"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="เพศ" FontAttributes="Bold"/>
+                            <Border Style="{StaticResource RoundedPickerContainerStyle}">
+                                <Picker x:Name="GenderPicker" Title="เลือกเพศ" Style="{StaticResource RoundedPickerStyle}">
+                                    <Picker.Items>
+                                        <x:String>Unknown</x:String>
+                                        <x:String>Male</x:String>
+                                        <x:String>Female</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Border Grid.Row="0" ZIndex="1" Margin="30,0,30,40" HeightRequest="64"
+                BackgroundColor="{StaticResource Primary500}" StrokeThickness="0" VerticalOptions="End">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="28"/>
+            </Border.StrokeShape>
+            <Label Text="บันทึกแมว" TextColor="White" FontSize="16" FontAttributes="Bold"
+                   HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnSaveTapped"/>
+            </Border.GestureRecognizers>
+        </Border>
+    </Grid>
+</ContentView>

@@ -8,6 +8,9 @@ public class Cat
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
 
+    [Indexed]
+    public int CustomerId { get; set; }
+
     [NotNull]
     public string Name { get; set; }
 

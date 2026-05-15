@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:CatHotel.Views.Controls"
              x:Class="CatHotel.Views.RoomDetailPage"
              BackgroundColor="#FFF5F5">
 
@@ -15,7 +16,6 @@
                 <Button Grid.Column="0" ImageSource="chevron_left.svg" BackgroundColor="Transparent" TextColor="{StaticResource Neutral950}"
                         FontSize="24" Padding="0" Clicked="OnBackClicked"/>
                 <StackLayout Grid.Column="1" HorizontalOptions="Center">
-                    <!-- BIND TO Room.Name -->
                     <Label Text="{Binding Room.Name, StringFormat='{0} - Booking Details'}"
                            FontSize="15" FontAttributes="Bold" TextColor="#212121"
                            HorizontalOptions="Center"/>
@@ -24,7 +24,6 @@
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="10"/>
                         </Border.StrokeShape>
-                        <!-- BIND TO Room.RoomType -->
                         <Label Text="{Binding Room.RoomType, StringFormat='{0}'}" 
                                TextColor="#E91E63" FontSize="12"/>
                     </Border>
@@ -45,11 +44,43 @@
                     </Border.Shadow>
                     <StackLayout Spacing="8">
                         <Label Text="Room Info" FontSize="15" FontAttributes="Bold" TextColor="#212121"/>
-                        <!-- BIND TO Room.BasePrice -->
                         <Label Text="{Binding Room.BasePrice, StringFormat='Base Price: ฿{0:N0} / night'}" 
                                FontSize="13" TextColor="#E91E63"/>
-                        <Label Text="(Customer &amp; Cat info will appear here)"
-                               FontSize="12" TextColor="#BDBDBD" FontAttributes="Italic"/>
+                    </StackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" StrokeThickness="0" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <StackLayout Spacing="10">
+                        <Label Text="ลูกค้า" FontSize="15" FontAttributes="Bold"/>
+                        <Label x:Name="CustomerSummaryLabel" FontSize="13" TextColor="#757575"/>
+                        <Button Text="เลือก / เพิ่มลูกค้า" BackgroundColor="#FCE4EC" TextColor="#E91E63"
+                                CornerRadius="10" Clicked="OnPickCustomerClicked"/>
+                    </StackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" StrokeThickness="0" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <StackLayout Spacing="10">
+                        <Label Text="แมว" FontSize="15" FontAttributes="Bold"/>
+                        <Label x:Name="CatsSummaryLabel" FontSize="13" TextColor="#757575"/>
+                        <Button Text="เลือก / เพิ่มแมว" BackgroundColor="#FCE4EC" TextColor="#E91E63"
+                                CornerRadius="10" Clicked="OnPickCatsClicked"/>
+                    </StackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" StrokeThickness="0" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <StackLayout Spacing="12">
+                        <Label Text="วันเวลาเข้าพัก" FontSize="15" FontAttributes="Bold"/>
+                        <controls:DateTimePickerField x:Name="FromDateField" Title="FromDate (เช็คอิน)"/>
+                        <controls:DateTimePickerField x:Name="ToDateField" Title="ToDate (เช็คเอาท์)"/>
                     </StackLayout>
                 </Border>
 

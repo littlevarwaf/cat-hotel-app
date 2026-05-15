@@ -118,6 +118,13 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
             try
             {
                 Room = await _roomRepo.GetRoomByIdAsync(roomId);
+                if (Room != null)
+                {
+                    var checkIn = parameters.TryGetValue("checkIn", out var d) && d is DateTime dt
+                        ? dt
+                        : (DateTime?)null;
+                    BookingDraftService.Instance.ResetForRoom(roomId, checkIn);
+                }
                 System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Room loaded: {Room?.Name ?? "NULL"}");
             }
             catch (Exception ex)

@@ -91,5 +91,7 @@ public class RoomViewModel
     public string? ImgUrl => Room.ImgUrl;
     public RoomStatus Status => Room.Status;
     public RoomTypes RoomType => Room.RoomType;
+    public string RoomTypeDisplay => Room.RoomType.ToString();
     public double BasePrice => Room.BasePrice;
+    public int Id => Room.Id;
 }

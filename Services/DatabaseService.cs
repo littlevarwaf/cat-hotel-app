@@ -39,9 +39,11 @@ namespace CatHotel.Services
                 await _db.CreateTableAsync<Discount>();
                 await _db.CreateTableAsync<Booking>();
                 await _db.CreateTableAsync<BookingItem>();
+                await _db.CreateTableAsync<BookingCat>();
                 await _db.CreateTableAsync<ShopItem>();
                 await _db.CreateTableAsync<OutcomeRecord>();
 
+                await EnsureColumnExistsAsync("Cats", "CustomerId", "INTEGER", "0");
                 await EnsureColumnExistsAsync("Bookings", "TotalPrice", "REAL", "0");
                 await EnsureColumnExistsAsync("BookingItems", "UnitPrice", "REAL", "0");
                 await EnsureColumnExistsAsync("BookingItems", "Quantity", "INTEGER", "1");

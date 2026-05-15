@@ -9,4 +9,10 @@ public partial class RoomWrapperPage : ContentPage
 		InitializeComponent();
 		BindingContext = new RoomWrapperViewModel();
     }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        RoomDetail.RefreshBookingFields();
+    }
 }
