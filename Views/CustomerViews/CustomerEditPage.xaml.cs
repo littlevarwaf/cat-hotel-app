@@ -102,10 +102,10 @@ public partial class CustomerEditPage : ContentPage, INavigationAware
 
         try
         {
-            await _db.Db.UpdateAsync(_customer);
+        await _db.Db.UpdateAsync(_customer);
 
             // Notify that customer was updated
-            CustomerService.NotifyCustomerUpdated(_customer);
+        CustomerService.NotifyCustomerUpdated(_customer);
 
             await DisplayAlertAsync("Success", "Customer updated successfully!", "OK");
             await Navigation.PopAsync();

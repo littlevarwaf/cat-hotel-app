@@ -44,7 +44,8 @@ namespace CatHotel
                 .AddTransient<Sales>()
                 .AddTransient<ShopPage>()
                 .AddTransient<RoomDetailPage>()
-                .AddTransient<CartPage>();
+                .AddTransient<CartPage>()
+                .AddTransient<BookingPage>();
 
             return builder.Build();
         }

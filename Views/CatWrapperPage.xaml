@@ -1,12 +1,78 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tabs="http://sharpnado.com"
+             xmlns:cviews="clr-namespace:CatHotel.Views.CatViews"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
              x:Class="CatHotel.Views.CatWrapperPage"
-             Title="CatWrapperPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             BackgroundColor="{StaticResource Primary50}">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- Header -->
+        <Border Grid.Row="0" BackgroundColor="Transparent" Padding="16,0,32,0" MinimumHeightRequest="56"
+            StrokeThickness="0" Margin="0">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="0">
+                <!-- Back Button -->
+                <Button Grid.Column="0"
+                    ImageSource="chevron_left.svg"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource Neutral950}"
+                    FontSize="28"
+                    Padding="8,0"
+                    Clicked="OnBackClicked"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"/>
+
+                <!-- Title -->
+                <Label Grid.Column="1"
+                   Text="Manage Cats"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource Neutral950}"
+                   HorizontalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   HorizontalTextAlignment="Center"/>
+
+                <!-- Paw Icon -->
+                <Image Grid.Column="2"
+                   Source="app_icon.svg"
+                   HeightRequest="28"
+                   WidthRequest="28"
+                   HorizontalOptions="End"
+                   VerticalOptions="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- Tab Navigation with Border Styling -->
+        <Border Grid.Row="1" BackgroundColor="Transparent" StrokeThickness="0" Padding="16,12" Margin="0" HeightRequest="64">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
+            </Border.Shadow>
+            <tabs:TabHostView x:Name="TabHost"
+                      SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
+                      BackgroundColor="Transparent"
+                      TabType="Fixed"
+                      Padding="0"
+                      CornerRadius="30">
+
+                <tabs:SegmentedTabItem UnselectedLabelColor="{StaticResource Primary900}" SelectedLabelColor="{StaticResource Primary900}"
+                               SelectedTabColor="{StaticResource Primary}"
+                               Label="Select Cats" />
+                <tabs:SegmentedTabItem UnselectedLabelColor="{StaticResource Primary900}" SelectedLabelColor="{StaticResource Primary900}"
+                               SelectedTabColor="{StaticResource Primary}"
+                               Label="Add New Cat" />
+            </tabs:TabHostView>
+        </Border>
+
+        <!-- Content Switcher -->
+        <tabs:ViewSwitcher Grid.Row="2" 
+                   SelectedIndex="{Binding Source={x:Reference TabHost}, Path=SelectedIndex, Mode=OneWay}"
+                   Padding="0">
+            <cviews:CatSelectView x:Name="CatSelectViewInstance" />
+            <cviews:CatAddView />
+        </tabs:ViewSwitcher>
+
+    </Grid>
 </ContentPage>

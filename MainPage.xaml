@@ -9,6 +9,10 @@
              Shell.NavBarIsVisible="False"
              x:Class="CatHotel.MainPage">
 
+    <ContentPage.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentPage.Background>
+
     <ContentPage.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Primary50}" StatusBarStyle="DarkContent" />
     </ContentPage.Behaviors>
@@ -18,7 +22,7 @@
         <tabs:ViewSwitcher Grid.Row="0" Padding="0,0,0,0"
                            SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
             <views:HomePage />
-            <views:CalendarPage />
+            <views:CalendarPage x:Name="Calendar" />
             <views:Sales />
         </tabs:ViewSwitcher>
 

@@ -13,6 +13,7 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
     private readonly IBookingRepository _bookingRepo;
     private readonly ICustomerRepository _customerRepo;
     private readonly ICatRepository _catRepo;
+    private readonly IBookingCatRepository _bookingCatRepo;
     private readonly CartService _cart = CartService.Instance;
 
     private int _selectedTabIndex = 0;
@@ -29,19 +30,22 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         IPlatformApplication.Current!.Services.GetRequiredService<IRoomRepository>(),
         IPlatformApplication.Current!.Services.GetRequiredService<IBookingRepository>(),
         IPlatformApplication.Current!.Services.GetRequiredService<ICustomerRepository>(),
-        IPlatformApplication.Current!.Services.GetRequiredService<ICatRepository>())
+        IPlatformApplication.Current!.Services.GetRequiredService<ICatRepository>(),
+        IPlatformApplication.Current!.Services.GetRequiredService<IBookingCatRepository>())
     { }
 
     public RoomWrapperViewModel(
         IRoomRepository roomRepo,
         IBookingRepository bookingRepo,
         ICustomerRepository customerRepo,
-        ICatRepository catRepo)
+        ICatRepository catRepo,
+        IBookingCatRepository bookingCatRepo)
     {
         _roomRepo = roomRepo;
         _bookingRepo = bookingRepo;
         _customerRepo = customerRepo;
         _catRepo = catRepo;
+        _bookingCatRepo = bookingCatRepo;
 
         GoToDetailCommand = new Command(() => SelectedTabIndex = 0);
         GoToShopCommand = new Command(() => SelectedTabIndex = 1);
@@ -57,6 +61,7 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         EditCustomerCommand = new Command(async () => await EditCustomerAsync());
         AddCustomerCommand = new Command(async () => await AddCustomerAsync());
         EditCatCommand = new Command<Cat>(async (cat) => await EditCatAsync(cat));
+        RemoveCatCommand = new Command<Cat>(async (cat) => await RemoveCatAsync(cat));
         AddMoreCatsCommand = new Command(async () => await AddMoreCatsAsync());
         CheckoutCommand = new Command(async () => await CheckoutAsync());
 
@@ -124,6 +129,7 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
             {
                 _cats = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(CanAddMoreCats));
             }
         }
     }
@@ -215,6 +221,7 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
     public ICommand EditCustomerCommand { get; }
     public ICommand AddCustomerCommand { get; }
     public ICommand EditCatCommand { get; }
+    public ICommand RemoveCatCommand { get; }
     public ICommand AddMoreCatsCommand { get; }
     public ICommand CheckoutCommand { get; }
 
@@ -229,6 +236,13 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
             try
             {
                 Room = await _roomRepo.GetRoomByIdAsync(roomId);
+                if (Room != null)
+                {
+                    var checkIn = parameters.TryGetValue("checkIn", out var d) && d is DateTime dt
+                        ? dt
+                        : (DateTime?)null;
+                    BookingDraftService.Instance.ResetForRoom(roomId, checkIn);
+                }
                 System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Room loaded: {Room?.Name ?? "NULL"}");
 
                 // Load active booking for this room
@@ -379,14 +393,136 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         await NavigationService.GoToAsync(NavigationService.CatWrapperPage, parameters);
     }
 
+    private async Task RemoveCatAsync(Cat cat)
+    {
+        if (Booking == null) return;
+
+        bool confirm = await Application.Current!.MainPage!.DisplayAlertAsync("Remove Cat",
+            $"Remove '{cat.Name}' from this booking?", "Remove", "Cancel");
+        if (!confirm) return;
+
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Removing cat {cat.Id} from booking {Booking.Id}");
+
+            // Remove the cat from the booking via BookingCat table
+            await _bookingCatRepo.RemoveCatFromBookingAsync(Booking.Id, cat.Id);
+
+            // Remove from UI
+            Cats.Remove(cat);
+
+            // Refresh CanAddMoreCats property
+            OnPropertyChanged(nameof(CanAddMoreCats));
+
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Cat {cat.Id} removed successfully");
+            await Application.Current!.MainPage!.DisplayAlertAsync("Success", $"'{cat.Name}' has been removed from this booking.", "OK");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error removing cat: {ex}");
+            await Application.Current!.MainPage!.DisplayAlertAsync("Error",
+                $"Failed to remove cat: {ex.Message}", "OK");
+        }
+    }
+
     private async Task AddMoreCatsAsync()
     {
-        await Task.CompletedTask;
+        if (Booking == null)
+        {
+            await Application.Current!.MainPage!.DisplayAlertAsync("Error",
+                "No active booking found.", "OK");
+            return;
+        }
+
+        System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Adding more cats for booking: {Booking.Id}");
+
+        await NavigationService.GoToAsync(NavigationService.CatWrapperPage,
+            new Dictionary<string, object>
+            {
+                ["mode"] = 0,
+                ["bookingId"] = Booking.Id
+            });
     }
 
     private async Task CheckoutAsync()
     {
-        await NavigationService.GoBackAsync();
+        if (Booking == null)
+        {
+            await Application.Current!.MainPage!.DisplayAlertAsync("Error", "No booking found.", "OK");
+            return;
+        }
+
+        bool confirm = await Application.Current!.MainPage!.DisplayAlertAsync(
+            "Check Out",
+            $"Check out booking #{Booking.Id}?",
+            "Yes",
+            "Cancel");
+
+        if (!confirm) return;
+
+        IsLoading = true;
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Checking out booking {Booking.Id}");
+
+            // Initialize database
+            await App.Database.InitializeAsync();
+
+            // 1. Update Booking's EndDate to current time
+            var checkoutTime = DateTime.Now;
+            Booking.EndDate = checkoutTime;
+
+            await App.Database.Db.UpdateAsync(Booking);
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Updated booking {Booking.Id} EndDate to {checkoutTime}");
+
+            // 2. Calculate RoomRevenue (BasePrice * number of nights)
+            var nights = Math.Max(1, (Booking.EndDate.Date - Booking.StartDate.Date).Days);
+            var roomRevenue = (int)(Booking.Room?.BasePrice * nights ?? 0);
+
+            // 3. Calculate ShopRevenue from BookingItems
+            var shopRevenue = (int)BookingItems.Sum(item => item.UnitPrice * item.Quantity);
+
+            // 4. Create and insert Sale entry
+            var sale = new Sale
+            {
+                BookingId = Booking.Id,
+                RoomId = Booking.RoomId,
+                RoomRevenue = roomRevenue,
+                ShopRevenue = shopRevenue,
+                TotalRevenue = roomRevenue + shopRevenue,
+                CompletedAt = checkoutTime
+            };
+
+            await App.Database.Db.InsertAsync(sale);
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Created sale entry: BookingId={sale.BookingId}, RoomRevenue={roomRevenue}, ShopRevenue={shopRevenue}");
+
+            // 5. Update Room status to Available
+            if (Booking.Room != null)
+            {
+                Booking.Room.Status = RoomStatus.Available;
+                await App.Database.Db.UpdateAsync(Booking.Room);
+                System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Updated room {Booking.Room.Id} status to Available");
+            }
+
+            await Application.Current!.MainPage!.DisplayAlertAsync(
+                "Success",
+                $"Check out successful! Sale #{sale.Id} created.",
+                "OK");
+
+            await NavigationService.GoBackAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error during checkout: {ex}");
+            await Application.Current!.MainPage!.DisplayAlertAsync(
+                "Error",
+                $"Checkout failed: {ex.Message}",
+                "OK");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -195,8 +195,5 @@
 	<ItemGroup>
 	  <PackageReference Update="Microsoft.Maui.Controls" Version="10.0.60" />
 	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Views\CatSettingViews\" />
-	</ItemGroup>
 
 </Project>

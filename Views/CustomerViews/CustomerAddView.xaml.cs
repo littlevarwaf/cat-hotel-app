@@ -127,7 +127,7 @@ public partial class CustomerAddView : ContentView
             await Application.Current!.MainPage!.DisplayAlertAsync("Error",
                 $"Failed to add customer: {ex.Message}", "OK");
         }
-    }
+        }
 
     private void ClearForm()
     {

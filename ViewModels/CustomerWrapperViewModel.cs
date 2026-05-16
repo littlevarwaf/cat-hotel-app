@@ -16,6 +16,7 @@ public class CustomerWrapperViewModel : INotifyCollectionChanged, INotifyPropert
     private int _selectedTabIndex = 0;
     private int _roomId = 0;
     private int _bookingId = 0;
+    private int _mode = 0; // 0 = RoomDetailPage, 1 = BookingPage
     private bool _isLoading = false;
     private ObservableCollection<Customer> _customers = new();
     private Customer? _selectedCustomer;
@@ -74,6 +75,19 @@ public class CustomerWrapperViewModel : INotifyCollectionChanged, INotifyPropert
         }
     }
 
+    public int Mode
+    {
+        get => _mode;
+        set
+        {
+            if (_mode != value)
+            {
+                _mode = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public bool IsLoading
     {
         get => _isLoading;
@@ -118,6 +132,13 @@ public class CustomerWrapperViewModel : INotifyCollectionChanged, INotifyPropert
     public async void OnNavigatedTo(IDictionary<string, object> parameters)
     {
         System.Diagnostics.Debug.WriteLine($"[CustomerWrapper] OnNavigatedTo called with params: {string.Join(",", parameters.Keys)}");
+
+        // Get mode (0 = RoomDetailPage, 1 = BookingPage)
+        if (parameters.TryGetValue("mode", out var modeObj) && modeObj is int mode)
+        {
+            Mode = mode;
+            System.Diagnostics.Debug.WriteLine($"[CustomerWrapper] Mode set to: {mode}");
+        }
 
         if (parameters.TryGetValue("roomId", out var roomIdObj) && roomIdObj is int roomId)
         {

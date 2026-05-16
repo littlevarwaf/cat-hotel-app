@@ -21,7 +21,7 @@ public static class CustomerService
     public static void NotifyCustomerDeleted(Customer customer)
     {
         CustomerDeleted?.Invoke(null, new CustomerEventArgs { Customer = customer });
-    }
+}
 }
 
 public class CustomerEventArgs : EventArgs

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:CatHotel.Views.Controls"
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             x:Class="CatHotel.Views.BookingPage">
+    <ContentPage.Background>
+        <StaticResource Key="PageBackgroundBrush" />
+    </ContentPage.Background>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Border Grid.Row="0" BackgroundColor="Transparent" Padding="12" StrokeThickness="0" Margin="0">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Button Grid.Column="0" 
+                        ImageSource="chevron_left.svg" 
+                        BackgroundColor="Transparent" 
+                        TextColor="{StaticResource Neutral950}"
+                        FontSize="24" Padding="0" 
+                        Clicked="OnBackClicked"/>
+
+                <StackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="8">
+                    <Label Text="{Binding Room.Name, StringFormat='Book {0}'}"
+                           FontSize="15" FontAttributes="Bold" 
+                           TextColor="{StaticResource Neutral950}"
+                           HorizontalOptions="Center"/>
+                    <Border BackgroundColor="{StaticResource Primary}" StrokeThickness="0" Padding="16,6" HorizontalOptions="Center">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="999"/>
+                        </Border.StrokeShape>
+                        <Label Text="{Binding FromDate, StringFormat='Check-in: {0:dd MMM yyyy HH:mm}'}"
+                               TextColor="{StaticResource Primary900}" FontSize="12" FontAttributes="Bold"/>
+                    </Border>
+                </StackLayout>
+
+                <Image Grid.Column="2" 
+                       Source="app_icon.svg" 
+                       HeightRequest="32" WidthRequest="32"/>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <ScrollView Grid.Row="1" Padding="12,8,12,24">
+            <VerticalStackLayout Spacing="16">
+
+                <!-- Customer Details Section -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" StrokeThickness="0" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                    </Border.Shadow>
+                    <StackLayout Spacing="12">
+                        <Label Text="Customer Details" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+
+                        <!-- Customer Card -->
+                        <StackLayout Spacing="8">
+                            <Frame x:Name="CustomerFrame" 
+                                   Padding="12" CornerRadius="8" 
+                                   HasShadow="False" 
+                                   BorderColor="{StaticResource Neutral200}"
+                                   BackgroundColor="{StaticResource NeutralWhite}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnPickCustomerClicked"/>
+                                </Frame.GestureRecognizers>
+                                <Grid ColumnDefinitions="128,*" ColumnSpacing="12" HorizontalOptions="Fill">
+                                    <!-- Customer Photo -->
+                                    <Frame Grid.Column="0" 
+                                           Padding="0"
+                                           CornerRadius="8" 
+                                           HasShadow="False"
+                                           WidthRequest="128"
+                                           HeightRequest="128">
+                                        <Image Source="{Binding SelectedCustomer.ImgUrl, FallbackValue='placeholder_user.png'}" 
+                                               Aspect="AspectFit" 
+                                               WidthRequest="128" 
+                                               HeightRequest="128" 
+                                               BackgroundColor="{StaticResource Neutral200}" />
+                                    </Frame>
+
+                                    <!-- Customer Info -->
+                                    <StackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center" HorizontalOptions="Fill">
+                                        <Label Text="{Binding SelectedCustomer.Name, FallbackValue='+ Add Customer'}" 
+                                               FontSize="16" FontAttributes="Bold" 
+                                               TextColor="{StaticResource Neutral950}"/>
+
+                                        <!-- Tel Row -->
+                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                            <Image Grid.Column="0" Source="phone_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                            <Label Grid.Column="1" Text="Tel" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                            <Label Grid.Column="3" Text="{Binding SelectedCustomer.TelephoneNum, FallbackValue='-'}" 
+                                                   FontSize="14" TextColor="{StaticResource Neutral400}" 
+                                                   VerticalOptions="Center" MaximumWidthRequest="108" 
+                                                   LineBreakMode="TailTruncation"/>
+                                        </Grid>
+
+                                        <!-- Email Row -->
+                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                            <Image Grid.Column="0" Source="mail_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                            <Label Grid.Column="1" Text="Email" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                            <Label Grid.Column="3" Text="{Binding SelectedCustomer.Email, FallbackValue='-'}" 
+                                                   FontSize="14" TextColor="{StaticResource Neutral400}" 
+                                                   VerticalOptions="Center" MaximumWidthRequest="108" 
+                                                   LineBreakMode="TailTruncation"/>
+                                        </Grid>
+
+                                        <!-- Line ID Row -->
+                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                            <Image Grid.Column="0" Source="chat_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                            <Label Grid.Column="1" Text="Line ID" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                            <Label Grid.Column="3" Text="{Binding SelectedCustomer.LineId, FallbackValue='-'}" 
+                                                   FontSize="14" TextColor="{StaticResource Neutral400}" 
+                                                   VerticalOptions="Center" MaximumWidthRequest="108" 
+                                                   LineBreakMode="TailTruncation"/>
+                                        </Grid>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </StackLayout>
+                    </StackLayout>
+                </Border>
+
+                <!-- Cat Details Section -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" StrokeThickness="0" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                    </Border.Shadow>
+                    <StackLayout Spacing="12">
+                        <Label Text="Cat Details" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+
+                        <!-- Cats List -->
+                        <StackLayout Spacing="12" BindableLayout.ItemsSource="{Binding SelectedCats}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid RowDefinitions="*" ColumnDefinitions="*">
+                                        <!-- Cat Card -->
+                                        <Border Grid.Row="0" Grid.Column="0"
+                                                BackgroundColor="{StaticResource NeutralWhite}"
+                                                StrokeThickness="1" 
+                                                Stroke="{StaticResource Neutral200}"
+                                                Padding="12" 
+                                                HorizontalOptions="FillAndExpand">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="12"/>
+                                            </Border.StrokeShape>
+                                            <Border.Shadow>
+                                                <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                                            </Border.Shadow>
+                                            <StackLayout Spacing="8">
+                                                <!-- Cat Card Content -->
+                                                <Grid ColumnDefinitions="128,*" ColumnSpacing="12" HorizontalOptions="Fill">
+                                                    <!-- Cat Photo -->
+                                                    <Frame Grid.Column="0" 
+                                                           Padding="0"
+                                                           CornerRadius="8" 
+                                                           HasShadow="False"
+                                                           WidthRequest="128"
+                                                           HeightRequest="128"
+                                                           BackgroundColor="{StaticResource Neutral200}">
+                                                        <Image Source="{Binding ImgUrl}" Aspect="AspectFill" WidthRequest="128" HeightRequest="128" />
+                                                    </Frame>
+
+                                                    <!-- Cat Info -->
+                                                    <StackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                        <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+
+                                                        <!-- Age Row -->
+                                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                            <Image Grid.Column="0" Source="calendar_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                                            <Label Grid.Column="1" Text="Age" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                                            <Label Grid.Column="3" Text="{Binding Age, StringFormat='{0} years', FallbackValue='-'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center"/>
+                                                        </Grid>
+
+                                                        <!-- Gender Row -->
+                                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                            <Image Grid.Column="0" Source="heart_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                                            <Label Grid.Column="1" Text="Gender" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                                            <Label Grid.Column="3" Text="{Binding Gender, FallbackValue='-'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center"/>
+                                                        </Grid>
+
+                                                        <!-- Breed Row -->
+                                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                            <Image Grid.Column="0" Source="star_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                                            <Label Grid.Column="1" Text="Breed" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                                            <Label Grid.Column="3" Text="{Binding Breed, FallbackValue='-'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="108" LineBreakMode="TailTruncation"/>
+                                                        </Grid>
+                                                    </StackLayout>
+                                                </Grid>
+                                            </StackLayout>
+                                        </Border>
+
+                                        <!-- Remove Button (Overlay) -->
+                                        <Button Grid.Row="0" Grid.Column="0"
+                                                Text="✕"
+                                                FontSize="24"
+                                                TextColor="White"
+                                                BackgroundColor="#E91E63"
+                                                CornerRadius="50"
+                                                Padding="0"
+                                                WidthRequest="44"
+                                                HeightRequest="44"
+                                                HorizontalOptions="End"
+                                                VerticalOptions="Start"
+                                                Margin="0,-6,-6,0"
+                                                Clicked="OnRemoveCatClicked"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+
+                        <!-- Add Cats Button -->
+                        <Button Text="เลือก / เพิ่มแมว" BackgroundColor="#FCE4EC" TextColor="#E91E63"
+                                CornerRadius="10" Clicked="OnPickCatsClicked"/>
+                    </StackLayout>
+                </Border>
+
+                <!-- Date Time Section -->
+                <Border BackgroundColor="{StaticResource NeutralWhite}" StrokeThickness="0" Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="วันเวลาเข้าพัก" FontSize="15" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                        <controls:DateTimePickerField x:Name="FromDateField" Title="FromDate (เช็คอิน)"/>
+                        <controls:DateTimePickerField x:Name="ToDateField" Title="ToDate (เช็คเอาท์)"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Confirm Button -->
+                <Button Text="ยืนยันการจอง" BackgroundColor="#E91E63" TextColor="White"
+                        CornerRadius="12" FontSize="16" HeightRequest="52"
+                        Clicked="OnConfirmBookingClicked"/>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

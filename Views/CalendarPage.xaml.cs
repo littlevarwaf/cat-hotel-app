@@ -54,9 +54,15 @@ public partial class CalendarPage : ContentView
         _roomRepo = roomRepo;
         BuildCalendarGrid();
 
-        // Call initialization when the view is loaded
-        this.Loaded += OnViewLoaded;
+        RoomService.RoomAdded += OnRoomsChanged;
+        RoomService.RoomUpdated += OnRoomsChanged;
+        RoomService.RoomDeleted += OnRoomsChanged;
+
+        Loaded += OnViewLoaded;
     }
+
+    private void OnRoomsChanged(object? sender, RoomEventArgs e) =>
+        _ = MainThread.InvokeOnMainThreadAsync(RefreshRoomsAsync);
 
     private async void OnViewLoaded(object? sender, EventArgs e)
     {
@@ -66,7 +72,7 @@ public partial class CalendarPage : ContentView
         try
         {
             RefreshCalendar();
-            await LoadAvailableRoomsAsync();
+            await RefreshRoomsAsync();
         }
         catch (Exception ex)
         {
@@ -74,6 +80,8 @@ public partial class CalendarPage : ContentView
             throw;
         }
     }
+
+    public async Task RefreshRoomsAsync() => await LoadAvailableRoomsAsync();
 
     private void RefreshCalendar()
     {
@@ -220,5 +228,20 @@ public partial class CalendarPage : ContentView
         _selectedDate = null;
         RefreshCalendar();
         _ = LoadAvailableRoomsAsync();
+    }
+
+    private async void OnRoomTapped(object? sender, TappedEventArgs e)
+    {
+        if (e.Parameter is not RoomViewModel vm)
+            return;
+
+        var checkIn = _selectedDate ?? DateTime.Today;
+        await NavigationService.GoToAsync(
+            NavigationService.BookingPage,
+            new Dictionary<string, object>
+            {
+                ["roomId"] = vm.Room.Id,
+                ["checkIn"] = checkIn
+            });
     }
 }

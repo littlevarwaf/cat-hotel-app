@@ -37,6 +37,7 @@ namespace CatHotel.Services
                 await _db.CreateTableAsync<Sale>();
                 await _db.CreateTableAsync<OutcomeRecord>();
 
+                await EnsureColumnExistsAsync("Cats", "CustomerId", "INTEGER", "0");
                 await EnsureColumnExistsAsync("Bookings", "TotalPrice", "REAL", "0");
                 await EnsureColumnExistsAsync("BookingItems", "UnitPrice", "REAL", "0");
                 await EnsureColumnExistsAsync("BookingItems", "Quantity", "INTEGER", "1");
@@ -121,7 +122,7 @@ namespace CatHotel.Services
 
             if (sales.Count == 0) return (0, 0, 0);
 
-            var roomIdList = sales.Select(s => int.Parse(s.RoomId)).Distinct().ToList();
+            var roomIdList = sales.Select(s => s.RoomId).Distinct().ToList();
 
             // ถ้า Contains แปลเป็น SQL ไม่ได้ในบางเครื่อง ให้เปลี่ยนเป็นดึง Room ทั้งหมดแล้วกรองใน memory
             var rooms = await _db.Table<Room>()
@@ -134,14 +135,19 @@ namespace CatHotel.Services
 
             foreach (var s in sales)
             {
-                if (!int.TryParse(s.RoomId, out int roomId)) continue;
-                if (!roomTypeById.TryGetValue(roomId, out var roomType)) continue;
+                if (!roomTypeById.TryGetValue(s.RoomId, out var roomType)) continue;
 
-                switch (roomType.ToString())
+                switch (roomType)
                 {
-                    case "Large": large++; break;
-                    case "Medium": medium++; break;
-                    case "Small": small++; break;
+                    case RoomTypes.Large:
+                        large++;
+                        break;
+                    case RoomTypes.Medium:
+                        medium++;
+                        break;
+                    case RoomTypes.Small:
+                        small++;
+                        break;
                 }
             }
 
@@ -157,7 +163,7 @@ namespace CatHotel.Services
                 .Where(s => s.CompletedAt >= monthStart && s.CompletedAt < monthEnd)
                 .ToListAsync();
 
-            var bookingIds = sales.Select(s => int.Parse(s.BookingId)).ToList();
+            var bookingIds = sales.Select(s => s.BookingId).Distinct().ToList();
             if (bookingIds.Count == 0)
                 return new Dictionary<string, float>();
 
@@ -557,10 +563,11 @@ namespace CatHotel.Services
                 }
             };
 
-            foreach (var booking in bookings)
-            {
-                await _db.InsertAsync(booking);
-            }
+            // UNCOMMENT TO ADD BOOKING
+            //foreach (var booking in bookings)
+            //{
+            //    await _db.InsertAsync(booking);
+            //}
 
             // 5) Link Cats to Bookings using BookingCat table
             var bookingCatLinks = new List<BookingCat>
@@ -570,10 +577,11 @@ namespace CatHotel.Services
                 new BookingCat { BookingId = bookings[2].Id, CatId = cats[2].Id }  // Michael + Tiger
             };
 
-            foreach (var link in bookingCatLinks)
-            {
-                await _db.InsertAsync(link);
-            }
+            // UNCOMMENT TO LINK CATS TO BOOKINGS
+            //foreach (var link in bookingCatLinks)
+            //{
+            //    await _db.InsertAsync(link);
+            //}
 
             System.Diagnostics.Debug.WriteLine("[SEED] Mock data created successfully!");
             System.Diagnostics.Debug.WriteLine($"[SEED] Rooms: {await _db.Table<Room>().CountAsync()}");

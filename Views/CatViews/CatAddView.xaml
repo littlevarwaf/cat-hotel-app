@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="CatHotel.Views.CustomerViews.CustomerAddView"
-             BackgroundColor="{StaticResource Primary50}">
-
+             x:Class="CatHotel.Views.CatViews.CatAddView">
     <ContentView.Background>
         <StaticResource Key="PageBackgroundBrush" />
     </ContentView.Background>
@@ -14,13 +12,13 @@
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Padding="16,16,16,120" Spacing="0">
 
-                <Label Text="Customer Details"
-                       FontSize="16" FontAttributes="Bold"
-                       TextColor="#1A1A1A" Margin="0,0,0,12"/>
+                <Label Text="Cat Details"
+                   FontSize="16" FontAttributes="Bold"
+                   TextColor="#1A1A1A" Margin="0,0,0,12"/>
 
                 <!-- Image Card -->
                 <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" StrokeThickness="1"
-                        Padding="16" Margin="0,0,0,16">
+                    Padding="16" Margin="0,0,0,16">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="6"/>
                     </Border.StrokeShape>
@@ -29,14 +27,14 @@
                     </Border.Shadow>
                     <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
                         <Border HeightRequest="180" WidthRequest="240"
-                                StrokeThickness="0" HorizontalOptions="Center">
+                            StrokeThickness="0" HorizontalOptions="Center">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="6"/>
                             </Border.StrokeShape>
-                            <Image x:Name="CustomerPhotoPreview"
-                                   Source="placeholder_user.png"
-                                   Aspect="AspectFill"
-                                   HeightRequest="180" WidthRequest="180"/>
+                            <Image x:Name="CatPhotoPreview"
+                               Source="placeholder_item.png"
+                               Aspect="AspectFill"
+                               HeightRequest="180" WidthRequest="180"/>
                         </Border>
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                             <Border Grid.Column="0" StrokeThickness="1" Stroke="{StaticResource Primary100}"
@@ -45,7 +43,7 @@
                                     <RoundRectangle CornerRadius="999"/>
                                 </Border.StrokeShape>
                                 <Label Text="Remove Image" FontSize="13"
-                                       TextColor="{StaticResource Primary900}" HorizontalOptions="Center"/>
+                                   TextColor="{StaticResource Primary900}" HorizontalOptions="Center"/>
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnRemoveImageTapped"/>
                                 </Border.GestureRecognizers>
@@ -56,7 +54,7 @@
                                     <RoundRectangle CornerRadius="999"/>
                                 </Border.StrokeShape>
                                 <Label Text="Upload Image" FontSize="13"
-                                       TextColor="{StaticResource Primary900}" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                   TextColor="{StaticResource Primary900}" FontAttributes="Bold" HorizontalOptions="Center"/>
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnUploadImageTapped"/>
                                 </Border.GestureRecognizers>
@@ -67,7 +65,7 @@
 
                 <!-- Input Fields Card -->
                 <Border BackgroundColor="{StaticResource NeutralWhite}" Stroke="{StaticResource Primary100}" StrokeThickness="1"
-                        Padding="16" Margin="0,0,0,24">
+                    Padding="16" Margin="0,0,0,24">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="6"/>
                     </Border.StrokeShape>
@@ -76,62 +74,80 @@
                     </Border.Shadow>
                     <VerticalStackLayout Spacing="24">
 
-                        <!-- Customer Name -->
+                        <!-- Cat Name -->
                         <VerticalStackLayout Spacing="12">
                             <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
-                                <Image Grid.Column="0" Source="user_icon.svg" HeightRequest="16" WidthRequest="16"/>
-                                <Label Grid.Column="1" Text="Customer Name"
+                                <Image Grid.Column="0" Source="cupcake_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Cat Name"
                                        FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
                             </Grid>
                             <Border Style="{StaticResource RoundedInputContainerStyle}">
                                 <Entry x:Name="NameEntry" 
-                                       Placeholder="e.g., John Doe"
-                                       Style="{StaticResource RoundedEntryStyle}"/>
+                                   Placeholder="e.g., Whiskers, Mittens"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
                             </Border>
                         </VerticalStackLayout>
 
-                        <!-- Telephone Number -->
+                        <!-- Breed -->
                         <VerticalStackLayout Spacing="12">
                             <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
-                                <Image Grid.Column="0" Source="phone_icon.svg" HeightRequest="16" WidthRequest="16"/>
-                                <Label Grid.Column="1" Text="Telephone Number"
+                                <Image Grid.Column="0" Source="note_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Breed"
                                        FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
                             </Grid>
                             <Border Style="{StaticResource RoundedInputContainerStyle}">
-                                <Entry x:Name="TelephoneEntry"
-                                       Placeholder="e.g., 0812345678"
-                                       Keyboard="Telephone"
-                                       Style="{StaticResource RoundedEntryStyle}"/>
+                                <Entry x:Name="BreedEntry"
+                                   Placeholder="e.g., Persian, Siamese"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
                             </Border>
                         </VerticalStackLayout>
 
-                        <!-- Email -->
+                        <!-- Age -->
                         <VerticalStackLayout Spacing="12">
                             <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
-                                <Image Grid.Column="0" Source="mail_icon.svg" HeightRequest="16" WidthRequest="16"/>
-                                <Label Grid.Column="1" Text="Email Address"
+                                <Image Grid.Column="0" Source="dollar_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Age (Years)"
                                        FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
                             </Grid>
                             <Border Style="{StaticResource RoundedInputContainerStyle}">
-                                <Entry x:Name="EmailEntry"
-                                       Placeholder="e.g., john@example.com"
-                                       Keyboard="Email"
-                                       Style="{StaticResource RoundedEntryStyle}"/>
+                                <Entry x:Name="AgeEntry"
+                                   Placeholder="e.g., 3"
+                                   Keyboard="Numeric"
+                                   Style="{StaticResource RoundedEntryStyle}"/>
                             </Border>
                         </VerticalStackLayout>
 
-                        <!-- Email -->
+                        <!-- Gender -->
                         <VerticalStackLayout Spacing="12">
                             <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
-                                <Image Grid.Column="0" Source="chat_icon.svg" HeightRequest="16" WidthRequest="16"/>
-                                <Label Grid.Column="1" Text="Line ID"
+                                <Image Grid.Column="0" Source="help_icon.svg" HeightRequest="16" WidthRequest="16"/>
+                                <Label Grid.Column="1" Text="Gender"
                                        FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
                             </Grid>
-                            <Border Style="{StaticResource RoundedInputContainerStyle}">
-                                <Entry x:Name="LineIdEntry"
-                                       Placeholder="e.g., johnexample"
-                                       Style="{StaticResource RoundedEntryStyle}"/>
-                            </Border>
+                            <HorizontalStackLayout Spacing="20">
+                                <HorizontalStackLayout Spacing="8">
+                                    <RadioButton x:Name="UnknownGenderRadio"
+                                             Value="Unknown" GroupName="Gender"
+                                             IsChecked="True"
+                                             CheckedChanged="OnGenderChanged"/>
+                                    <Label Text="Unknown" FontSize="13" TextColor="#1A1A1A"
+                                       VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="8">
+                                    <RadioButton x:Name="MaleGenderRadio"
+                                             Value="Male" GroupName="Gender"
+                                             CheckedChanged="OnGenderChanged"/>
+                                    <Label Text="Male" FontSize="13" TextColor="#1A1A1A"
+                                       VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="8">
+                                    <RadioButton x:Name="FemaleGenderRadio"
+                                             Value="Female" GroupName="Gender"
+                                             CheckedChanged="OnGenderChanged"/>
+                                    <Label Text="Female" FontSize="13" TextColor="#1A1A1A"
+                                       VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
                         </VerticalStackLayout>
 
                     </VerticalStackLayout>
@@ -161,15 +177,15 @@
                 <Shadow Brush="#E06060" Offset="0,4" Radius="12" Opacity="0.4" />
             </Border.Shadow>
             <Border BackgroundColor="{StaticResource Primary500}" StrokeThickness="0" Padding="0">
-            <Border.StrokeShape>
+                <Border.StrokeShape>
                     <RoundRectangle CornerRadius="38"/>
-            </Border.StrokeShape>
-                <Label Text="+ Add Customer" TextColor="White" FontSize="16"
-                       FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
-            <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnAddCustomerClicked"/>
-            </Border.GestureRecognizers>
-        </Border>
+                </Border.StrokeShape>
+                <Label Text="Create New Cat Profile" TextColor="White" FontSize="16"
+                   FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnSaveTapped"/>
+                </Border.GestureRecognizers>
+            </Border>
         </Border>
 
     </Grid>

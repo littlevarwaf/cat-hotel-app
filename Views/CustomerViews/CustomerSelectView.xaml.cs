@@ -10,6 +10,7 @@ public partial class CustomerSelectView : ContentView
 {
     private readonly ICustomerRepository _customerRepo;
     private readonly IBookingRepository _bookingRepo;
+    private readonly BookingDraftService _draftService = BookingDraftService.Instance;
     private List<Customer> _allCustomers = new();
     private CustomerWrapperViewModel? _viewModel;
     private CancellationTokenSource? _searchCancellationTokenSource;
@@ -172,8 +173,17 @@ public partial class CustomerSelectView : ContentView
         {
             System.Diagnostics.Debug.WriteLine($"[CustomerSelectView] Customer selected: {customer.Name} (ID: {customer.Id})");
 
-            if (_viewModel.BookingId > 0)
+            // Mode 1 = BookingPage flow (save to BookingDraftService)
+            if (_viewModel.Mode == 1)
             {
+                System.Diagnostics.Debug.WriteLine($"[CustomerSelectView] Mode: BOOKING DRAFT (1) - Updating BookingDraftService");
+                _draftService.SelectedCustomer = customer;
+                System.Diagnostics.Debug.WriteLine($"[CustomerSelectView] BookingDraftService.SelectedCustomer set to {customer.Name} (ID: {customer.Id})");
+            }
+            // Mode 0 = RoomDetailPage flow (save to database)
+            else if (_viewModel.Mode == 0 && _viewModel.BookingId > 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"[CustomerSelectView] Mode: EXISTING BOOKING (0) - Updating database");
                 var booking = await _bookingRepo.GetBookingByIdAsync(_viewModel.BookingId);
                 if (booking != null)
                 {
@@ -182,9 +192,14 @@ public partial class CustomerSelectView : ContentView
                     System.Diagnostics.Debug.WriteLine($"[CustomerSelectView] Booking {booking.Id} updated with customer {customer.Id}");
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[CustomerSelectView] Warning: No valid mode detected (Mode={_viewModel.Mode}, BookingId={_viewModel.BookingId})");
+            }
 
             SearchEntry.Text = string.Empty;
             await NavigationService.GoBackAsync();
+            return;
         }
         catch (Exception ex)
         {

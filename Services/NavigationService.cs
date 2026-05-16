@@ -4,6 +4,7 @@ using CatHotel.Views.RoomSettingViews;
 using CatHotel.Views.DiscountSettingViews;
 using CatHotel.Views.OutcomeSettingViews;
 using CatHotel.Views.CustomerViews;
+using CatHotel.Views.CatViews;
 
 namespace CatHotel.Services;
 
@@ -20,7 +21,9 @@ public static class NavigationService
     public const string SettingsMenuPage = "SettingsMenuPage";
     public const string ShopItemEditPage = "ShopItemEditPage";
     public const string RoomEditPage = "RoomEditPage";
+    public const string BookingPage = "BookingPage";
     public const string CustomerEditPage = "CustomerEditPage";
+    public const string CatEditPage = "CatEditPage";
 
     // outcome / outcome history
     public const string OutcomePage = "OutcomePage";
@@ -43,10 +46,16 @@ public static class NavigationService
             throw new InvalidOperationException($"Route '{route}' not found in navigation service.");
         }
 
-        if (page.BindingContext is INavigationAware navigationAware)
+        // Check both the page itself AND its BindingContext for INavigationAware
+        if (page is INavigationAware pageNavigationAware)
         {
-            navigationAware.OnNavigatedTo(parameters);
+            pageNavigationAware.OnNavigatedTo(parameters);
         }
+        else if (page.BindingContext is INavigationAware bindingContextNavigationAware)
+        {
+            bindingContextNavigationAware.OnNavigatedTo(parameters);
+        }
+
         await Application.Current!.MainPage!.Navigation.PushAsync(page);
     }
 
@@ -66,11 +75,14 @@ public static class NavigationService
             nameof(ShopSettingsWrapperPage) => new ShopSettingsWrapperPage(),
             nameof(DiscountSettingsWrapperPage) => new DiscountSettingsWrapperPage(),
             nameof(OutcomeSettingsWrapperPage) => new OutcomeSettingsWrapperPage(),
-            nameof(CustomerWrapperPage) => new CustomerWrapperPage(), // Placeholder
-            nameof(CatWrapperPage) => new CatWrapperPage(), // Placeholder
+            nameof(CustomerWrapperPage) => new CustomerWrapperPage(),
+            nameof(CatWrapperPage) => new CatWrapperPage(), 
             nameof(ShopItemEditPage) => new ShopItemEditPage(),
             nameof(RoomEditPage) => new RoomEditPage(),
+            nameof(DiscountEditPage) => new DiscountEditPage(),
+            nameof(BookingPage) => new BookingPage(),
             nameof(CustomerEditPage) => new CustomerEditPage(),
+            nameof(CatEditPage) => new CatEditPage(),
             _ => null
         };
     }

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.CatViews.CatSelectView"
+             BackgroundColor="{StaticResource Primary50}">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- Cats List -->
+        <CollectionView x:Name="CatsCollectionView"
+                        ItemsSource="{Binding Cats}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnCatSelected"
+                        Margin="16,12,16,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="{StaticResource NeutralWhite}"
+                            StrokeThickness="1" 
+                            Stroke="{StaticResource Neutral200}"
+                            Padding="12" 
+                            Margin="0,0,0,12"
+                            HorizontalOptions="FillAndExpand">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                        </Border.Shadow>
+                        <Grid ColumnDefinitions="128,*" ColumnSpacing="12" HorizontalOptions="Fill">
+                            <!-- Cat Photo -->
+                            <Frame Grid.Column="0" 
+                                   Padding="0"
+                                   CornerRadius="8" 
+                                   HasShadow="False"
+                                   WidthRequest="128"
+                                   HeightRequest="128">
+                                <Image Source="{Binding ImgUrl}" Aspect="AspectFill" WidthRequest="128" HeightRequest="128" BackgroundColor="{StaticResource Neutral200}" />
+                            </Frame>
+
+                            <!-- Cat Info -->
+                            <StackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center" HorizontalOptions="Fill">
+                                <Label Text="{Binding Name}" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{StaticResource Neutral950}"/>
+
+                                <!-- Age Row -->
+                                <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                    <Image Grid.Column="0" Source="calendar_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="Age" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                    <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                    <Label Grid.Column="3" Text="{Binding Age, StringFormat='{0} years'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center"/>
+                                </Grid>
+
+                                <!-- Gender Row -->
+                                <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                    <Image Grid.Column="0" Source="heart_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="Gender" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                    <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                    <Label Grid.Column="3" Text="{Binding Gender}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center"/>
+                                </Grid>
+
+                                <!-- Breed Row -->
+                                <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                    <Image Grid.Column="0" Source="star_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="Breed" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                    <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                    <Label Grid.Column="3" Text="{Binding Breed}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="108" LineBreakMode="TailTruncation"/>
+                                </Grid>
+
+                                <!-- Edit Button -->
+                                <Frame
+                                    HorizontalOptions="EndAndExpand"
+                                    Padding="0"
+                                    HasShadow="False">
+                                    <Button
+                                        WidthRequest="16"
+                                        HeightRequest="16"
+                                        CornerRadius="35"
+                                        BackgroundColor="{StaticResource Primary}"
+                                        FontSize="1"
+                                        ImageSource="edit_pencil_icon.svg"
+                                        BindingContext="{Binding .}"
+                                        Clicked="OnEditButtonClicked">
+                                    </Button>
+                                </Frame>
+                            </StackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <!-- Empty State -->
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Spacing="12" 
+                                     Padding="12" 
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center">
+                    <Label Text="No Cats Found" 
+                           FontSize="14" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource Neutral600}"
+                           HorizontalTextAlignment="Center"/>
+                    <Label Text="Add a new cat to get started" 
+                           FontSize="12" 
+                           TextColor="{StaticResource Neutral400}"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <!-- Footer spacing -->
+            <CollectionView.Footer>
+                <BoxView HeightRequest="80" BackgroundColor="Transparent" />
+            </CollectionView.Footer>
+        </CollectionView>
+
+        <!-- Gradient overlay behind search bar -->
+        <BoxView Grid.Row="0" ZIndex="0" VerticalOptions="End" HeightRequest="96">
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="{StaticResource Primary50}" Offset="1" />
+                    <GradientStop Color="#00FFF7EF" Offset="0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <!-- Floating Search Bar -->
+        <Border Grid.Row="0" 
+                ZIndex="1"
+                Style="{StaticResource RoundedInputContainerStyle}"
+                Margin="16,0,16,16" 
+                Padding="12,0,12,0"
+                VerticalOptions="End"
+                HeightRequest="56">
+            <Grid ColumnDefinitions="Auto,*">
+                <Image Grid.Column="0" Source="search_icon.svg" HeightRequest="16" WidthRequest="16" VerticalOptions="Center"/>
+                <Border Grid.Column="1" BackgroundColor="Transparent" Stroke="Transparent">
+                    <Entry x:Name="SearchEntry" 
+                           Style="{StaticResource RoundedEntryStyle}"
+                           Placeholder="Search by name or breed..." 
+                           TextChanged="OnSearchTextChanged" />
+                </Border>
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentView>

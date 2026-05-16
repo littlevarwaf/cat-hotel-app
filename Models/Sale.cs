@@ -9,10 +9,10 @@ public class Sale
     public int Id { get; set; }
 
     [NotNull]
-    public string BookingId { get; set; }
+    public int BookingId { get; set; }
 
     [NotNull]
-    public string RoomId { get; set; }
+    public int RoomId { get; set; }
 
     [NotNull]
     public int RoomRevenue { get; set; } = 0;
@@ -31,7 +31,7 @@ public class Sale
     {
     }
 
-    public Sale(string bookingId, string roomId, int roomRevenue, int shopRevenue)
+    public Sale(int bookingId, int roomId, int roomRevenue, int shopRevenue)
     {
         BookingId = bookingId;
         RoomId = roomId;
