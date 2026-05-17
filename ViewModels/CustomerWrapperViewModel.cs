@@ -140,7 +140,14 @@ public class CustomerWrapperViewModel : INotifyCollectionChanged, INotifyPropert
             System.Diagnostics.Debug.WriteLine($"[CustomerWrapper] Mode set to: {mode}");
         }
 
-        if (parameters.TryGetValue("roomId", out var roomIdObj) && roomIdObj is int roomId)
+        // For mode 0 (RoomDetailPage), get bookingId directly
+        if (Mode == 0 && parameters.TryGetValue("bookingId", out var bookingIdObj) && bookingIdObj is int bookingId)
+        {
+            BookingId = bookingId;
+            System.Diagnostics.Debug.WriteLine($"[CustomerWrapper] BookingId set to: {bookingId}");
+        }
+        // For mode 1 (BookingPage), derive bookingId from roomId if needed
+        else if (Mode == 1 && parameters.TryGetValue("roomId", out var roomIdObj) && roomIdObj is int roomId)
         {
             System.Diagnostics.Debug.WriteLine($"[CustomerWrapper] Loading with roomId: {roomId}");
             RoomId = roomId;

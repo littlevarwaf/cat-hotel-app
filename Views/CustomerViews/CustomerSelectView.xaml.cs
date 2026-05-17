@@ -190,6 +190,10 @@ public partial class CustomerSelectView : ContentView
                     booking.CustomerId = customer.Id;
                     await _bookingRepo.UpdateBookingAsync(booking);
                     System.Diagnostics.Debug.WriteLine($"[CustomerSelectView] Booking {booking.Id} updated with customer {customer.Id}");
+
+                    // 🔔 Notify that customer was updated
+                    CustomerService.NotifyCustomerUpdated(customer);
+                    System.Diagnostics.Debug.WriteLine($"[CustomerSelectView] ✅ CustomerService.NotifyCustomerUpdated triggered for customer {customer.Id}");
                 }
             }
             else

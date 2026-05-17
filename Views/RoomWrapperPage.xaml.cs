@@ -2,6 +2,7 @@ using CatHotel.Models;
 using CatHotel.Services;
 using CatHotel.Views;
 using CatHotel.ViewModels;
+using System.ComponentModel;
 
 namespace CatHotel.Views;
 
@@ -21,6 +22,12 @@ public partial class RoomWrapperPage : ContentPage, INavigationAware
         // Subscribe to popup service events
         PopupService.Instance.ShowPopupRequested += OnShowPopup;
         PopupService.Instance.HidePopupRequested += OnHidePopup;
+
+        // Subscribe to cart changes to detect when order is placed
+        if (CartService.Instance is INotifyPropertyChanged cartNotify)
+        {
+            cartNotify.PropertyChanged += OnCartPropertyChanged;
+        }
     }
 
     private void OnPageLoaded(object? sender, EventArgs e)
@@ -28,6 +35,26 @@ public partial class RoomWrapperPage : ContentPage, INavigationAware
         if (this.FindByName("RoomDetailPageInstance") is RoomDetailPage roomDetailPage)
         {
             roomDetailPage.BindingContext = _viewModel;
+        }
+    }
+
+    private void OnCartPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // When cart is cleared (order placed), refresh booking items
+        if (e.PropertyName == nameof(CartService.Instance.Count) &&
+            CartService.Instance.Count == 0)
+        {
+            _ = RefreshBookingItemsFromCartAsync();
+        }
+    }
+
+    private async Task RefreshBookingItemsFromCartAsync()
+    {
+        if (_viewModel.Booking != null)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapperPage] 🔄 Cart cleared - Refreshing booking items for booking: {_viewModel.Booking.Id}");
+            await _viewModel.RefreshBookingItemsAsync(_viewModel.Booking.Id);
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapperPage] ✅ Booking items refreshed after cart checkout");
         }
     }
 

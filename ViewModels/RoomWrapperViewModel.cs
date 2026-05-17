@@ -86,6 +86,9 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         }
 
         CartItemCount = _cart.Count;
+
+        // Subscribe to customer changes
+        CustomerService.CustomerUpdated += OnCustomerUpdated;
     }
 
     public Room? Room
@@ -365,7 +368,6 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         }
     }
 
-    // Update the RefreshBookingItemsAsync method to include ShopItem loading:
     public async Task RefreshBookingItemsAsync(int bookingId)
     {
         try
@@ -415,16 +417,65 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         System.Diagnostics.Debug.WriteLine($"[RoomWrapper] TotalPrice calculated: {TotalPrice}");
     }
 
+    private async void OnCustomerUpdated(object? sender, CustomerEventArgs e)
+    {
+        if (Booking != null && e.Customer != null)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] 🔄 Customer updated event received for customer {e.Customer.Id}");
+
+            // Update the in-memory booking's CustomerId to match the database
+            Booking.CustomerId = e.Customer.Id;
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Updated Booking.CustomerId to {e.Customer.Id}");
+
+            // Refresh the customer display
+            await RefreshCustomerAsync(e.Customer.Id);
+        }
+    }
+
+    private async Task RefreshCustomerAsync(int customerId)
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Refreshing customer {customerId}");
+            var customer = await _customerRepo.GetCustomerByIdAsync(customerId);
+            Customer = customer;
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] ✅ Customer refreshed: {customer?.Name ?? "NULL"}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error refreshing customer: {ex}");
+        }
+    }
+
     private async Task EditCustomerAsync()
     {
-        if (Customer == null) return;
-        var parameters = new Dictionary<string, object> { ["customerId"] = Customer.Id };
+        if (Booking == null) return;
+
+        var parameters = new Dictionary<string, object>
+        {
+            ["mode"] = 0,  // 0 = RoomDetailPage (existing booking)
+            ["bookingId"] = Booking.Id
+        };
+
         await NavigationService.GoToAsync(NavigationService.CustomerWrapperPage, parameters);
     }
 
     private async Task AddCustomerAsync()
     {
-        await NavigationService.GoToAsync(NavigationService.CustomerWrapperPage);
+        if (Booking == null)
+        {
+            await Application.Current!.MainPage!.DisplayAlertAsync("Error",
+                "No active booking found.", "OK");
+            return;
+        }
+
+        var parameters = new Dictionary<string, object>
+        {
+            ["mode"] = 0,  // 0 = RoomDetailPage (existing booking)
+            ["bookingId"] = Booking.Id
+        };
+
+        await NavigationService.GoToAsync(NavigationService.CustomerWrapperPage, parameters);
     }
 
     private async Task EditCatAsync(Cat cat)

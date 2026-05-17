@@ -1,4 +1,6 @@
 using CatHotel.Services;
+using CatHotel.ViewModels;
+using System.ComponentModel;
 
 namespace CatHotel.Views;
 
@@ -10,6 +12,19 @@ public partial class RoomDetailPage : ContentView
     {
         InitializeComponent();
         this.Loaded += OnViewLoaded;
+
+        // Subscribe to cart service to detect when items are added
+        if (CartService.Instance is INotifyPropertyChanged cartNotify)
+        {
+            cartNotify.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CartService.Instance.Count) &&
+                    CartService.Instance.Count == 0) // Cart was just cleared (order placed)
+                {
+                    RefreshBookingDataAsync();
+                }
+            };
+        }
     }
 
     private void OnViewLoaded(object? sender, EventArgs e)
@@ -23,6 +38,23 @@ public partial class RoomDetailPage : ContentView
             System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Booking: {((dynamic)this.BindingContext).Booking}");
             System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Room: {((dynamic)this.BindingContext).Room}");
             System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] DateRangeDisplay: {((dynamic)this.BindingContext).DateRangeDisplay}");
+        }
+    }
+
+    private async Task RefreshBookingDataAsync()
+    {
+        try
+        {
+            if (this.BindingContext is RoomWrapperViewModel viewModel && viewModel.Booking != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Refreshing booking data for booking: {viewModel.Booking.Id}");
+                await viewModel.RefreshBookingItemsAsync(viewModel.Booking.Id);
+                System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Booking data refreshed");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Error refreshing booking data: {ex}");
         }
     }
 
