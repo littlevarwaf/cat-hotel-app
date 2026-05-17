@@ -9,6 +9,7 @@
             InitializeComponent();
             BindingContext = _vm;
             _vm.PropertyChanged += OnViewModelPropertyChanged;
+            _vm.SelectedTabIndex = 1;
         }
 
         private async void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

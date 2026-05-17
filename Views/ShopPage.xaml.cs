@@ -11,15 +11,6 @@ public partial class ShopPage : ContentView
     private int _qty = 1;
     private bool _isAnimating;
 
-    private static string GetEmoji(ShopItem item) => item.ItemType switch
-    {
-        ItemType.Food       => "🐟",
-        ItemType.Necessity  => "🪨",
-        ItemType.Toy        => "🧶",
-        ItemType.Accessory  => "🧴",
-        _                   => "🐾"
-    };
-
     public ShopPage()
     { 
         InitializeComponent();
@@ -43,58 +34,29 @@ public partial class ShopPage : ContentView
             await App.Database.InitializeAsync();
             var items = await App.Database.Db.Table<ShopItem>().ToListAsync();
 
-            // ถ้า DB ว่างให้ seed ข้อมูลตั้งต้นไว้ก่อน
-            if (items.Count == 0)
-            {
-                items = GetDefaultItems();
-                foreach (var item in items)
-                    await App.Database.Db.InsertAsync(item);
-
-                // reload เพื่อให้ได้ Id จริงจาก DB
-                items = await App.Database.Db.Table<ShopItem>().ToListAsync();
-            }
-
             ShopCollection.ItemsSource = items;
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine("[SHOP] LoadShopItemsAsync error: " + ex);
-            // fallback ใช้ default list ถ้า DB ยังไม่พร้อม
-            ShopCollection.ItemsSource = GetDefaultItems();
         }
     }
-
-    private static List<ShopItem> GetDefaultItems() => new()
-    {
-        new ShopItem("Me-O Tuna",      "Wet food for cats",   35,  ItemType.Food,       ""),
-        new ShopItem("Royal Canin",    "Dry food premium",   399,  ItemType.Food,       ""),
-        new ShopItem("Whiskas Sachet", "Pouch meal",          25,  ItemType.Food,       ""),
-        new ShopItem("Cat Treat",      "Snack & reward",      89,  ItemType.Food,       ""),
-        new ShopItem("Kitty Litter",   "Clumping sand",      199,  ItemType.Necessity,  ""),
-        new ShopItem("Cat Shampoo",    "Gentle formula",     149,  ItemType.Accessory,  ""),
-    };
 
     private async void OnItemTapped(object? sender, TappedEventArgs e)
     {
         if (_isAnimating || e.Parameter is not ShopItem item) return;
-        _selectedItem = item;
-        _qty = 1;
-
-        PopupName.Text  = item.Name;
-        PopupDesc.Text  = item.Description;
-        PopupPrice.Text = $"฿{item.ItemPrice:N0}";
-        PopupQty.Text   = "1";
-        PopupEmoji.Text = GetEmoji(item);
-
-        PopupCard.TranslationY = 600;
-        DimOverlay.Opacity     = 0;
-        DimOverlay.IsVisible   = true;
-        PopupCard.IsVisible    = true;
-
         _isAnimating = true;
-        await Task.WhenAll(
-            PopupCard.TranslateToAsync(0, 0, 300, Easing.CubicOut),
-            DimOverlay.FadeToAsync(1, 250));
+
+        var args = new PopupEventArgs
+        {
+            ShopItem = item,
+            Name = item.Name,
+            Description = item.Description,
+            Price = $"฿{item.ItemPrice:N0}",
+            ImageUrl = !string.IsNullOrEmpty(item.ImgUrl) ? item.ImgUrl : "app_icon.svg"
+        };
+
+        PopupService.Instance.ShowPopup(args);
         _isAnimating = false;
     }
 

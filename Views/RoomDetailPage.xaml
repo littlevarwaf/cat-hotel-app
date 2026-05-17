@@ -234,9 +234,12 @@
 
                         <!-- Add More Cats Button -->
                         <Button x:Name="AddMoreCatsButton"
+                                ImageSource="add_plus_icon_square.svg"
                                 Text="+ Add More Cats"
-                                BackgroundColor="{StaticResource Primary50}"
-                                TextColor="{StaticResource Primary700}"
+                                BackgroundColor="{StaticResource NeutralWhite}"
+                                TextColor="{StaticResource Neutral950}"
+                                BorderColor="{StaticResource Primary500}"
+                                BorderWidth="0.25"
                                 CornerRadius="8"
                                 FontSize="14"
                                 HeightRequest="48"
@@ -278,12 +281,18 @@
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
                                         <Grid ColumnDefinitions="*,Auto">
-                                            <Label Grid.Column="0" 
-                                                   Text="{Binding ItemId, StringFormat='Item #{0} (x{1})', ConverterParameter=Quantity}" 
-                                                   FontSize="12" TextColor="{StaticResource Neutral600}"/>
-                                            <Label Grid.Column="1" 
-                                                   Text="{Binding UnitPrice, StringFormat='฿ {0:N0}'}" 
-                                                   FontSize="12" TextColor="{StaticResource Neutral600}"/>
+                                            <StackLayout Grid.Column="0" Spacing="2">
+                                                <Label Text="{Binding ShopItem.Name, StringFormat='{0}'}" 
+                                                       FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                                                <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" 
+                                                       FontSize="11" TextColor="{StaticResource Neutral600}"/>
+                                            </StackLayout>
+                                            <StackLayout Grid.Column="1" Spacing="2" HorizontalOptions="End">
+                                                <Label Text="{Binding UnitPrice, StringFormat='฿ {0:N0}'}" 
+                                                       FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Primary700}"/>
+                                                <Label Text="{Binding Quantity, UnitPrice, StringFormat='Subtotal: ฿ {0:N0}'}" 
+                                                       FontSize="11" TextColor="{StaticResource Neutral600}"/>
+                                            </StackLayout>
                                         </Grid>
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
@@ -325,7 +334,7 @@
                             FontSize="16" 
                             HeightRequest="64"
                             Command="{Binding CheckoutCommand}"/>
-        </Border>
+                </Border>
             </StackLayout>
         </ScrollView>
 

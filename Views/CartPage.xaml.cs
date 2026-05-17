@@ -9,6 +9,10 @@ public partial class CartPage : ContentPage, INavigationAware
     private bool _isInitialized = false;
     private readonly CartService _cart = CartService.Instance;
     private Room? _room;
+    private Booking? _booking;
+
+    // Static flag to signal refresh needed
+    public static bool ShouldRefreshBookingItems { get; set; } = false;
 
     public Room? Room
     {
@@ -28,8 +32,7 @@ public partial class CartPage : ContentPage, INavigationAware
         InitializeComponent();
         BindingContext = this;
         this.Loaded += OnViewLoaded;
-        
-        // Subscribe to cart changes to update in real-time
+
         if (_cart is INotifyPropertyChanged notifyPropertyChanged)
         {
             notifyPropertyChanged.PropertyChanged += (s, e) =>
@@ -44,15 +47,20 @@ public partial class CartPage : ContentPage, INavigationAware
 
     public void OnNavigatedTo(IDictionary<string, object> parameters)
     {
-        // Extract room data if passed
         if (parameters.TryGetValue("room", out var roomObj) && roomObj is Room room)
         {
             Room = room;
             System.Diagnostics.Debug.WriteLine($"[CART] Received Room: {room.Name} (ID: {room.Id})");
         }
+
+        if (parameters.TryGetValue("booking", out var bookingObj) && bookingObj is Booking booking)
+        {
+            _booking = booking;
+            System.Diagnostics.Debug.WriteLine($"[CART] Received Booking: {booking.Id}");
+        }
         else
         {
-            System.Diagnostics.Debug.WriteLine("[CART] No room data received");
+            System.Diagnostics.Debug.WriteLine("[CART] No booking data received");
         }
     }
 
@@ -88,9 +96,9 @@ public partial class CartPage : ContentPage, INavigationAware
         if (!_cart.Items.Any())
             return;
 
-        if (_room == null)
+        if (_booking == null)
         {
-            await DisplayAlert("Error", "ไม่พบข้อมูลห้อง กรุณาลองใหม่", "OK");
+            await DisplayAlert("Error", "No active booking found", "OK");
             return;
         }
 
@@ -98,36 +106,28 @@ public partial class CartPage : ContentPage, INavigationAware
         {
             await App.Database.InitializeAsync();
 
-            // สร้าง Booking ใหม่
-            var booking = new Booking
-            {
-                RoomId     = _room.Id,
-                CustomerId = 1,                   // TODO: เปลี่ยนเป็น current user จริง
-                StartDate  = DateTime.Today,
-                EndDate    = DateTime.Today.AddDays(1),
-                TotalPrice = _cart.Total,
-                CreatedAt  = DateTime.Now
-            };
-
-            await App.Database.Db.InsertAsync(booking);
-
-            // insert BookingItems จาก cart
+            // ✨ Add items to EXISTING booking instead of creating new one
             foreach (var entry in _cart.Items)
             {
-                var bi = new BookingItem(booking.Id, entry.Item.Id, entry.Quantity)
+                var bi = new BookingItem(_booking.Id, entry.Item.Id, entry.Quantity)
                 {
                     UnitPrice = entry.Item.ItemPrice
                 };
                 await App.Database.Db.InsertAsync(bi);
+                System.Diagnostics.Debug.WriteLine($"[CART] BookingItem created: BookingId={_booking.Id}, ItemId={entry.Item.Id}, Qty={entry.Quantity}");
             }
 
-            // คำนวณ TotalPrice อีกครั้งจาก BookingItems จริง
-            await App.Database.RecalculateBookingTotalPriceAsync(booking.Id);
+            // Recalculate total price with new items
+            await App.Database.RecalculateBookingTotalPriceAsync(_booking.Id);
+            System.Diagnostics.Debug.WriteLine($"[CART] Booking {_booking.Id} total price recalculated");
 
             _cart.Clear();
             Refresh();
 
-            await DisplayAlert("สำเร็จ ✅", $"สั่งซื้อเรียบร้อย (Booking #{booking.Id})", "OK");
+            await DisplayAlert("สำเร็จ ✅", $"สั่งซื้อเรียบร้อย (Booking #{_booking.Id})", "OK");
+
+            // 🔔 Signal that booking items need to be refreshed
+            ShouldRefreshBookingItems = true;
             await NavigationService.GoBackAsync();
         }
         catch (Exception ex)

@@ -95,7 +95,7 @@ public partial class BookingPage : ContentPage, INavigationAware
         _draft.SelectedCats.Remove(cat);
     }
 
-    private async void OnConfirmBookingClicked(object? sender, EventArgs e)
+    private async void OnConfirmBookingTapped(object? sender, TappedEventArgs e)
     {
         if (_room == null)
         {

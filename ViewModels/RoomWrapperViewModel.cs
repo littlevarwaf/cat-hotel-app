@@ -51,9 +51,17 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         GoToShopCommand = new Command(() => SelectedTabIndex = 1);
         GoToCartCommand = new Command(async () =>
         {
+            if (Booking == null)
+            {
+                await Application.Current!.MainPage!.DisplayAlertAsync("Error",
+                    "No active booking found for this room.", "OK");
+                return;
+            }
+
             var parameters = new Dictionary<string, object>
             {
-                ["room"] = Room!
+                ["room"] = Room!,
+                ["booking"] = Booking
             };
             await NavigationService.GoToAsync(NavigationService.CartPage, parameters);
         });
@@ -311,6 +319,7 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
                 System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Loading booking items for booking: {bookingId}");
                 var items = await _bookingRepo.GetBookingItemsByBookingIdAsync(bookingId);
                 System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Found {items.Count} booking items");
+                await LoadBookingItemsWithDetailsAsync(items);
                 BookingItems = new ObservableCollection<BookingItem>(items);
 
                 // Calculate date range display
@@ -325,6 +334,51 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error loading booking data: {ex}");
+        }
+    }
+
+    private async Task LoadBookingItemsWithDetailsAsync(IEnumerable<BookingItem> bookingItems)
+    {
+        try
+        {
+            // For each booking item, load the associated ShopItem
+            foreach (var item in bookingItems)
+            {
+                if (item.ItemId > 0)
+                {
+                    // Get ShopItem from database
+                    var shopItem = await App.Database.Db.Table<ShopItem>()
+                        .Where(si => si.Id == item.ItemId)
+                        .FirstOrDefaultAsync();
+
+                    if (shopItem != null)
+                    {
+                        item.ShopItem = shopItem;
+                        System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Loaded ShopItem for BookingItem {item.Id}: {shopItem.Name}");
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error loading ShopItem details: {ex}");
+        }
+    }
+
+    // Update the RefreshBookingItemsAsync method to include ShopItem loading:
+    public async Task RefreshBookingItemsAsync(int bookingId)
+    {
+        try
+        {
+            var items = await _bookingRepo.GetBookingItemsByBookingIdAsync(bookingId);
+            await LoadBookingItemsWithDetailsAsync(items);
+            BookingItems = new ObservableCollection<BookingItem>(items);
+            CalculateTotalPrice();
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] BookingItems refreshed with details: {items.Count} items");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error refreshing booking items: {ex}");
         }
     }
 
@@ -359,20 +413,6 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         }
 
         System.Diagnostics.Debug.WriteLine($"[RoomWrapper] TotalPrice calculated: {TotalPrice}");
-    }
-
-    public async Task RefreshBookingItemsAsync(int bookingId)
-    {
-        try
-        {
-            var items = await _bookingRepo.GetBookingItemsByBookingIdAsync(bookingId);
-            BookingItems = new ObservableCollection<BookingItem>(items);
-            CalculateTotalPrice();
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error refreshing booking items: {ex}");
-        }
     }
 
     private async Task EditCustomerAsync()

@@ -25,7 +25,8 @@ public class BookingItem
     [Ignore]
     public Booking Booking { get; set; }
     [Ignore]
-    public Cat Cat { get; set; }
+    public ShopItem ShopItem { get; set; }
+
     public BookingItem()
     {
     }

@@ -85,24 +85,29 @@
             </CollectionView>
         </Grid>
 
+        <!-- Dim Overlay -->
         <BoxView x:Name="DimOverlay"
                  AbsoluteLayout.LayoutBounds="0,0,1,1"
                  AbsoluteLayout.LayoutFlags="All"
-                 Color="#80000000"
+                 Color="Black"
+                 Opacity="0.5"
                  IsVisible="False"
-                 InputTransparent="False">
+                 InputTransparent="False"
+                 ZIndex="1000">
             <BoxView.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnDimTapped"/>
             </BoxView.GestureRecognizers>
         </BoxView>
 
+        <!-- Popup Card -->
         <Border x:Name="PopupCard"
-                AbsoluteLayout.LayoutBounds="0,1,1,AutoSize"
-                AbsoluteLayout.LayoutFlags="XProportional,YProportional,WidthProportional"
+                AbsoluteLayout.LayoutBounds="0,1,1,0.7"
+                AbsoluteLayout.LayoutFlags="XProportional,YProportional,WidthProportional,HeightProportional"
                 BackgroundColor="White"
                 StrokeThickness="0"
-                Padding="20,16,20,32"
-                IsVisible="False">
+                Padding="0"
+                IsVisible="False"
+                ZIndex="1001">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="24,24,0,0"/>
             </Border.StrokeShape>
@@ -110,71 +115,141 @@
                 <Shadow Brush="Black" Offset="0,-4" Radius="16" Opacity="0.25"/>
             </Border.Shadow>
 
-            <StackLayout Spacing="14">
+            <Grid RowDefinitions="*,Auto,Auto" Padding="0">
 
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                    <Button Text="✕" BackgroundColor="Transparent" TextColor="#9E9E9E"
-                            FontSize="18" Padding="0" WidthRequest="36" HeightRequest="36"
-                            Clicked="OnClosePopup"/>
-                    <Label Grid.Column="1"/>
-                    <Border x:Name="PopupNewBadge" Grid.Column="2"
-                            BackgroundColor="#4CAF50" StrokeThickness="0"
-                            Padding="10,4" IsVisible="False" VerticalOptions="Center">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="8"/>
-                        </Border.StrokeShape>
-                        <Label Text="NEWLOOK!!" TextColor="White"
-                               FontSize="11" FontAttributes="Bold"/>
-                    </Border>
-                </Grid>
+                <!-- Image Container with Close Button - Scrollable -->
+                <ScrollView Grid.Row="0">
+                    <Grid>
+                        <!-- Image with 1:1 Aspect Ratio -->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                <Border BackgroundColor="#FFCDD2" StrokeThickness="0" HeightRequest="180">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="16"/>
-                    </Border.StrokeShape>
-                    <Label x:Name="PopupEmoji" Text="🐟" FontSize="80"
-                           HorizontalOptions="Center" VerticalOptions="Center"/>
-                </Border>
+                        <Border BackgroundColor="#FFCDD2" StrokeThickness="0">
+                            <Grid>
+                                <Image x:Name="PopupImage" 
+                                       Source="app_icon.svg"
+                                       Aspect="AspectFill"/>
 
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <!-- Fade Overlay -->
+                                <BoxView BackgroundColor="White" Opacity="0.15"/>
+
+                                <!-- Close Button (Top-Left) -->
+                                <Button Text="✕" 
+                                        BackgroundColor="White" 
+                                        TextColor="#9E9E9E"
+                                        FontSize="24" 
+                                        Padding="0" 
+                                        WidthRequest="44" 
+                                        HeightRequest="44"
+                                        CornerRadius="22"
+                                        HorizontalOptions="Start" 
+                                        VerticalOptions="Start"
+                                        Margin="12,12,0,0"
+                                        Clicked="OnClosePopup"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </ScrollView>
+
+                <!-- Item Info Section -->
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Padding="20,16,20,12" ColumnSpacing="12">
+                    <!-- Left: Name and Description -->
                     <StackLayout VerticalOptions="Center">
-                        <Label x:Name="PopupName" Text="" FontSize="20"
-                               FontAttributes="Bold" TextColor="#212121"/>
-                        <Label x:Name="PopupDesc" Text="" FontSize="13" TextColor="#9E9E9E"/>
+                        <Label x:Name="PopupName" 
+                               Text="" 
+                               FontSize="22"
+                               FontAttributes="Bold" 
+                               TextColor="#212121"/>
+                        <Label x:Name="PopupDesc" 
+                               Text="" 
+                               FontSize="13" 
+                               TextColor="#9E9E9E"
+                               LineBreakMode="WordWrap"/>
                     </StackLayout>
-                    <Grid Grid.Column="1" ColumnDefinitions="38,36,38"
-                          VerticalOptions="Center" ColumnSpacing="2">
-                        <Button Text="−" BackgroundColor="#FCE4EC" TextColor="#E91E63"
-                                FontSize="20" CornerRadius="19"
-                                WidthRequest="38" HeightRequest="38"
-                                Padding="0" Clicked="OnDecrement"/>
-                        <Label x:Name="PopupQty" Grid.Column="1" Text="1"
-                               FontSize="17" FontAttributes="Bold" TextColor="#212121"
-                               HorizontalOptions="Center" VerticalOptions="Center"
-                               HorizontalTextAlignment="Center"/>
-                        <Button Grid.Column="2" Text="+" BackgroundColor="#FCE4EC"
-                                TextColor="#E91E63" FontSize="20" CornerRadius="19"
-                                WidthRequest="38" HeightRequest="38"
-                                Padding="0" Clicked="OnIncrement"/>
+
+                    <!-- Right: Quantity Control (Pills Style) -->
+                    <Grid Grid.Column="1" 
+                          ColumnDefinitions="38,40,38" 
+                          VerticalOptions="Center" 
+                          ColumnSpacing="0"
+                          HeightRequest="48">
+                        <Border BackgroundColor="#FCE4EC" 
+                                StrokeThickness="0"
+                                Padding="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="24,0,0,24"/>
+                            </Border.StrokeShape>
+                            <Button Text="−" 
+                                    BackgroundColor="Transparent"
+                                    TextColor="#E91E63"
+                                    FontSize="22" 
+                                    Padding="0"
+                                    Clicked="OnDecrement"
+                                    VerticalOptions="Center"/>
+                        </Border>
+
+                        <Border Grid.Column="1" 
+                                BackgroundColor="#FCE4EC" 
+                                StrokeThickness="0"
+                                Padding="0">
+                            <Label x:Name="PopupQty" 
+                                   Text="1"
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#212121"
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"/>
+                        </Border>
+
+                        <Border Grid.Column="2" 
+                                BackgroundColor="#FCE4EC" 
+                                StrokeThickness="0"
+                                Padding="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="0,24,24,0"/>
+                            </Border.StrokeShape>
+                            <Button Text="+" 
+                                    BackgroundColor="Transparent"
+                                    TextColor="#E91E63" 
+                                    FontSize="22" 
+                                    Padding="0"
+                                    Clicked="OnIncrement"
+                                    VerticalOptions="Center"/>
+                        </Border>
                     </Grid>
                 </Grid>
 
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                    <Border BackgroundColor="#F5F5F5" StrokeThickness="0" Padding="12,14">
+                <!-- Price and Add to Cart  -->
+                <Grid Grid.Row="2" ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="20,8,20,20" RowSpacing="0">
+                    <Border BackgroundColor="White" 
+                            StrokeThickness="1"
+                            Padding="16,12" 
+                            VerticalOptions="End">
                         <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="12"/>
+                            <RoundRectangle CornerRadius="24"/>
                         </Border.StrokeShape>
-                        <Label x:Name="PopupPrice" Text="" FontSize="16"
-                               FontAttributes="Bold" TextColor="#E91E63"
-                               HorizontalOptions="Center"/>
+                        <Label x:Name="PopupPrice" 
+                               Text="" 
+                               FontSize="16"
+                               FontAttributes="Bold" 
+                               TextColor="#E91E63"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
                     </Border>
-                    <Button Grid.Column="1" Text="🛒  Add to Cart"
-                            BackgroundColor="#E91E63" TextColor="White"
-                            CornerRadius="12" FontSize="14" HeightRequest="52"
+                    <Button Grid.Column="1" 
+                            Text="🛒  Add to Cart"
+                            BackgroundColor="#E91E63" 
+                            TextColor="White"
+                            CornerRadius="12" 
+                            FontSize="14" 
+                            HeightRequest="52"
+                            VerticalOptions="End"
                             Clicked="OnAddToCart"/>
                 </Grid>
 
-            </StackLayout>
+            </Grid>
         </Border>
 
     </AbsoluteLayout>
