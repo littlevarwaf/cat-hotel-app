@@ -24,7 +24,7 @@ public class CartService : INotifyPropertyChanged
             existing.Quantity += qty;
         else
             Items.Add(new CartEntry { Item = item, Quantity = qty });
-        
+
         OnPropertyChanged(nameof(Count));
         OnPropertyChanged(nameof(Total));
     }
@@ -45,7 +45,7 @@ public class CartService : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    public void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
@@ -58,4 +58,5 @@ public class CartEntry
     public double Subtotal => Item.ItemPrice * Quantity;
     public string SubtotalDisplay => $"฿{Subtotal:N0}";
     public string PriceDisplay => $"฿{Item.ItemPrice:N0}";
+    public string DisplayName => $"{Item.Name} (x{Quantity})";
 }

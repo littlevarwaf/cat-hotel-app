@@ -76,10 +76,10 @@ public partial class CartPage : ContentPage, INavigationAware
     {
         CartCollection.ItemsSource = null;
         CartCollection.ItemsSource = _cart.Items;
+        OrderSummaryCollection.ItemsSource = null;
+        OrderSummaryCollection.ItemsSource = _cart.Items;
         TotalItemsLabel.Text = $"Total Items: {_cart.Count}";
         TotalLabel.Text = $"฿{_cart.Total:N0}";
-        SummaryLabel.Text = string.Join(", ",
-            _cart.Items.Select(c => $"{c.Item.Name} (x{c.Quantity})"));
     }
 
     private void OnRemoveClicked(object? sender, EventArgs e)
@@ -91,6 +91,46 @@ public partial class CartPage : ContentPage, INavigationAware
         }
     }
 
+    private async void OnCartItemIncrement(object? sender, EventArgs e)
+    {
+        if (sender is Button btn && btn.CommandParameter is CartEntry entry)
+        {
+            entry.Quantity++;
+            _cart.OnPropertyChanged(nameof(_cart.Count));
+            _cart.OnPropertyChanged(nameof(_cart.Total));
+            Refresh();
+        }
+    }
+
+    private async void OnCartItemDecrement(object? sender, EventArgs e)
+    {
+        if (sender is Button btn && btn.CommandParameter is CartEntry entry)
+        {
+            if (entry.Quantity > 1)
+            {
+                entry.Quantity--;
+                _cart.OnPropertyChanged(nameof(_cart.Count));
+                _cart.OnPropertyChanged(nameof(_cart.Total));
+                Refresh();
+            }
+            else if (entry.Quantity == 1)
+            {
+                // Quantity is at 1, ask if user wants to remove
+                bool result = await DisplayAlertAsync(
+                    "Remove Item",
+                    $"Remove {entry.Item.Name} from cart?",
+                    "Yes",
+                    "No");
+
+                if (result)
+                {
+                    _cart.Remove(entry);
+                    Refresh();
+                }
+            }
+        }
+    }
+
     private async void OnPlaceOrder(object? sender, EventArgs e)
     {
         if (!_cart.Items.Any())
@@ -98,7 +138,7 @@ public partial class CartPage : ContentPage, INavigationAware
 
         if (_booking == null)
         {
-            await DisplayAlert("Error", "No active booking found", "OK");
+            await DisplayAlertAsync("Error", "No active booking found", "OK");
             return;
         }
 
@@ -124,7 +164,7 @@ public partial class CartPage : ContentPage, INavigationAware
             _cart.Clear();
             Refresh();
 
-            await DisplayAlert("สำเร็จ ✅", $"สั่งซื้อเรียบร้อย (Booking #{_booking.Id})", "OK");
+            await DisplayAlertAsync("สำเร็จ ✅", $"สั่งซื้อเรียบร้อย (Booking #{_booking.Id})", "OK");
 
             // 🔔 Signal that booking items need to be refreshed
             ShouldRefreshBookingItems = true;
@@ -133,7 +173,7 @@ public partial class CartPage : ContentPage, INavigationAware
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine("[CART] OnPlaceOrder error: " + ex);
-            await DisplayAlert("Error", "บันทึกคำสั่งซื้อไม่สำเร็จ: " + ex.Message, "OK");
+            await DisplayAlertAsync("Error", "บันทึกคำสั่งซื้อไม่สำเร็จ: " + ex.Message, "OK");
         }
     }
 

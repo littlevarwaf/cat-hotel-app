@@ -27,17 +27,17 @@
         </BoxView>
 
         <!-- Floating tabbar container -->
-        <Border Grid.Row="0" ZIndex="1" Margin="30,0,30,40" HeightRequest="70"
+        <Border Grid.Row="0" ZIndex="1" Margin="30,0,30,32" HeightRequest="90"
                 BackgroundColor="Transparent" StrokeThickness="0"
                 VerticalOptions="End">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="35" />
+                <RoundRectangle CornerRadius="0" />
             </Border.StrokeShape>
             <Border.Shadow>
                 <Shadow Brush="Black" Offset="4,4" Radius="10" Opacity="0.15" />
             </Border.Shadow>
 
-            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="16" Padding="8">
+            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="16" Padding="8" VerticalOptions="End">
 
                 <!-- GROUP 1: Tab Navigation with white background -->
                 <Border Grid.Column="0" HeightRequest="70" BackgroundColor="White" StrokeThickness="0" Padding="8">
@@ -202,13 +202,12 @@
                         Grid.Column="1"
                         BackgroundColor="{StaticResource Neutral950}"
                         StrokeThickness="0"
-                        Padding="8"
-                        MaximumWidthRequest="128">
+                        Padding="8">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="24"/>
                         </Border.StrokeShape>
 
-                        <Grid ColumnDefinitions="32,*,32" 
+                        <Grid ColumnDefinitions="32,Auto,32" 
                               VerticalOptions="Center" 
                               ColumnSpacing="16"
                               HeightRequest="32">
