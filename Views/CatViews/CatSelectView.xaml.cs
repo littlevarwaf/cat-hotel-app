@@ -194,16 +194,27 @@ public partial class CatSelectView : ContentView
             // Mode 1 = BookingPage flow (save to BookingDraftService)
             if (_viewModel.Mode == 1)
             {
-                System.Diagnostics.Debug.WriteLine($"[CatSelectView] Mode: BOOKING DRAFT (1) - Adding to BookingDraftService");
+                System.Diagnostics.Debug.WriteLine($"[CatSelectView] Mode: BOOKING DRAFT (1)");
                 var selectedCats = BookingDraftService.Instance.SelectedCats;
+                var editingIndex = BookingDraftService.Instance.EditingCatIndex;
 
-                if (selectedCats.Any(c => c.Id == cat.Id))
+                // If editing a specific cat, replace it
+                if (editingIndex.HasValue && editingIndex.Value >= 0 && editingIndex.Value < selectedCats.Count)
                 {
-                    selectedCats.Remove(selectedCats.First(c => c.Id == cat.Id));
+                    System.Diagnostics.Debug.WriteLine($"[CatSelectView] Replacing cat at index {editingIndex.Value}");
+                    selectedCats[editingIndex.Value] = cat;
                 }
                 else
                 {
-                    selectedCats.Add(cat);
+                    // Normal add mode
+                    if (selectedCats.Any(c => c.Id == cat.Id))
+                    {
+                        selectedCats.Remove(selectedCats.First(c => c.Id == cat.Id));
+                    }
+                    else
+                    {
+                        selectedCats.Add(cat);
+                    }
                 }
 
                 System.Diagnostics.Debug.WriteLine($"[CatSelectView] BookingDraftService.SelectedCats updated. Total: {selectedCats.Count}");

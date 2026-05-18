@@ -16,6 +16,14 @@ public class BookingDraftService : INotifyPropertyChanged
     private bool _isPickingCustomer;
     private bool _isPickingCats;
     private Room? _room;
+    private int? _editingCatIndex;
+    private Cat? _editingCatBackup;
+
+    public BookingDraftService()
+    {
+        // Subscribe to SelectedCats collection changes to update CanAddMoreCats
+        _selectedCats.CollectionChanged += (s, e) => OnPropertyChanged(nameof(CanAddMoreCats));
+    }
 
     public bool IsPickingCustomer
     {
@@ -41,6 +49,7 @@ public class BookingDraftService : INotifyPropertyChanged
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SelectedCustomerDisplay));
                 OnPropertyChanged(nameof(SelectedCatsDisplay));
+                OnPropertyChanged(nameof(CanAddMoreCats));
             }
         }
     }
@@ -51,8 +60,10 @@ public class BookingDraftService : INotifyPropertyChanged
         set
         {
             _selectedCats = value ?? new ObservableCollection<Cat>();
+            _selectedCats.CollectionChanged += (s, e) => OnPropertyChanged(nameof(CanAddMoreCats));
             OnPropertyChanged();
             OnPropertyChanged(nameof(SelectedCatsDisplay));
+            OnPropertyChanged(nameof(CanAddMoreCats));
         }
     }
 
@@ -71,7 +82,19 @@ public class BookingDraftService : INotifyPropertyChanged
     public Room? Room
     {
         get => _room;
-        set => SetProperty(ref _room, value);
+        set
+        {
+            if (SetProperty(ref _room, value))
+            {
+                OnPropertyChanged(nameof(CanAddMoreCats));
+            }
+        }
+    }
+
+    public int? EditingCatIndex
+    {
+        get => _editingCatIndex;
+        set => SetProperty(ref _editingCatIndex, value);
     }
 
     public string SelectedCustomerDisplay =>
@@ -79,6 +102,8 @@ public class BookingDraftService : INotifyPropertyChanged
 
     public string SelectedCatsDisplay =>
         SelectedCats.Count == 0 ? "ยังไม่ได้เลือกแมว" : string.Join(", ", SelectedCats.Select(c => c.Name));
+
+    public bool CanAddMoreCats => Room != null && SelectedCats.Count < Room.MaxOccupants;
 
     public void BeginCustomerPick() => IsPickingCustomer = true;
 
@@ -88,10 +113,34 @@ public class BookingDraftService : INotifyPropertyChanged
 
     public void EndCatPick() => IsPickingCats = false;
 
+    public void BeginCatEdit(int catIndex)
+    {
+        System.Diagnostics.Debug.WriteLine($"[BookingDraftService] BeginCatEdit for index {catIndex}");
+        EditingCatIndex = catIndex;
+        if (catIndex >= 0 && catIndex < SelectedCats.Count)
+        {
+            _editingCatBackup = SelectedCats[catIndex];
+        }
+    }
+
+    public void EndCatEdit(bool save)
+    {
+        System.Diagnostics.Debug.WriteLine($"[BookingDraftService] EndCatEdit - save: {save}");
+        if (!save && _editingCatBackup != null && EditingCatIndex.HasValue)
+        {
+            // Restore the original cat
+            SelectedCats.Insert(EditingCatIndex.Value, _editingCatBackup);
+        }
+        EditingCatIndex = null;
+        _editingCatBackup = null;
+    }
+
     public void ResetForRoom(int roomId, DateTime? checkInDate = null)
     {
         SelectedCustomer = null;
         SelectedCats.Clear();
+        EditingCatIndex = null;
+        _editingCatBackup = null;
         var day = (checkInDate ?? DateTime.Today).Date;
         FromDate = day.AddHours(14);
         ToDate = day.AddDays(1).AddHours(12);

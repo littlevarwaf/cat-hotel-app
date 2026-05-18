@@ -28,6 +28,14 @@ public partial class BookingPage : ContentPage, INavigationAware
             System.Diagnostics.Debug.WriteLine($"[BookingPage] Parameter: {param.Key} = {param.Value}");
         }
 
+        // Handle cat edit completion
+        if (_draft.EditingCatIndex.HasValue)
+        {
+            System.Diagnostics.Debug.WriteLine($"[BookingPage] Completing cat edit at index {_draft.EditingCatIndex}");
+            _draft.EndCatEdit(true); // save=true
+            return;
+        }
+
         if (!parameters.TryGetValue("roomId", out var idObj) || idObj is not int roomId)
         {
             System.Diagnostics.Debug.WriteLine("[BookingPage] ERROR: roomId parameter not found or invalid");
@@ -80,11 +88,35 @@ public partial class BookingPage : ContentPage, INavigationAware
             new Dictionary<string, object> { ["mode"] = 1 });
     }
 
-    private async void OnRemoveCatClicked(object? sender, EventArgs e)
+    private async void OnEditCatClicked(object? sender, TappedEventArgs e)
     {
-        if (sender is not Button button) return;
+        if (sender is not Border border) return;
 
-        var cat = button.BindingContext as Cat;
+        var cat = border.BindingContext as Cat;
+        if (cat == null) return;
+
+        // Find the index of the cat being edited
+        var catIndex = _draft.SelectedCats.IndexOf(cat);
+        if (catIndex < 0) return;
+
+        System.Diagnostics.Debug.WriteLine($"[BookingPage] Editing cat: {cat.Name} at index {catIndex}");
+
+        if (_draft.SelectedCustomer == null)
+        {
+            await DisplayAlertAsync("เลือกลูกค้าก่อน", "กรุณาเลือกลูกค้าก่อนเลือกแมว", "OK");
+            return;
+        }
+
+        _draft.BeginCatEdit(catIndex);
+        await NavigationService.GoToAsync(NavigationService.CatWrapperPage,
+            new Dictionary<string, object> { ["mode"] = 1 });
+    }
+
+    private async void OnRemoveCatClicked(object? sender, TappedEventArgs e)
+    {
+        if (sender is not Border border) return;
+
+        var cat = border.BindingContext as Cat;
         if (cat == null) return;
 
         bool confirm = await DisplayAlertAsync("Remove Cat",

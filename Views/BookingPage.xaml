@@ -141,89 +141,124 @@
                         <StackLayout Spacing="12" BindableLayout.ItemsSource="{Binding SelectedCats}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid RowDefinitions="*" ColumnDefinitions="*">
-                                        <!-- Cat Card -->
-                                        <Border Grid.Row="0" Grid.Column="0"
-                                                BackgroundColor="{StaticResource NeutralWhite}"
-                                                StrokeThickness="1" 
-                                                Stroke="{StaticResource Neutral200}"
-                                                Padding="12" 
-                                                HorizontalOptions="FillAndExpand">
-                                            <Border.StrokeShape>
-                                                <RoundRectangle CornerRadius="12"/>
-                                            </Border.StrokeShape>
-                                            <Border.Shadow>
-                                                <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
-                                            </Border.Shadow>
-                                            <StackLayout Spacing="8">
-                                                <!-- Cat Card Content -->
-                                                <Grid ColumnDefinitions="128,*" ColumnSpacing="12" HorizontalOptions="Fill">
-                                                    <!-- Cat Photo -->
-                                                    <Frame Grid.Column="0" 
-                                                           Padding="0"
-                                                           CornerRadius="8" 
-                                                           HasShadow="False"
-                                                           WidthRequest="128"
-                                                           HeightRequest="128"
-                                                           BackgroundColor="{StaticResource Neutral200}">
-                                                        <Image Source="{Binding ImgUrl}" Aspect="AspectFill" WidthRequest="128" HeightRequest="128" />
-                                                    </Frame>
+                                    <Border BackgroundColor="{StaticResource NeutralWhite}"
+                                            StrokeThickness="1" 
+                                            Stroke="{StaticResource Neutral200}"
+                                            Padding="12" 
+                                            HorizontalOptions="FillAndExpand">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="12"/>
+                                        </Border.StrokeShape>
+                                        <Border.Shadow>
+                                            <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+                                        </Border.Shadow>
+                                        <StackLayout Spacing="8">
+                                            <!-- Cat Card Content -->
+                                            <Grid ColumnDefinitions="128,*" ColumnSpacing="12" HorizontalOptions="Fill">
+                                                <!-- Cat Photo -->
+                                                <Frame Grid.Column="0" 
+                                                       Padding="0"
+                                                       CornerRadius="8" 
+                                                       HasShadow="False"
+                                                       WidthRequest="128"
+                                                       HeightRequest="128"
+                                                       BackgroundColor="{StaticResource Neutral200}">
+                                                    <Image Source="{Binding ImgUrl}" Aspect="AspectFill" WidthRequest="128" HeightRequest="128" />
+                                                </Frame>
 
-                                                    <!-- Cat Info -->
-                                                    <StackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center" HorizontalOptions="Fill">
-                                                        <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                                                <!-- Cat Info -->
+                                                <StackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                    <Label Text="{Binding Name}" 
+                                                           FontSize="16" 
+                                                           FontAttributes="Bold" 
+                                                           TextColor="{StaticResource Neutral950}"/>
 
-                                                        <!-- Age Row -->
-                                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
-                                                            <Image Grid.Column="0" Source="calendar_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
-                                                            <Label Grid.Column="1" Text="Age" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
-                                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
-                                                            <Label Grid.Column="3" Text="{Binding Age, StringFormat='{0} years', FallbackValue='-'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center"/>
-                                                        </Grid>
+                                                    <!-- Age Row -->
+                                                    <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                        <Image Grid.Column="0" Source="calendar_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                                        <Label Grid.Column="1" Text="Age" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                                        <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                                        <Label Grid.Column="3" Text="{Binding Age, StringFormat='{0} years', FallbackValue='-'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center"/>
+                                                    </Grid>
 
-                                                        <!-- Gender Row -->
-                                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
-                                                            <Image Grid.Column="0" Source="heart_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
-                                                            <Label Grid.Column="1" Text="Gender" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
-                                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
-                                                            <Label Grid.Column="3" Text="{Binding Gender, FallbackValue='-'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center"/>
-                                                        </Grid>
+                                                    <!-- Gender Row -->
+                                                    <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                        <Image Grid.Column="0" Source="heart_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                                        <Label Grid.Column="1" Text="Gender" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                                        <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                                        <Label Grid.Column="3" Text="{Binding Gender, FallbackValue='-'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center"/>
+                                                    </Grid>
 
-                                                        <!-- Breed Row -->
-                                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
-                                                            <Image Grid.Column="0" Source="star_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
-                                                            <Label Grid.Column="1" Text="Breed" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
-                                                            <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
-                                                            <Label Grid.Column="3" Text="{Binding Breed, FallbackValue='-'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="108" LineBreakMode="TailTruncation"/>
-                                                        </Grid>
-                                                    </StackLayout>
-                                                </Grid>
-                                            </StackLayout>
-                                        </Border>
+                                                    <!-- Breed Row -->
+                                                    <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                                        <Image Grid.Column="0" Source="star_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                                        <Label Grid.Column="1" Text="Breed" FontSize="12" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                                        <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                                        <Label Grid.Column="3" Text="{Binding Breed, FallbackValue='-'}" FontSize="14" TextColor="{StaticResource Neutral400}" VerticalOptions="Center" MaximumWidthRequest="108" LineBreakMode="TailTruncation"/>
+                                                    </Grid>
+                                                </StackLayout>
+                                            </Grid>
 
-                                        <!-- Remove Button (Overlay) -->
-                                        <Button Grid.Row="0" Grid.Column="0"
-                                                Text="✕"
-                                                FontSize="24"
-                                                TextColor="White"
-                                                BackgroundColor="#E91E63"
-                                                CornerRadius="50"
-                                                Padding="0"
-                                                WidthRequest="44"
-                                                HeightRequest="44"
-                                                HorizontalOptions="End"
-                                                VerticalOptions="Start"
-                                                Margin="0,-6,-6,0"
-                                                Clicked="OnRemoveCatClicked"/>
-                                    </Grid>
+                                            <!-- Action Buttons Row -->
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                                <!-- Edit Button -->
+                                                <Border Grid.Column="0" 
+                                                        StrokeThickness="1" 
+                                                        Stroke="{StaticResource Primary100}"
+                                                        BackgroundColor="{StaticResource NeutralWhite}" 
+                                                        Padding="0,8"
+                                                        HorizontalOptions="Fill">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="8"/>
+                                                    </Border.StrokeShape>
+                                                    <Label Text="Edit" 
+                                                           FontSize="12"
+                                                           TextColor="{StaticResource Primary700}" 
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center"/>
+                                                    <Border.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="OnEditCatClicked"/>
+                                                    </Border.GestureRecognizers>
+                                                </Border>
+
+                                                <!-- Remove Button -->
+                                                <Border Grid.Column="1" 
+                                                        StrokeThickness="1" 
+                                                        Stroke="{StaticResource Neutral200}"
+                                                        BackgroundColor="{StaticResource Neutral100}" 
+                                                        Padding="0,8"
+                                                        WidthRequest="80">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="8"/>
+                                                    </Border.StrokeShape>
+                                                    <Label Text="Remove" 
+                                                           FontSize="12"
+                                                           TextColor="{StaticResource Neutral600}" 
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center"/>
+                                                    <Border.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="OnRemoveCatClicked"/>
+                                                    </Border.GestureRecognizers>
+                                                </Border>
+                                            </Grid>
+                                        </StackLayout>
+                                    </Border>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </StackLayout>
 
-                        <!-- Add Cats Button -->
-                        <Button Text="Add More Cats" BackgroundColor="{StaticResource NeutralWhite}" TextColor="{StaticResource Neutral950}"
-                                ImageSource="add_plus_icon_square.svg" BorderColor="{StaticResource Primary500}" BorderWidth="0.25"
-                                CornerRadius="10" Clicked="OnPickCatsClicked" />
+                        <!-- Add More Cats Button -->
+                        <Button Text="+ Add More Cats"
+                                ImageSource="add_plus_icon_square.svg"
+                                BackgroundColor="{StaticResource NeutralWhite}"
+                                TextColor="{StaticResource Neutral950}"
+                                BorderColor="{StaticResource Primary500}"
+                                BorderWidth="0.25"
+                                CornerRadius="8"
+                                FontSize="14"
+                                HeightRequest="48"
+                                IsVisible="{Binding CanAddMoreCats}"
+                                Clicked="OnPickCatsClicked" />
                     </StackLayout>
                 </Border>
 
@@ -242,39 +277,39 @@
                     </VerticalStackLayout>
                 </Border>
 
-
             </VerticalStackLayout>
         </ScrollView>
-                <!-- Gradient overlay behind search bar -->
-                <BoxView Grid.Row="1" ZIndex="0" VerticalOptions="End" HeightRequest="96">
-                    <BoxView.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#FFF7EF" Offset="1" />
-                            <GradientStop Color="#00FFF7EF" Offset="0" />
-                        </LinearGradientBrush>
-                    </BoxView.Background>
-                </BoxView>
-        
-                <!-- Floating Confirm Button -->
-                <Border Grid.Row="1" ZIndex="1" Margin="30,0,30,40" HeightRequest="64"
-                        BackgroundColor="Transparent" StrokeThickness="0"
-                        VerticalOptions="End">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="28" />
-                    </Border.StrokeShape>
-                    <Border.Shadow>
-                        <Shadow Brush="#E06060" Offset="0,4" Radius="12" Opacity="0.4" />
-                    </Border.Shadow>
-                    <Border BackgroundColor="{StaticResource Primary500}" StrokeThickness="0" Padding="0">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="38"/>
-                        </Border.StrokeShape>
-                        <Label Text="Confirm Booking Details" TextColor="White" FontSize="16"
-                               FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnConfirmBookingTapped"/>
-                        </Border.GestureRecognizers>
-                    </Border>
-                </Border>
+
+        <!-- Gradient overlay behind confirm button -->
+        <BoxView Grid.Row="1" ZIndex="0" VerticalOptions="End" HeightRequest="96">
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FFF7EF" Offset="1" />
+                    <GradientStop Color="#00FFF7EF" Offset="0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <!-- Floating Confirm Button -->
+        <Border Grid.Row="1" ZIndex="1" Margin="30,0,30,40" HeightRequest="64"
+                BackgroundColor="Transparent" StrokeThickness="0"
+                VerticalOptions="End">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="28" />
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="#E06060" Offset="0,4" Radius="12" Opacity="0.4" />
+            </Border.Shadow>
+            <Border BackgroundColor="{StaticResource Primary500}" StrokeThickness="0" Padding="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="38"/>
+                </Border.StrokeShape>
+                <Label Text="Confirm Booking Details" TextColor="White" FontSize="16"
+                       FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnConfirmBookingTapped"/>
+                </Border.GestureRecognizers>
+            </Border>
+        </Border>
     </Grid>
 </ContentPage>

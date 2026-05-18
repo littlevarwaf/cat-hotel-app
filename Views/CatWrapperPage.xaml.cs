@@ -13,18 +13,13 @@ public partial class CatWrapperPage : ContentPage
         InitializeComponent();
         BindingContext = new CatWrapperViewModel();
         _viewModel = (CatWrapperViewModel)BindingContext;
-        this.Loaded += OnPageLoaded;
     }
 
-    private void OnPageLoaded(object? sender, EventArgs e)
+    public async void OnNavigatedTo(IDictionary<string, object> parameters)
     {
-        System.Diagnostics.Debug.WriteLine($"[CatWrapperPage] Loaded");
-
-        // Set binding context for CatSelectView
-        if (this.FindByName("CatSelectViewInstance") is CatSelectView catSelectView)
+        if (_viewModel is INavigationAware navigationAware)
         {
-            catSelectView.BindingContext = _viewModel;
-            System.Diagnostics.Debug.WriteLine($"[CatWrapperPage] CatSelectView binding context set");
+            navigationAware.OnNavigatedTo(parameters);
         }
     }
 
