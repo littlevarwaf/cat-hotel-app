@@ -42,6 +42,11 @@ public partial class HomePage : ContentView
         }
     }
 
+    public async Task RefreshRoomsAsync()
+    {
+        await LoadRoomsAsync();
+    }
+
     private async Task LoadRoomsAsync()
     {
         LoadingIndicator.IsRunning = true;
@@ -50,11 +55,11 @@ public partial class HomePage : ContentView
         try
         {
             var rooms = await _roomRepo.GetAllRoomsAsync();
-            var viewModels = rooms.Select(r => new RoomViewModel(r)).ToList();
+            var occupiedRooms = rooms.Where(r => r.Status == RoomStatus.Occupied).ToList();
+            var viewModels = occupiedRooms.Select(r => new RoomViewModel(r)).ToList();
             RoomsCollection.ItemsSource = viewModels;
 
-            int available = rooms.Count(r => r.Status == RoomStatus.Available);
-            AvailableLabel.Text = $"Available Rooms: {available}";
+            OccupiedLabel.Text = $"Occupied Rooms: {occupiedRooms.Count}";
         }
         catch (Exception ex)
         {

@@ -39,7 +39,7 @@
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="20"/>
                         </Border.StrokeShape>
-                        <Label x:Name="AvailableLabel" Text="Available Rooms: 0"
+                        <Label x:Name="OccupiedLabel" Text="Occupied Rooms: 0"
                                TextColor="White" FontSize="13" FontAttributes="Bold"/>
                     </Border>
                     <Label Grid.Column="1" x:Name="DateLabel" Text=""
@@ -150,7 +150,7 @@
                     <CollectionView.EmptyView>
                         <StackLayout HorizontalOptions="Center" Padding="20">
                             <Label Text="🏨" FontSize="48" HorizontalOptions="Center"/>
-                            <Label Text="No rooms found" FontSize="14"
+                            <Label Text="No occupied rooms" FontSize="14"
                                    TextColor="#757575" HorizontalOptions="Center"/>
                         </StackLayout>
                     </CollectionView.EmptyView>

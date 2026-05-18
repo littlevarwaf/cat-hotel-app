@@ -1,4 +1,6 @@
-﻿namespace CatHotel
+﻿using CatHotel.Views;
+
+namespace CatHotel
 {
     public partial class MainPage : ContentPage
     {
@@ -15,16 +17,24 @@
 
         private async void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MainViewModel.SelectedTabIndex) && _vm.SelectedTabIndex == 1)
-                await Calendar.RefreshRoomsAsync();
-
             if (e.PropertyName == nameof(MainViewModel.SelectedTabIndex))
             {
+                if (_vm.SelectedTabIndex == 0 && _lastActiveTab != 0)
+                {
+                    await HomePage.RefreshRoomsAsync();
+                }
+
+                if (_vm.SelectedTabIndex == 1 && _lastActiveTab != 1)
+                {
+                    await Calendar.RefreshRoomsAsync();
+                }
+
                 if (_vm.SelectedTabIndex == 2 && _lastActiveTab != 2)
                 {
                     var salesView = FindVisualChild<CatHotel.Views.Sales>(this);
                     salesView?.OnTabActivated();
                 }
+
                 _lastActiveTab = _vm.SelectedTabIndex;
             }
         }
@@ -42,6 +52,5 @@
             }
             return null;
         }
-
     }
 }

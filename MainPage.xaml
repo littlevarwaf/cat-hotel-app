@@ -21,7 +21,7 @@
 
         <tabs:ViewSwitcher Grid.Row="0" Padding="0,0,0,0"
                            SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
-            <views:HomePage />
+            <views:HomePage x:Name="HomePage"/>
             <views:CalendarPage x:Name="Calendar" />
             <views:Sales />
         </tabs:ViewSwitcher>
