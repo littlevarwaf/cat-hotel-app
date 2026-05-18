@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CatHotel.Views.SalesAiSummaryView"
+             x:Name="AiSummaryView">
+
+    <Grid RowDefinitions="Auto,Auto" RowSpacing="0">
+        <!-- Header (Expandable) -->
+        <Border Grid.Row="0" 
+                BackgroundColor="{StaticResource Primary500}" 
+                Padding="16,12" 
+                StrokeThickness="0"
+                Margin="0,0,0,0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8,8,8,8"/>
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ToggleExpandCommand}" NumberOfTapsRequired="1" />
+            </Border.GestureRecognizers>
+
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                <StackLayout Grid.Column="0" Spacing="1" VerticalOptions="Center">
+                    <Label Text="AI Sales Insights" 
+                           FontSize="14" 
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource NeutralWhite}"/>
+                    <Label Text="{Binding LastUpdatedText}" 
+                           FontSize="11" 
+                           TextColor="{StaticResource NeutralWhite}"
+                           Opacity="0.85"/>
+                </StackLayout>
+
+                <BoxView Grid.Column="1" BackgroundColor="Transparent"/>
+
+                <Label Grid.Column="2" 
+                       Text="{Binding IsExpanded, StringFormat='{0:chevron}'}" 
+                       FontSize="16" 
+                       TextColor="{StaticResource NeutralWhite}"
+                       VerticalOptions="Center">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding IsExpanded}" Value="True">
+                            <Setter Property="Text" Value="▲"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding IsExpanded}" Value="False">
+                            <Setter Property="Text" Value="▼"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+            </Grid>
+        </Border>
+
+        <!-- Expandable Content -->
+        <Border Grid.Row="1" 
+                IsVisible="{Binding IsExpanded}" 
+                BackgroundColor="{StaticResource NeutralWhite}"
+                StrokeThickness="0"
+                Padding="0"
+                Margin="8,0,8,8">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="0,0,8,8"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.08"/>
+            </Border.Shadow>
+
+            <StackLayout Spacing="12" Padding="16,12">
+
+                <!-- Loading State -->
+                <StackLayout IsVisible="{Binding IsLoading}" 
+                             Spacing="12" 
+                             VerticalOptions="Center" 
+                             HorizontalOptions="Center"
+                             Padding="20">
+                    <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                                       Color="{StaticResource Primary500}" 
+                                       Scale="1"/>
+                    <Label Text="Analyzing Sales Data..." 
+                           TextColor="{StaticResource Neutral600}" 
+                           FontSize="12"
+                           HorizontalTextAlignment="Center"/>
+                </StackLayout>
+
+                <!-- Error State -->
+                <StackLayout IsVisible="{Binding HasError}" Spacing="12">
+                    <Border BackgroundColor="{StaticResource Primary50}" 
+                            Padding="12" 
+                            StrokeThickness="1" 
+                            Stroke="{StaticResource Primary100}"
+                            StrokeShape="RoundRectangle 6">
+                        <StackLayout Spacing="6">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                <Image Grid.Column="0" Source="triangle_warning_icon_primary700.svg" WidthRequest="12" HeightRequest="12"/>
+                                <Label Grid.Column="1" Text="Error Occured!" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{StaticResource Primary700}"
+                                       FontSize="12"/>
+                            </Grid>
+                            <Label Text="{Binding ErrorMessage}" 
+                                   TextColor="{StaticResource Primary700}" 
+                                   FontSize="11"
+                                   LineBreakMode="WordWrap"/>
+                        </StackLayout>
+                    </Border>
+
+                    <Button Text="Retry" 
+                            Command="{Binding RetryCommand}"
+                            BackgroundColor="{StaticResource Primary500}"
+                            TextColor="{StaticResource NeutralWhite}"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Padding="12,8"
+                            CornerRadius="6"
+                            HorizontalOptions="Center"
+                            WidthRequest="140"/>
+                </StackLayout>
+
+                <!-- Summary Content - shown when not loading and not error -->
+                <StackLayout IsVisible="{Binding ShowSummaryContent}" Spacing="12">
+                    <Border BackgroundColor="{StaticResource Primary50}" 
+                            Padding="12" 
+                            StrokeThickness="1" 
+                            Stroke="{StaticResource Primary100}"
+                            StrokeShape="RoundRectangle 6">
+                        <ScrollView MaximumHeightRequest="280">
+                            <Label Text="{Binding AiSummary}" 
+                                   TextColor="{StaticResource Neutral950}" 
+                                   FontSize="12"
+                                   LineHeight="1.4"
+                                   LineBreakMode="WordWrap"
+                                   Padding="0"/>
+                        </ScrollView>
+                    </Border>
+
+                    <!-- Refresh Button -->
+                    <Button Text="Refresh Analysis" 
+                            ImageSource="reload_icon_white.svg"
+                            Command="{Binding RefreshCommand}"
+                            IsEnabled="{Binding IsRefreshEnabled}"
+                            BackgroundColor="{StaticResource Primary500}"
+                            TextColor="{StaticResource NeutralWhite}"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Padding="12,8"
+                            CornerRadius="6"
+                            HorizontalOptions="Fill"/>
+                </StackLayout>
+
+            </StackLayout>
+        </Border>
+    </Grid>
+</ContentView>

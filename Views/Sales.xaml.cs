@@ -1,4 +1,5 @@
 using CatHotel.Models;
+using CatHotel.ViewModels;
 using Microcharts;
 using SkiaSharp;
 using System;
@@ -17,6 +18,7 @@ public partial class Sales : ContentView
     private List<(DateTime Month, double Income, double Expense)> _allMonths;
     private int _currentStartIndex = 0;
     private const int _monthsPerPage = 6;
+    private SalesAnalysisViewModel _aiViewModel;
 
     // --- ObservableCollection for Month Label (for XAML binding) ---
     public ObservableCollection<string> MonthLabels { get; set; } = new();
@@ -27,6 +29,9 @@ public partial class Sales : ContentView
     public Sales()
     {
         InitializeComponent();
+
+        // Initialize AI ViewModel
+        _aiViewModel = new SalesAnalysisViewModel();
 
         // ----- BindingContextChanged จะถูกเรียกทุกครั้งที่ฝังใน Tab หรือ ViewHost -----
         this.BindingContextChanged += (s, e) =>
@@ -68,7 +73,11 @@ public partial class Sales : ContentView
     private void MainVm_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(MainViewModel.SelectedYear))
+        {
             SyncGraphToSelectedYear();
+            // Trigger AI analysis refresh when year changes
+            _ = _aiViewModel?.RefreshAnalysisAsync();
+        }
     }
     private async void SyncGraphToSelectedYear()
     {
@@ -89,6 +98,9 @@ public partial class Sales : ContentView
             await LoadAllYearDataAsync();
             await RenderBestCategoryDonut(MonthPicker.SelectedIndex);
             await LoadRoomUsageFromDbAsync();
+
+            // Load AI analysis (with cached result if available)
+            await _aiViewModel?.LoadCachedSummaryAsync();
         }
         catch (Exception ex)
         {

@@ -1,5 +1,6 @@
 ﻿using CatHotel.Services;
 using CatHotel.Views;
+using CatHotel.ViewModels;
 using CommunityToolkit.Maui;
 using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
@@ -38,6 +39,11 @@ namespace CatHotel
                 .AddSingleton<ICatRepository, DatabaseCatRepository>()
                 .AddSingleton<IBookingCatRepository, DatabaseBookingCatRepository>()
 
+                // AI Services
+                .AddSingleton<HttpClient>(sp => new HttpClient { Timeout = TimeSpan.FromSeconds(30) })
+                .AddSingleton<GeminiAiService>()
+                .AddTransient<SalesAnalysisViewModel>()
+
                 // Pages — เลือกแค่ Singleton หรือ Transient อย่างใดอย่างหนึ่ง
                 .AddTransient<HomePage>()
                 .AddTransient<CalendarPage>()
@@ -45,7 +51,8 @@ namespace CatHotel
                 .AddTransient<ShopPage>()
                 .AddTransient<RoomDetailPage>()
                 .AddTransient<CartPage>()
-                .AddTransient<BookingPage>();
+                .AddTransient<BookingPage>()
+                .AddTransient<GeminiApiKeySetupPage>();
 
             return builder.Build();
         }

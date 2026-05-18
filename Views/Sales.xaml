@@ -2,6 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             xmlns:local="clr-namespace:CatHotel.Views"
              x:Class="CatHotel.Views.Sales" x:Name="SalesView">
 
     <ContentView.Background>
@@ -29,6 +30,9 @@
         <ScrollView Grid.Row="1" Padding="0,0,0,128">
 
             <VerticalStackLayout Padding="16" Spacing="12">
+                <!-- AI Sales Analysis Summary -->
+                <local:SalesAiSummaryView/>
+
                 <!-- ตัวกราฟแท่ง -->
                 <Label Text="รายได้ปัจจุบัน" FontSize="14" FontAttributes="Bold" />
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="8" Margin="0,8,0,8">
@@ -44,10 +48,10 @@
                         Clicked="NextYearButton_Clicked"/>
                 </HorizontalStackLayout>
                 <Border Padding="12"
-        StrokeShape="RoundRectangle 8"
-        StrokeThickness="1"
-        HeightRequest="280"
-        BackgroundColor="White">
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1"
+                        HeightRequest="280"
+                        BackgroundColor="White">
                     <microcharts:ChartView x:Name="Income7MonthsChart"
                            HorizontalOptions="FillAndExpand"
                            VerticalOptions="FillAndExpand" Margin="0,0,0,0" />

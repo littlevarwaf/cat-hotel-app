@@ -34,4 +34,10 @@ public partial class SettingsMenuPage : ContentPage
     {
         await NavigationService.GoToAsync(NavigationService.OutcomeSettingsWrapperPage);
     }
+
+    // AI Settings
+    private async void OnAiSettingsClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new GeminiApiKeySetupPage());
+    }
 }
