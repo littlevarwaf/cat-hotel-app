@@ -22,53 +22,87 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Border BackgroundColor="White" StrokeThickness="0" Padding="0">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="12"/>
-                        </Border.StrokeShape>
-                        <Border.Shadow>
-                            <Shadow Brush="#20000000" Offset="0,2" Radius="6" Opacity="0.12"/>
-                        </Border.Shadow>
-                        <Grid RowDefinitions="Auto,Auto" RowSpacing="0">
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer CommandParameter="{Binding .}"
-                                                  Tapped="OnItemTapped"/>
-                            </Grid.GestureRecognizers>
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*" RowSpacing="0">
+                        <!-- Main Card -->
+                        <Border Grid.Row="0" Grid.RowSpan="2"
+                                BackgroundColor="{StaticResource NeutralWhite}" 
+                                Stroke="{StaticResource Primary100}" 
+                                StrokeThickness="1" 
+                                Padding="2,10,2,0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="6"/>
+                            </Border.StrokeShape>
+                            <Border.Shadow>
+                                <Shadow Brush="#20000000" Offset="0,2" Radius="6" Opacity="0.12"/>
+                            </Border.Shadow>
+                            <Grid RowDefinitions="Auto,Auto" RowSpacing="0">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                      Tapped="OnItemTapped"/>
+                                </Grid.GestureRecognizers>
 
-                            <Grid Grid.Row="0" HeightRequest="140">
-                                <Border BackgroundColor="#FDECEC" StrokeThickness="0"
-                                    HeightRequest="140">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="12,12,0,0"/>
-                                    </Border.StrokeShape>
-                                    <Image Source="{Binding ImgUrl}" Aspect="AspectFill"
-                                       HeightRequest="140"/>
-                                </Border>
+                                <!-- Image Container -->
+                                <Grid Grid.Row="0" Padding="0,0,0,0">
+                                    <Grid.WidthRequest>
+                                        <OnPlatform x:TypeArguments="x:Double">
+                                            <On Platform="iOS,Android,WinUI">140</On>
+                                        </OnPlatform>
+                                    </Grid.WidthRequest>
+                                    <Border BackgroundColor="#FDECEC" 
+                                            StrokeThickness="0"
+                                            Padding="0"
+                                            HorizontalOptions="Center">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,0,0,0"/>
+                                        </Border.StrokeShape>
+                                        <Grid HeightRequest="156" WidthRequest="156">
+                                            <Image Source="{Binding ImgUrl}" Aspect="AspectFill"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
 
-                                <Border BackgroundColor="#1A1A1A" StrokeThickness="0"
-                                    Padding="8,4"
-                                    HorizontalOptions="End"
-                                    VerticalOptions="Start"
-                                    Margin="0,8,8,0">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="999"/>
-                                    </Border.StrokeShape>
-                                    <Label Text="{Binding ItemPrice, StringFormat='฿{0:N0}'}"
-                                       TextColor="White" FontSize="11" FontAttributes="Bold"/>
-                                </Border>
+                                <!-- Item Info -->
+                                <VerticalStackLayout Grid.Row="1" Padding="12,8,12,12" Spacing="2">
+                                    <Label Text="{Binding Name}"
+                                           FontSize="13" 
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Neutral950}" 
+                                           LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding Description}"
+                                           FontSize="11" 
+                                           TextColor="{StaticResource Neutral600}"
+                                           LineBreakMode="TailTruncation"/>
+                                </VerticalStackLayout>
                             </Grid>
+                        </Border>
 
-
-                            <VerticalStackLayout Grid.Row="1" Padding="10,8,10,10" Spacing="2">
-                                <Label Text="{Binding Name}"
-                                   FontSize="13" FontAttributes="Bold"
-                                   TextColor="#1A1A1A" LineBreakMode="TailTruncation"/>
-                                <Label Text="{Binding Description}"
-                                   FontSize="11" TextColor="#9E9090"
-                                   LineBreakMode="TailTruncation"/>
-                            </VerticalStackLayout>
-                        </Grid>
-                    </Border>
+                        <!-- Price Tag Badge (Overlay) -->
+                        <Border Grid.Row="0"
+                                BackgroundColor="{StaticResource Neutral950}" 
+                                StrokeThickness="0"
+                                Padding="8,4"
+                                HorizontalOptions="End"
+                                VerticalOptions="Start"
+                                Margin="0,16,0,0"
+                                ZIndex="10">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="999,0,999,0"/>
+                            </Border.StrokeShape>
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="4">
+                                <Image Grid.Column="0"
+                                       Source="price_tag_icon_white.svg"
+                                       HeightRequest="12"
+                                       WidthRequest="12"
+                                       VerticalOptions="Center"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding ItemPrice, StringFormat='฿{0:N0}'}"
+                                       TextColor="{StaticResource NeutralWhite}" 
+                                       FontSize="11" 
+                                       FontAttributes="Bold"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 
