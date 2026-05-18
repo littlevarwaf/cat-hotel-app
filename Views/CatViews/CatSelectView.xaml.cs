@@ -222,25 +222,81 @@ public partial class CatSelectView : ContentView
             // Mode 0 = RoomDetailPage flow (save to database)
             else if (_viewModel.Mode == 0 && _viewModel.BookingId > 0)
             {
-                System.Diagnostics.Debug.WriteLine($"[CatSelectView] Mode: ROOM DETAIL (0) - Adding to database for booking {_viewModel.BookingId}");
+                System.Diagnostics.Debug.WriteLine($"[CatSelectView] Mode: ROOM DETAIL (0) - BookingId: {_viewModel.BookingId}");
 
-                try
+                // Check if we're in edit mode (replacing a cat)
+                if (_viewModel.EditingBookingCatId.HasValue && _viewModel.EditingBookingCatId.Value > 0)
                 {
-                    await _bookingCatRepo.AddCatToBookingAsync(_viewModel.BookingId, cat.Id);
-                    System.Diagnostics.Debug.WriteLine($"[CatSelectView] BookingCat inserted: BookingId={_viewModel.BookingId}, CatId={cat.Id}");
+                    System.Diagnostics.Debug.WriteLine($"[CatSelectView] EDIT MODE: Replacing cat with BookingCatId={_viewModel.EditingBookingCatId}");
+
+                    // Get the current BookingCat record to find what cat is currently assigned
+                    var currentBookingCat = await _bookingCatRepo.GetBookingCatByIdAsync(_viewModel.EditingBookingCatId.Value);
+                    if (currentBookingCat == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CatSelectView] Error: BookingCat not found: {_viewModel.EditingBookingCatId}");
+                        await Application.Current!.MainPage!.DisplayAlertAsync("Error",
+                            "Could not find booking cat record.", "OK");
+                        CatsCollectionView.SelectedItem = null;
+                        return;
+                    }
+
+                    // Check 1: Is it the same cat (no change needed)?
+                    if (currentBookingCat.CatId == cat.Id)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CatSelectView] Cat is already selected: {cat.Name}");
+                        await Application.Current!.MainPage!.DisplayAlertAsync("No Change",
+                            $"'{cat.Name}' is already selected for this booking.", "OK");
+                        CatsCollectionView.SelectedItem = null;
+                        return;
+                    }
+
+                    // Check 2: Is the new cat already in the booking (other than the current one)?
+                    var isAlreadyInBooking = await _bookingCatRepo.IsCatInBookingAsync(_viewModel.BookingId, cat.Id);
+
+                    if (isAlreadyInBooking)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CatSelectView] Cat already exists in booking: {cat.Name}");
+                        await Application.Current!.MainPage!.DisplayAlertAsync("Duplicate Cat",
+                            $"'{cat.Name}' is already assigned to this booking.", "OK");
+                        CatsCollectionView.SelectedItem = null;
+                        return;
+                    }
+
+                    // Update the BookingCat record with the new CatId
+                    try
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CatSelectView] Updating BookingCat: {_viewModel.EditingBookingCatId} with new CatId: {cat.Id}");
+                        await _bookingCatRepo.UpdateCatInBookingAsync(_viewModel.EditingBookingCatId.Value, cat.Id);
+                        System.Diagnostics.Debug.WriteLine($"[CatSelectView] BookingCat updated successfully");
+                    }
+                    catch (Exception dbEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CatSelectView] Error updating BookingCat: {dbEx}");
+                        await Application.Current!.MainPage!.DisplayAlertAsync("Error",
+                            $"Failed to replace cat: {dbEx.Message}", "OK");
+                        CatsCollectionView.SelectedItem = null;
+                        return;
+                    }
                 }
-                catch (Exception dbEx)
+                else
                 {
-                    System.Diagnostics.Debug.WriteLine($"[CatSelectView] Error inserting BookingCat: {dbEx}");
-                    await Application.Current!.MainPage!.DisplayAlertAsync("Error",
-                        $"Failed to add cat to booking: {dbEx.Message}", "OK");
-                    CatsCollectionView.SelectedItem = null;
-                    return;
+                    // Normal add mode (adding a new cat)
+                    System.Diagnostics.Debug.WriteLine($"[CatSelectView] ADD MODE: Adding new cat to booking {_viewModel.BookingId}");
+
+                    try
+                    {
+                        await _bookingCatRepo.AddCatToBookingAsync(_viewModel.BookingId, cat.Id);
+                        System.Diagnostics.Debug.WriteLine($"[CatSelectView] BookingCat inserted: BookingId={_viewModel.BookingId}, CatId={cat.Id}");
+                    }
+                    catch (Exception dbEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[CatSelectView] Error inserting BookingCat: {dbEx}");
+                        await Application.Current!.MainPage!.DisplayAlertAsync("Error",
+                            $"Failed to add cat to booking: {dbEx.Message}", "OK");
+                        CatsCollectionView.SelectedItem = null;
+                        return;
+                    }
                 }
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine($"[CatSelectView] Warning: No valid mode or bookingId detected (Mode={_viewModel.Mode}, BookingId={_viewModel.BookingId})");
             }
 
             SearchEntry.Text = string.Empty;

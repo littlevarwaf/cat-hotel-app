@@ -14,6 +14,7 @@ public class CatWrapperViewModel : INotifyCollectionChanged, INotifyPropertyChan
     private int _selectedTabIndex = 0;
     private int _mode = 0; // 0 = RoomDetailPage, 1 = BookingPage
     private int _bookingId = 0;
+    private int? _editingBookingCatId = null;  // Track which BookingCat is being edited
     private bool _isLoading = false;
     private ObservableCollection<Cat> _cats = new();
     private Cat? _selectedCat;
@@ -102,6 +103,19 @@ public class CatWrapperViewModel : INotifyCollectionChanged, INotifyPropertyChan
         }
     }
 
+    public int? EditingBookingCatId
+    {
+        get => _editingBookingCatId;
+        set
+        {
+            if (_editingBookingCatId != value)
+            {
+                _editingBookingCatId = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public ICommand GoBackCommand { get; }
 
     public async void OnNavigatedTo(IDictionary<string, object> parameters)
@@ -115,11 +129,18 @@ public class CatWrapperViewModel : INotifyCollectionChanged, INotifyPropertyChan
             System.Diagnostics.Debug.WriteLine($"[CatWrapper] Mode set to: {mode}");
         }
 
-        // Get bookingId if provided (Mode 0 = RoomDetailPage)
+        // Get bookingId if provided
         if (parameters.TryGetValue("bookingId", out var bookingIdObj) && bookingIdObj is int bookingId)
         {
             BookingId = bookingId;
             System.Diagnostics.Debug.WriteLine($"[CatWrapper] BookingId set to: {bookingId}");
+        }
+
+        // Get editingBookingCatId if provided (Mode 0 cat edit)
+        if (parameters.TryGetValue("editingBookingCatId", out var editingIdObj) && editingIdObj is int editingId)
+        {
+            EditingBookingCatId = editingId;
+            System.Diagnostics.Debug.WriteLine($"[CatWrapper] EditingBookingCatId set to: {editingId}");
         }
 
         // Load all cats

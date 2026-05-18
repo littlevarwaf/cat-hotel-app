@@ -480,7 +480,30 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
 
     private async Task EditCatAsync(Cat cat)
     {
-        var parameters = new Dictionary<string, object> { ["catId"] = cat.Id };
+        if (Booking == null) return;
+
+        // Get the BookingCat record for this cat
+        var bookingCat = await App.Database.Db.Table<BookingCat>()
+            .Where(bc => bc.BookingId == Booking.Id && bc.CatId == cat.Id)
+            .FirstOrDefaultAsync();
+
+        if (bookingCat == null)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error: BookingCat not found for booking {Booking.Id} and cat {cat.Id}");
+            await Application.Current!.MainPage!.DisplayAlertAsync("Error", "Could not find cat record in booking.", "OK");
+            return;
+        }
+
+        System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Editing cat: {cat.Name} (BookingCatId: {bookingCat.Id})");
+
+        // Navigate with the BookingCat ID
+        var parameters = new Dictionary<string, object>
+        {
+            ["mode"] = 0,  // RoomDetailPage mode
+            ["bookingId"] = Booking.Id,
+            ["editingBookingCatId"] = bookingCat.Id
+        };
+
         await NavigationService.GoToAsync(NavigationService.CatWrapperPage, parameters);
     }
 

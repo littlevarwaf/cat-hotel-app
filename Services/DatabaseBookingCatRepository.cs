@@ -29,4 +29,23 @@ public class DatabaseBookingCatRepository : IBookingCatRepository
             .FirstOrDefaultAsync();
         return exists != null;
     }
+
+    public async Task<BookingCat?> GetBookingCatByIdAsync(int bookingCatId)
+    {
+        await Db.InitializeAsync();
+        return await Db.Db.Table<BookingCat>()
+            .Where(bc => bc.Id == bookingCatId)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<int> UpdateCatInBookingAsync(int bookingCatId, int newCatId)
+    {
+        await Db.InitializeAsync();
+        var bookingCat = await GetBookingCatByIdAsync(bookingCatId);
+        if (bookingCat == null)
+            throw new InvalidOperationException($"BookingCat with ID {bookingCatId} not found.");
+
+        bookingCat.CatId = newCatId;
+        return await Db.Db.UpdateAsync(bookingCat);
+    }
 }
