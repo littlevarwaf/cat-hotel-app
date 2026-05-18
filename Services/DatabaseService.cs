@@ -1,5 +1,12 @@
 ﻿using CatHotel.Models;
+using Microcharts;
+using SkiaSharp;
 using SQLite;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 
 namespace CatHotel.Services
 {
@@ -80,11 +87,10 @@ namespace CatHotel.Services
             await _db.ExecuteAsync("UPDATE Bookings SET TotalPrice = ? WHERE Id = ?", total, bookingId);
         }
 
-        public async Task<List<(DateTime Month, double Income, double Expense)>> GetMonthlySalesLast7MonthsAsync()
+        public async Task<List<(DateTime Month, double Income, double Expense)>> GetMonthlySalesByYearAsync(int year)
         {
-            var thisMonthStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            var start = thisMonthStart.AddMonths(-6);
-            var end = thisMonthStart.AddMonths(1);
+            var start = new DateTime(year, 1, 1);
+            var end = start.AddYears(1);
 
             var bookings = await _db.Table<Booking>()
                 .Where(b => b.EndDate >= start && b.EndDate < end)
@@ -94,10 +100,10 @@ namespace CatHotel.Services
                 .Where(o => o.CreatedAt >= start && o.CreatedAt < end)
                 .ToListAsync();
 
-            var result = new List<(DateTime Month, double Total, double Expense)>();
-            for (int i = 0; i < 7; i++)
+            var result = new List<(DateTime Month, double Income, double Expense)>();
+            for (int i = 1; i <= 12; i++)
             {
-                var m = start.AddMonths(i);
+                var m = new DateTime(year, i, 1);
                 var income = bookings
                     .Where(b => b.EndDate.Year == m.Year && b.EndDate.Month == m.Month)
                     .Sum(b => b.TotalPrice);
