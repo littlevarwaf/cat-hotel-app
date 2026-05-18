@@ -368,6 +368,22 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         }
     }
 
+    public async Task RefreshBookingCatsAsync(int bookingId)
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Refreshing cats for booking: {bookingId}");
+            var cats = await _catRepo.GetCatsByBookingIdAsync(bookingId);
+            Cats = new ObservableCollection<Cat>(cats);
+            OnPropertyChanged(nameof(CanAddMoreCats));
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] ✅ Cats refreshed: {cats.Count} cats loaded");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error refreshing cats: {ex}");
+        }
+    }
+
     public async Task RefreshBookingItemsAsync(int bookingId)
     {
         try

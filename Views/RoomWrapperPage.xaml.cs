@@ -38,6 +38,26 @@ public partial class RoomWrapperPage : ContentPage, INavigationAware
         }
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        System.Diagnostics.Debug.WriteLine($"[RoomWrapperPage] OnAppearing - Refreshing cats and booking data");
+
+        // Refresh the cats from database if we have an active booking
+        if (_viewModel.Booking != null)
+        {
+            try
+            {
+                await _viewModel.RefreshBookingCatsAsync(_viewModel.Booking.Id);
+                System.Diagnostics.Debug.WriteLine($"[RoomWrapperPage] ✅ Cats refreshed on page appearing");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[RoomWrapperPage] Error refreshing cats: {ex}");
+            }
+        }
+    }
+
     private void OnCartPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         // When cart is cleared (order placed), refresh booking items
