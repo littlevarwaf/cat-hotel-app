@@ -406,7 +406,7 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
 
         var startDate = Booking.StartDate;
         var endDate = Booking.EndDate;
-        var days = (int)(endDate - startDate).TotalDays;
+        var days = (endDate.Date - startDate.Date).Days;
 
         DateRangeDisplay = $"{startDate:dd.MM.yy} - {endDate:dd.MM.yy} ({days} Days)";
         System.Diagnostics.Debug.WriteLine($"[RoomWrapper] DateRangeDisplay: {DateRangeDisplay}");
@@ -418,7 +418,7 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
 
         var startDate = Booking.StartDate;
         var endDate = Booking.EndDate;
-        var nights = (int)(endDate - startDate).TotalDays;
+        var nights = (endDate.Date - startDate.Date).Days;
         var roomCharge = Booking.Room?.BasePrice * nights ?? 0;
 
         var shopCharge = BookingItems.Sum(item => item.UnitPrice * item.Quantity);

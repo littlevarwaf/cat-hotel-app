@@ -263,20 +263,25 @@
                         <StackLayout Spacing="8">
                             <Grid ColumnDefinitions="*,Auto">
                                 <StackLayout Grid.Column="0" Spacing="2">
-                                    <Label Text="⭕ Pre-paid Items" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                                    <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                        <Image Grid.Column="0" Source="circle_check_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1" Text="Pre-paid Items" FontSize="13" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                        <BoxView Grid.Column="2" BackgroundColor="Transparent"/>
+                                        <Label Grid.Column="3" Text="{Binding Booking.TotalPrice, StringFormat='฿ {0:N0}'}" FontSize="13" TextColor="{StaticResource Primary500}" VerticalOptions="Center"/>
+                                    </Grid>
                                     <Label Text="{Binding Booking.Room.Name, StringFormat='{0} room charge'}" 
                                            FontSize="12" TextColor="{StaticResource Neutral600}"/>
                                 </StackLayout>
-                                <Label Grid.Column="1" 
-                                       Text="{Binding Booking.TotalPrice, StringFormat='฿ {0:N0}'}" 
-                                       FontSize="13" FontAttributes="Bold" TextColor="{StaticResource Primary700}"
-                                       VerticalOptions="Center"/>
                             </Grid>
                         </StackLayout>
 
                         <!-- Shop Items -->
                         <StackLayout Spacing="8">
-                            <Label Text="🏷️ Added from Shop" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource Neutral950}"/>
+                            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8" VerticalOptions="Center" HorizontalOptions="Fill">
+                                <Image Grid.Column="0" Source="price_tag_icon.svg" HeightRequest="12" WidthRequest="12" VerticalOptions="Center"/>
+                                <Label Grid.Column="1" Text="Added from Shop" FontSize="13" TextColor="{StaticResource Neutral950}" VerticalOptions="Center"/>
+                                <BoxView Grid.Column="2" BackgroundColor="Transparent"/>                                
+                            </Grid>
                             <StackLayout BindableLayout.ItemsSource="{Binding BookingItems}" Spacing="6">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
@@ -289,8 +294,8 @@
                                             </StackLayout>
                                             <StackLayout Grid.Column="1" Spacing="2" HorizontalOptions="End">
                                                 <Label Text="{Binding UnitPrice, StringFormat='฿ {0:N0}'}" 
-                                                       FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Primary700}"/>
-                                                <Label Text="{Binding Quantity, UnitPrice, StringFormat='Subtotal: ฿ {0:N0}'}" 
+                                                       FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Primary700}" HorizontalTextAlignment="End"/>
+                                                <Label Text="{Binding Subtotal, StringFormat='Subtotal: ฿ {0:N0}'}" 
                                                        FontSize="11" TextColor="{StaticResource Neutral600}"/>
                                             </StackLayout>
                                         </Grid>

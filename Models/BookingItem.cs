@@ -27,6 +27,10 @@ public class BookingItem
     [Ignore]
     public ShopItem ShopItem { get; set; }
 
+    // Calculated property for subtotal
+    [Ignore]
+    public double Subtotal => UnitPrice * Quantity;
+
     public BookingItem()
     {
     }
