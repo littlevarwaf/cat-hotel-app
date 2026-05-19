@@ -43,12 +43,29 @@ namespace CatHotel
         {
             try
             {
+                // Uncomment the line below if you need to reset the database (e.g., due to schema migration errors)
+                //await Database.DeleteDatabaseAsync();
+
                 await Database.InitializeAsync(); // รอ DB init เสร็จก่อน
                 //await Database.SeedMockDataAsync();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("DB init failed: " + ex);
+
+                // If initialization fails, try deleting and reinitializing the database
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine("Attempting to reset database...");
+                    await Database.DeleteDatabaseAsync();
+                    await Database.InitializeAsync();
+                    await Database.SeedMockDataAsync();
+                    System.Diagnostics.Debug.WriteLine("Database reset successful!");
+                }
+                catch (Exception resetEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Database reset failed: {resetEx}");
+                }
             }
 
             // navigate ไป MainPage บน UI thread

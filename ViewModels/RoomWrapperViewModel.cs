@@ -25,6 +25,15 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
     private bool _isLoading = false;
     private string _dateRangeDisplay = string.Empty;
     private double _totalPrice = 0;
+    private Discount? _appliedDiscount;
+    private double _discountAmount = 0;
+    private double _finalTotalPrice = 0;
+    private bool _hasAppliedDiscount = false;
+
+    private int _plannedNights = 0;
+    private int _actualNights = 0;
+    private double _earlyCheckOutAdjustment = 0;
+    private string _roomChargeDescription = string.Empty;
 
     public RoomWrapperViewModel() : this(
         IPlatformApplication.Current!.Services.GetRequiredService<IRoomRepository>(),
@@ -72,6 +81,8 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         RemoveCatCommand = new Command<Cat>(async (cat) => await RemoveCatAsync(cat));
         AddMoreCatsCommand = new Command(async () => await AddMoreCatsAsync());
         CheckoutCommand = new Command(async () => await CheckoutAsync());
+        ApplyDiscountCommand = new Command(async () => await ApplyDiscountAsync());
+        RemoveDiscountCommand = new Command(async () => await RemoveDiscountAsync());
 
         // Subscribe to cart changes
         if (_cart is INotifyPropertyChanged notifyPropertyChanged)
@@ -206,9 +217,52 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
             {
                 _totalPrice = value;
                 OnPropertyChanged();
+                RecalculateFinalTotal();
             }
         }
     }
+
+    public Discount? AppliedDiscount
+    {
+        get => _appliedDiscount;
+        set
+        {
+            if (_appliedDiscount != value)
+            {
+                _appliedDiscount = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasAppliedDiscount));
+            }
+        }
+    }
+
+    public double DiscountAmount
+    {
+        get => _discountAmount;
+        set
+        {
+            if (_discountAmount != value)
+            {
+                _discountAmount = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public double FinalTotalPrice
+    {
+        get => _finalTotalPrice;
+        set
+        {
+            if (_finalTotalPrice != value)
+            {
+                _finalTotalPrice = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public bool HasAppliedDiscount => _appliedDiscount != null;
 
     private int _cartItemCount;
     public int CartItemCount
@@ -235,6 +289,66 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
     public ICommand RemoveCatCommand { get; }
     public ICommand AddMoreCatsCommand { get; }
     public ICommand CheckoutCommand { get; }
+    public ICommand ApplyDiscountCommand { get; }
+    public ICommand RemoveDiscountCommand { get; }
+
+    public string? DiscountCodeInput { get; set; }
+
+    public int PlannedNights
+    {
+        get => _plannedNights;
+        set
+        {
+            if (_plannedNights != value)
+            {
+                _plannedNights = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public int ActualNights
+    {
+        get => _actualNights;
+        set
+        {
+            if (_actualNights != value)
+            {
+                _actualNights = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public double EarlyCheckOutAdjustment
+    {
+        get => _earlyCheckOutAdjustment;
+        set
+        {
+            if (_earlyCheckOutAdjustment != value)
+            {
+                _earlyCheckOutAdjustment = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasEarlyCheckOut));
+                RecalculateFinalTotal();
+            }
+        }
+    }
+
+    public string RoomChargeDescription
+    {
+        get => _roomChargeDescription;
+        set
+        {
+            if (_roomChargeDescription != value)
+            {
+                _roomChargeDescription = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public bool HasEarlyCheckOut => Math.Abs(_earlyCheckOutAdjustment) > 0.001;
 
     public async void OnNavigatedTo(IDictionary<string, object> parameters)
     {
@@ -330,6 +444,9 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
 
                 // Calculate total price
                 CalculateTotalPrice();
+
+                // Calculate nights and adjustment
+                CalculateNightsAndAdjustment();
 
                 System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Booking data loaded successfully");
             }
@@ -431,6 +548,101 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         }
 
         System.Diagnostics.Debug.WriteLine($"[RoomWrapper] TotalPrice calculated: {TotalPrice}");
+    }
+
+    private void RecalculateFinalTotal()
+    {
+        FinalTotalPrice = TotalPrice - DiscountAmount - Math.Abs(EarlyCheckOutAdjustment);
+        System.Diagnostics.Debug.WriteLine($"[RoomWrapper] FinalTotalPrice: {FinalTotalPrice} (Total: {TotalPrice}, Discount: {DiscountAmount}, Early Checkout: {EarlyCheckOutAdjustment})");
+    }
+
+    private void CalculateNightsAndAdjustment()
+    {
+        if (Booking == null || Booking.Room == null) return;
+
+        var startDate = Booking.StartDate;
+        var endDate = Booking.EndDate;
+        var plannedNights = (endDate.Date - startDate.Date).Days;
+        var actualNights = (DateTime.Now.Date - startDate.Date).Days;
+
+        PlannedNights = plannedNights;
+        ActualNights = actualNights;
+
+        // Calculate the room charge for actual nights
+        var roomChargeForActualNights = Booking.Room.BasePrice * actualNights;
+
+        // Calculate the adjustment (negative if checked out early)
+        var earlyCheckOutNights = plannedNights - actualNights;
+        EarlyCheckOutAdjustment = earlyCheckOutNights > 0 ? -(Booking.Room.BasePrice * earlyCheckOutNights) : 0;
+
+        // Create a descriptive string for the room charge
+        RoomChargeDescription = $"{Booking.Room.Name} - {plannedNights} Days";
+
+        System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Nights Calculation:");
+        System.Diagnostics.Debug.WriteLine($"  Planned: {plannedNights}, Actual: {actualNights}");
+        System.Diagnostics.Debug.WriteLine($"  Early Checkout Nights: {earlyCheckOutNights}");
+        System.Diagnostics.Debug.WriteLine($"  Early Checkout Adjustment: {EarlyCheckOutAdjustment}");
+    }
+
+    private async Task ApplyDiscountAsync()
+    {
+        if (string.IsNullOrWhiteSpace(DiscountCodeInput))
+        {
+            await Application.Current!.MainPage!.DisplayAlertAsync("Error", "Please enter a discount code.", "OK");
+            return;
+        }
+
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Applying discount code: {DiscountCodeInput}");
+
+            // Search for discount by code
+            var discount = await App.Database.Db.Table<Discount>()
+                .Where(d => d.Code.ToUpper() == DiscountCodeInput.ToUpper())
+                .FirstOrDefaultAsync();
+
+            if (discount == null)
+            {
+                await Application.Current!.MainPage!.DisplayAlertAsync("Error", "Discount code not found.", "OK");
+                return;
+            }
+
+            // Check if discount is expired
+            if (discount.ExpirationDate < DateTime.Now)
+            {
+                await Application.Current!.MainPage!.DisplayAlertAsync("Error", "This discount code has expired.", "OK");
+                return;
+            }
+
+            // Check if discount has remaining uses
+            if (discount.UsedCount >= discount.Quantity)
+            {
+                await Application.Current!.MainPage!.DisplayAlertAsync("Error", "This discount code has no remaining uses.", "OK");
+                return;
+            }
+
+            // Apply discount
+            AppliedDiscount = discount;
+            DiscountAmount = discount.Amount;
+            RecalculateFinalTotal();
+            DiscountCodeInput = string.Empty;
+
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] ✅ Discount applied: {discount.Code} - Amount: {discount.Amount}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error applying discount: {ex}");
+            await Application.Current!.MainPage!.DisplayAlertAsync("Error", $"Error applying discount: {ex.Message}", "OK");
+        }
+    }
+
+    private async Task RemoveDiscountAsync()
+    {
+        AppliedDiscount = null;
+        DiscountAmount = 0;
+        RecalculateFinalTotal();
+        System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Discount removed");
+        await Task.CompletedTask;
     }
 
     private async void OnCustomerUpdated(object? sender, CustomerEventArgs e)
@@ -594,6 +806,10 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         try
         {
             System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Checking out booking {Booking.Id}");
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Applied Discount: {AppliedDiscount?.Code ?? "NONE"}");
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Discount Amount: {DiscountAmount}");
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Total Price Before Discount: {TotalPrice}");
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Final Total Price: {FinalTotalPrice}");
 
             // Initialize database
             await App.Database.InitializeAsync();
@@ -612,21 +828,49 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
             // 3. Calculate ShopRevenue from BookingItems
             var shopRevenue = (int)BookingItems.Sum(item => item.UnitPrice * item.Quantity);
 
-            // 4. Create and insert Sale entry
+            // 4. Calculate discount amount at checkout
+            var discountAmountAtCheckout = (int)DiscountAmount;
+            var finalTotal = roomRevenue + shopRevenue - discountAmountAtCheckout;
+
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Room Revenue: {roomRevenue}");
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Shop Revenue: {shopRevenue}");
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Discount Amount at Checkout: {discountAmountAtCheckout}");
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Final Total Revenue: {finalTotal}");
+
+            // 5. Create and insert Sale entry with discount info
             var sale = new Sale
             {
                 BookingId = Booking.Id,
                 RoomId = Booking.RoomId,
                 RoomRevenue = roomRevenue,
                 ShopRevenue = shopRevenue,
-                TotalRevenue = roomRevenue + shopRevenue,
+                TotalRevenue = finalTotal,
+                DiscountId = AppliedDiscount?.Id,  // NULL if no discount applied
                 CompletedAt = checkoutTime
             };
 
             await App.Database.Db.InsertAsync(sale);
-            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Created sale entry: BookingId={sale.BookingId}, RoomRevenue={roomRevenue}, ShopRevenue={shopRevenue}");
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] ✅ Created sale entry:");
+            System.Diagnostics.Debug.WriteLine($"    - SaleId: {sale.Id}");
+            System.Diagnostics.Debug.WriteLine($"    - BookingId: {sale.BookingId}");
+            System.Diagnostics.Debug.WriteLine($"    - DiscountId: {sale.DiscountId}");
+            System.Diagnostics.Debug.WriteLine($"    - RoomRevenue: {sale.RoomRevenue}");
+            System.Diagnostics.Debug.WriteLine($"    - ShopRevenue: {sale.ShopRevenue}");
+            System.Diagnostics.Debug.WriteLine($"    - TotalRevenue: {sale.TotalRevenue}");
 
-            // 5. Update Room status to Available
+            // 6. If discount was applied, increment UsedCount
+            if (AppliedDiscount != null)
+            {
+                AppliedDiscount.UsedCount++;
+                await App.Database.Db.UpdateAsync(AppliedDiscount);
+                System.Diagnostics.Debug.WriteLine($"[RoomWrapper] ✅ Discount {AppliedDiscount.Code} UsedCount incremented to {AppliedDiscount.UsedCount}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[RoomWrapper] No discount applied");
+            }
+
+            // 7. Update Room status to Available
             if (Booking.Room != null)
             {
                 Booking.Room.Status = RoomStatus.Available;
@@ -652,6 +896,24 @@ public class RoomWrapperViewModel : INotifyPropertyChanged, INavigationAware
         finally
         {
             IsLoading = false;
+        }
+    }
+
+    /// <summary>
+    /// Helper method to get discount details from database using DiscountId
+    /// </summary>
+    public async Task<Discount?> GetDiscountByIdAsync(int discountId)
+    {
+        try
+        {
+            return await App.Database.Db.Table<Discount>()
+                .Where(d => d.Id == discountId)
+                .FirstOrDefaultAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[RoomWrapper] Error getting discount {discountId}: {ex}");
+            return null;
         }
     }
 

@@ -23,8 +23,8 @@ public class ShopItem
     [NotNull]
     public string ImgUrl { get; set; }
 
-    [Ignore]
-    public bool IsNew => false;
+    [NotNull]
+    public ItemStatus ItemStatus { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
@@ -33,12 +33,13 @@ public class ShopItem
     {
     }
 
-    public ShopItem(string name, string description, double price, ItemType itemType, string imgUrl)
+    public ShopItem(string name, string description, double price, ItemType itemType, ItemStatus itemStatus, string imgUrl)
     {
         Name = name;
         Description = description;
         ItemPrice = price;
         ItemType = itemType;
+        ItemStatus = itemStatus;
         ImgUrl = imgUrl;
         CreatedAt = DateTime.Now;
     }

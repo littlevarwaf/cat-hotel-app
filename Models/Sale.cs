@@ -23,6 +23,8 @@ public class Sale
     [NotNull]
     public int TotalRevenue { get; set; } = 0;
 
+    public int? DiscountId { get; set; }  // Changed to nullable int
+
     [NotNull]
     public DateTime CompletedAt { get; set; } = DateTime.Now;
 
@@ -31,13 +33,14 @@ public class Sale
     {
     }
 
-    public Sale(int bookingId, int roomId, int roomRevenue, int shopRevenue)
+    public Sale(int bookingId, int roomId, int roomRevenue, int shopRevenue, int? discountId = null)
     {
         BookingId = bookingId;
         RoomId = roomId;
         RoomRevenue = roomRevenue;
         ShopRevenue = shopRevenue;
         TotalRevenue = roomRevenue + shopRevenue;
+        DiscountId = discountId;
         CompletedAt = DateTime.Now;
     }
 }

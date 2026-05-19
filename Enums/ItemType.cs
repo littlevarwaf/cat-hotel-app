@@ -2,6 +2,7 @@
 
 public enum ItemType
 {
+    Service,
     Food,
     Toy,
     Accessory,

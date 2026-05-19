@@ -94,6 +94,8 @@ public partial class Sales : ContentView
 
         try
         {
+            System.Diagnostics.Debug.WriteLine($"[SALES] OnViewLoaded started - SelectedYear: {SelectedYear}");
+            
             await App.Database.InitializeAsync();
             await LoadAllYearDataAsync();
             await RenderBestCategoryDonut(MonthPicker.SelectedIndex);
@@ -101,6 +103,8 @@ public partial class Sales : ContentView
 
             // Load AI analysis (with cached result if available)
             await _aiViewModel?.LoadCachedSummaryAsync();
+            
+            System.Diagnostics.Debug.WriteLine($"[SALES] ✅ OnViewLoaded completed successfully");
         }
         catch (Exception ex)
         {
@@ -114,10 +118,14 @@ public partial class Sales : ContentView
     {
         try
         {
+            System.Diagnostics.Debug.WriteLine($"[SALES] RefreshSalesData started - SelectedYear: {SelectedYear}");
+            
             await App.Database.InitializeAsync();
             await LoadAllYearDataAsync();
             await RenderBestCategoryDonut(MonthPicker.SelectedIndex);
             await LoadRoomUsageFromDbAsync();
+            
+            System.Diagnostics.Debug.WriteLine($"[SALES] ✅ RefreshSalesData completed");
         }
         catch (Exception ex)
         {
@@ -195,7 +203,7 @@ public partial class Sales : ContentView
             _currentStartIndex -= _monthsPerPage;
             await RenderCurrentBarChartPage();
         }
-    }
+        }
     public async Task NextPage()
     {
         if (_currentStartIndex + _monthsPerPage < _allMonths.Count)
@@ -212,12 +220,12 @@ public partial class Sales : ContentView
     {
         if (BindingContext is MainViewModel vm && vm.SelectedYear > 2000)
             vm.SelectedYear--;
-    }
+        }
     private void NextYearButton_Clicked(object sender, EventArgs e)
     {
         if (BindingContext is MainViewModel vm && vm.SelectedYear < DateTime.Now.Year)
             vm.SelectedYear++;
-    }
+        }
 
     // ---- เดือน/Picker/Chart อื่น ตามเดิม ----
     private void UpdateMonthDisplay()
@@ -318,10 +326,10 @@ public partial class Sales : ContentView
     }
 
     private void SetRoomUsageChart(int large, int medium, int small)
-    {
-        var entries = new List<ChartEntry>
         {
-            new ChartEntry(large)  { Label="Big",    ValueLabel=large.ToString(),  Color=SKColor.Parse("#FF6B6B") },
+        var entries = new List<ChartEntry>
+            {
+            new ChartEntry(large)  { Label="Large",    ValueLabel=large.ToString(),  Color=SKColor.Parse("#FF6B6B") },
             new ChartEntry(medium) { Label="Medium", ValueLabel=medium.ToString(), Color=SKColor.Parse("#4ECDC4") },
             new ChartEntry(small)  { Label="Small",  ValueLabel=small.ToString(),  Color=SKColor.Parse("#45B7D1") },
         };

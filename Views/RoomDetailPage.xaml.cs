@@ -38,6 +38,31 @@ public partial class RoomDetailPage : ContentView
             System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Booking: {((dynamic)this.BindingContext).Booking}");
             System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Room: {((dynamic)this.BindingContext).Room}");
             System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] DateRangeDisplay: {((dynamic)this.BindingContext).DateRangeDisplay}");
+
+            // Subscribe to discount changes
+            if (this.BindingContext is RoomWrapperViewModel viewModel && viewModel is INotifyPropertyChanged notifyPropertyChanged)
+            {
+                notifyPropertyChanged.PropertyChanged += ViewModel_PropertyChanged;
+            }
+        }
+    }
+
+    private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(RoomWrapperViewModel.HasAppliedDiscount))
+        {
+            if (this.BindingContext is RoomWrapperViewModel viewModel)
+            {
+                // Toggle visibility of discount entry and discount card
+                DiscountEntrySection.IsVisible = !viewModel.HasAppliedDiscount;
+                AppliedDiscountCard.IsVisible = viewModel.HasAppliedDiscount;
+
+                // Toggle visibility of subtotal and discount rows
+                SubtotalRow.IsVisible = viewModel.HasAppliedDiscount;
+                DiscountRow.IsVisible = viewModel.HasAppliedDiscount;
+
+                System.Diagnostics.Debug.WriteLine($"[RoomDetailPage] Discount visibility updated: HasAppliedDiscount={viewModel.HasAppliedDiscount}");
+            }
         }
     }
 

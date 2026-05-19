@@ -13,9 +13,11 @@ namespace CatHotel.Services
     public class DatabaseService
     {
         private readonly SQLiteAsyncConnection _db;
+        private readonly string _dbPath;
 
         public DatabaseService(string dbPath)
         {
+            _dbPath = dbPath;
             _db = new SQLiteAsyncConnection(dbPath);
 
         }
@@ -48,11 +50,46 @@ namespace CatHotel.Services
                 await EnsureColumnExistsAsync("Bookings", "TotalPrice", "REAL", "0");
                 await EnsureColumnExistsAsync("BookingItems", "UnitPrice", "REAL", "0");
                 await EnsureColumnExistsAsync("BookingItems", "Quantity", "INTEGER", "1");
+                await EnsureColumnExistsAsync("Sales", "DiscountId", "INTEGER", null);
 
                 // ถ้าจะเทสให้เอาcommentออก
                 //await SeedTestDataIfEmptyAsync();
 
                 _initialized = true;
+            }
+            finally
+            {
+                _initLock.Release();
+            }
+        }
+
+        /// <summary>
+        /// Deletes the database file and resets the initialization state.
+        /// Call this when you need to reset the database (e.g., due to schema conflicts).
+        /// After calling this, you can call InitializeAsync() again to create a fresh database.
+        /// </summary>
+        public async Task DeleteDatabaseAsync()
+        {
+            await _initLock.WaitAsync();
+            try
+            {
+                // Close the connection
+                await _db.CloseAsync();
+
+                // Delete the database file if it exists
+                if (File.Exists(_dbPath))
+                {
+                    File.Delete(_dbPath);
+                    System.Diagnostics.Debug.WriteLine($"[DB] Database file deleted: {_dbPath}");
+                }
+
+                // Reset the initialization state so InitializeAsync() will recreate the database
+                _initialized = false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DB] Error deleting database: {ex.Message}");
+                throw;
             }
             finally
             {
@@ -78,11 +115,29 @@ namespace CatHotel.Services
 
         public async Task RecalculateBookingTotalPriceAsync(int bookingId)
         {
+            var booking = await _db.Table<Booking>()
+                .Where(x => x.Id == bookingId)
+                .FirstOrDefaultAsync();
+
+            if (booking == null) return;
+
             var items = await _db.Table<BookingItem>()
                 .Where(x => x.BookingId == bookingId)
                 .ToListAsync();
 
-            var total = items.Sum(x => x.Quantity * x.UnitPrice);
+            var room = await _db.Table<Room>()
+                .Where(x => x.Id == booking.RoomId)
+                .FirstOrDefaultAsync();
+
+            // Calculate room charge for the booking period
+            var nights = Math.Max(1, (booking.EndDate.Date - booking.StartDate.Date).Days);
+            var roomCharge = (room?.BasePrice ?? 0) * nights;
+
+            // Calculate shop items total
+            var shopTotal = items.Sum(x => x.Quantity * x.UnitPrice);
+
+            // Total = room charge + shop items
+            var total = roomCharge + shopTotal;
 
             await _db.ExecuteAsync("UPDATE Bookings SET TotalPrice = ? WHERE Id = ?", total, bookingId);
         }
@@ -92,8 +147,9 @@ namespace CatHotel.Services
             var start = new DateTime(year, 1, 1);
             var end = start.AddYears(1);
 
-            var bookings = await _db.Table<Booking>()
-                .Where(b => b.EndDate >= start && b.EndDate < end)
+            // ✅ REFACTORED: Fetch all SALES (completed transactions) for the year
+            var sales = await _db.Table<Sale>()
+                .Where(s => s.CompletedAt >= start && s.CompletedAt < end)
                 .ToListAsync();
 
             var outcomes = await _db.Table<OutcomeRecord>()
@@ -104,10 +160,13 @@ namespace CatHotel.Services
             for (int i = 1; i <= 12; i++)
             {
                 var m = new DateTime(year, i, 1);
-                var income = bookings
-                    .Where(b => b.EndDate.Year == m.Year && b.EndDate.Month == m.Month)
-                    .Sum(b => b.TotalPrice);
 
+                // ✅ Calculate income from SALES table (TotalRevenue)
+                var income = sales
+                    .Where(s => s.CompletedAt.Year == m.Year && s.CompletedAt.Month == m.Month)
+                    .Sum(s => s.TotalRevenue);
+
+                // Calculate expenses from OUTCOMES table (remains unchanged)
                 double expense = outcomes
                     .Where(o => o.CreatedAt.Year == m.Year && o.CreatedAt.Month == m.Month)
                     .Sum(o => o.Amount);
@@ -122,6 +181,7 @@ namespace CatHotel.Services
             var monthStart = new DateTime(year, month, 1);
             var monthEnd = monthStart.AddMonths(1);
 
+            // Fetch all sales for the month
             var sales = await _db.Table<Sale>()
                 .Where(s => s.CompletedAt >= monthStart && s.CompletedAt < monthEnd)
                 .ToListAsync();
@@ -165,6 +225,7 @@ namespace CatHotel.Services
             var monthStart = new DateTime(year, month, 1);
             var monthEnd = monthStart.AddMonths(1);
 
+            // Fetch all sales for the month
             var sales = await _db.Table<Sale>()
                 .Where(s => s.CompletedAt >= monthStart && s.CompletedAt < monthEnd)
                 .ToListAsync();
@@ -423,13 +484,15 @@ namespace CatHotel.Services
         {
             await InitializeAsync();
 
-            // Clear existing data
-            await _db.DeleteAllAsync<BookingCat>();
-            await _db.DeleteAllAsync<BookingItem>();
-            await _db.DeleteAllAsync<Booking>();
-            await _db.DeleteAllAsync<Cat>();
-            await _db.DeleteAllAsync<Customer>();
-            await _db.DeleteAllAsync<Room>();
+            // Clear existing data (this was called from App.xaml.cs anyways, uncomment if needed)
+            //await _db.DeleteAllAsync<BookingCat>();
+            //await _db.DeleteAllAsync<BookingItem>();
+            //await _db.DeleteAllAsync<Booking>();
+            //await _db.DeleteAllAsync<Cat>();
+            //await _db.DeleteAllAsync<Customer>();
+            //await _db.DeleteAllAsync<Room>();
+            //await _db.DeleteAllAsync<Sale>();
+            //await _db.DeleteAllAsync<ShopItem>();
 
             // 1) Create Mock Rooms (3 different types)
             var rooms = new List<Room>
@@ -536,7 +599,164 @@ namespace CatHotel.Services
                 await _db.InsertAsync(cat);
             }
 
-            // 4) Create Mock Bookings (3 bookings with different customers, cats, and rooms)
+            // 4) Create Mock Shop Items (12 items: 6 Accessories, 4 Necessities, 2 Toys)
+            var shopItems = new List<ShopItem>
+            {
+                // 1. Kawaii Existential Cats Blind Box
+                new ShopItem
+                {
+                    Id = 1,
+                    Name = "Kawaii Existential Cats Blind Box",
+                    Description = "Small cats statue blind box",
+                    ItemPrice = 1500.00,
+                    ItemType = ItemType.Miscellaneous,
+                    ItemStatus = ItemStatus.Available,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+                // 2. Cat Pen Holder
+                new ShopItem
+                {
+                    Id = 2,
+                    Name = "Cat Pen Holder",
+                    Description = "A must-have pen holder! (in a cat shape)",
+                    ItemPrice = 300.00,
+                    ItemType = ItemType.Miscellaneous,
+                    ItemStatus = ItemStatus.Unavailable,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+                // 3. Wooden Basket
+                new ShopItem
+                {
+                    Id = 3,
+                    Name = "Wooden Basket",
+                    Description = "A basket for your cat to sit in!",
+                    ItemPrice = 250.00,
+                    ItemType = ItemType.Accessory,
+                    ItemStatus = ItemStatus.Unavailable,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+                // 4. Small Pet Select U.S. - Pelleted Pine Cat Litter
+                new ShopItem
+                {
+                    Id = 4,
+                    Name = "Small Pet Select U.S. - Pelleted Pine Cat Litter",
+                    Description = "100% All-natural litter",
+                    ItemPrice = 650.00,
+                    ItemType = ItemType.Necessity,
+                    ItemStatus = ItemStatus.Unavailable,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+                // 5. Cute Pink Bow-tie
+                new ShopItem
+                {
+                    Id = 5,
+                    Name = "Cute Pink Bow-tie",
+                    Description = "A cute Pink bow-tie accessory for your cat!",
+                    ItemPrice = 120.00,
+                    ItemType = ItemType.Accessory,
+                    ItemStatus = ItemStatus.Unavailable,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+                // 6. Heart Hand-knitted Beanie
+                new ShopItem
+                {
+                    Id = 6,
+                    Name = "Heart Hand-knitted Beanie",
+                    Description = "Cute heart hand-knitted beanie",
+                    ItemPrice = 135.00,
+                    ItemType = ItemType.Accessory,
+                    ItemStatus = ItemStatus.Unavailable,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+                // 7. Sisal Ball Grinding Claw Kitty Stick
+                new ShopItem
+                {
+                    Id = 7,
+                    Name = "Sisal Ball Grinding Claw Kitty Stick",
+                    Description = "Interactive cat toy",
+                    ItemPrice = 85.00,
+                    ItemType = ItemType.Toy,
+                    ItemStatus = ItemStatus.Unavailable,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+                // 8. Petstages Squeak Squeak Mouse Plush
+                new ShopItem
+                {
+                    Id = 8,
+                    Name = "Petstages Squeak Squeak Mouse Plush",
+                    Description = "A mouse-shaped plush cat toy",
+                    ItemPrice = 45.00,
+                    ItemType = ItemType.Toy,
+                    ItemStatus = ItemStatus.Unavailable,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+                // 9. Royal Canin Weight Minceur
+                new ShopItem
+                {
+                    Id = 9,
+                    Name = "Royal Canin Weight Minceur",
+                    Description = "Feline care nutrition, dry cat food",
+                    ItemPrice = 1250.00,
+                    ItemType = ItemType.Food,
+                    ItemStatus = ItemStatus.Unavailable,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+                // 10. Royal Canin Kitten Gravy Cat Food
+                new ShopItem
+                {
+                    Id = 10,
+                    Name = "Royal Canin Kitten Gravy Cat Food",
+                    Description = "Pack of 6, 3 oz",
+                    ItemPrice = 2350.00,
+                    ItemType = ItemType.Food,
+                    ItemStatus = ItemStatus.Unavailable,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+    
+                // ---- Added "Service" Mock Data ----
+    
+                // 11. Full Cat Grooming & Spa
+                new ShopItem
+                {
+                    Id = 11,
+                    Name = "Full Cat Grooming & Spa Session",
+                    Description = "Premium bath, blow-dry, nail trim, and ear cleaning service.",
+                    ItemPrice = 850.00,
+                    ItemType = ItemType.Service,
+                    ItemStatus = ItemStatus.Available,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                },
+                // 12. In-Room Vet Health Checkup
+                new ShopItem
+                {
+                    Id = 12,
+                    Name = "In-Room Routine Health Checkup",
+                    Description = "A professional wellness exam by a licensed veterinarian directly in their cozy room.",
+                    ItemPrice = 1200.00,
+                    ItemType = ItemType.Service,
+                    ItemStatus = ItemStatus.Available,
+                    ImgUrl = "",
+                    CreatedAt = DateTime.Now
+                }
+            };
+
+            foreach (var item in shopItems)
+            {
+                await _db.InsertAsync(item);
+            }
+
+            // 5) Create Mock Bookings (3 bookings with different customers, cats, and rooms)
             // Date range: 15/05/2026 to 25/05/2026
             var bookings = new List<Booking>
             {
@@ -575,7 +795,7 @@ namespace CatHotel.Services
             //    await _db.InsertAsync(booking);
             //}
 
-            // 5) Link Cats to Bookings using BookingCat table
+            // 6) Link Cats to Bookings using BookingCat table
             var bookingCatLinks = new List<BookingCat>
             {
                 new BookingCat { BookingId = bookings[0].Id, CatId = cats[0].Id }, // John + Whiskers
@@ -589,11 +809,87 @@ namespace CatHotel.Services
             //    await _db.InsertAsync(link);
             //}
 
+            // 7) Add discount codes
+            var discounts = new List<Discount>
+            {
+                // ---- EXPIRED COUPONS (Before 19/05/2026) ----
+    
+                // 1. Early Bird 2026 Promo (-฿150 flat)
+                new Discount
+                {
+                    Id = 1,
+                    Code = "EARLYCAT150",
+                    Description = "Get ฿150 off early spring bookings.",
+                    Amount = 150,
+                    Quantity = 100,
+                    UsedCount = 100, // Fully used up
+                    ExpirationDate = new DateTime(2026, 4, 30), // Expired April 30, 2026
+                    CreatedAt = new DateTime(2026, 3, 1)
+                },
+                // 2. Songkran Festival Special (-฿300 flat)
+                new Discount
+                {
+                    Id = 2,
+                    Code = "SONGKRAN300",
+                    Description = "Special holiday discount for the water festival.",
+                    Amount = 300,
+                    Quantity = 50,
+                    UsedCount = 42,
+                    ExpirationDate = new DateTime(2026, 5, 15), // Expired May 15, 2026
+                    CreatedAt = new DateTime(2026, 4, 10)
+                },
+
+                // ---- ACTIVE COUPONS (After 19/05/2026) ----
+    
+                // 3. Welcome New User Discount (-฿100 flat)
+                new Discount
+                {
+                    Id = 3,
+                    Code = "MEOWWELCOME",
+                    Description = "Welcome discount for first-time cat hotel bookings.",
+                    Amount = 100,
+                    Quantity = 500,
+                    UsedCount = 134,
+                    ExpirationDate = new DateTime(2026, 12, 31), // Valid until end of year
+                    CreatedAt = new DateTime(2026, 1, 1)
+                },
+                // 4. Mid-Year Flash Sale (-฿500 flat)
+                new Discount
+                {
+                    Id = 4,
+                    Code = "MIDYEAR500",
+                    Description = "Huge mid-year saving event for premium suites.",
+                    Amount = 500,
+                    Quantity = 30,
+                    UsedCount = 5,
+                    ExpirationDate = new DateTime(2026, 6, 30), // Valid until June 30, 2026
+                    CreatedAt = new DateTime(2026, 5, 15)
+                },
+                // 5. Cozy Corner Special Promotion (-฿50 flat)
+                new Discount
+                {
+                    Id = 5,
+                    Code = "COZYKITTY50",
+                    Description = "Flat ฿50 discount on shop items and room upgrades.",
+                    Amount = 50,
+                    Quantity = 200,
+                    UsedCount = 12,
+                    ExpirationDate = new DateTime(2026, 8, 18), // Valid until August 18, 2026
+                    CreatedAt = new DateTime(2026, 5, 1)
+                }
+            };
+
+            foreach (var code in discounts)
+            {
+                await _db.InsertAsync(code);
+            }
+
             System.Diagnostics.Debug.WriteLine("[SEED] Mock data created successfully!");
             System.Diagnostics.Debug.WriteLine($"[SEED] Rooms: {await _db.Table<Room>().CountAsync()}");
             System.Diagnostics.Debug.WriteLine($"[SEED] Customers: {await _db.Table<Customer>().CountAsync()}");
             System.Diagnostics.Debug.WriteLine($"[SEED] Cats: {await _db.Table<Cat>().CountAsync()}");
-            System.Diagnostics.Debug.WriteLine($"[SEED] Bookings: {await _db.Table<Booking>().CountAsync()}");
+            System.Diagnostics.Debug.WriteLine($"[SEED] Shop Items: {await _db.Table<ShopItem>().CountAsync()}");
+            //System.Diagnostics.Debug.WriteLine($"[SEED] Bookings: {await _db.Table<Booking>().CountAsync()}");
         }
     }
 }

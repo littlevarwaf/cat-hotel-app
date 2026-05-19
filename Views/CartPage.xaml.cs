@@ -50,25 +50,19 @@ public partial class CartPage : ContentPage, INavigationAware
         if (parameters.TryGetValue("room", out var roomObj) && roomObj is Room room)
         {
             Room = room;
-            System.Diagnostics.Debug.WriteLine($"[CART] Received Room: {room.Name} (ID: {room.Id})");
         }
 
         if (parameters.TryGetValue("booking", out var bookingObj) && bookingObj is Booking booking)
         {
             _booking = booking;
-            System.Diagnostics.Debug.WriteLine($"[CART] Received Booking: {booking.Id}");
-        }
-        else
-        {
-            System.Diagnostics.Debug.WriteLine("[CART] No booking data received");
+            System.Diagnostics.Debug.WriteLine($"[CartPage] Booking loaded: {_booking.Id}");
         }
     }
 
-    private async void OnViewLoaded(object? sender, EventArgs e)
+    private void OnViewLoaded(object? sender, EventArgs e)
     {
         if (_isInitialized) return;
         _isInitialized = true;
-
         Refresh();
     }
 
@@ -111,9 +105,8 @@ public partial class CartPage : ContentPage, INavigationAware
                 entry.Quantity--;
                 _cart.OnPropertyChanged(nameof(_cart.Count));
                 _cart.OnPropertyChanged(nameof(_cart.Total));
-                Refresh();
             }
-            else if (entry.Quantity == 1)
+            else
             {
                 // Quantity is at 1, ask if user wants to remove
                 bool result = await DisplayAlertAsync(
@@ -130,6 +123,9 @@ public partial class CartPage : ContentPage, INavigationAware
             }
         }
     }
+
+    private async void OnBackClicked(object? sender, EventArgs e)
+        => await NavigationService.GoBackAsync();
 
     private async void OnPlaceOrder(object? sender, EventArgs e)
     {
@@ -176,7 +172,4 @@ public partial class CartPage : ContentPage, INavigationAware
             await DisplayAlertAsync("Error", "บันทึกคำสั่งซื้อไม่สำเร็จ: " + ex.Message, "OK");
         }
     }
-
-    private async void OnBackClicked(object? sender, EventArgs e)
-        => await NavigationService.GoBackAsync();
 }
