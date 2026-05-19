@@ -58,8 +58,8 @@
                     BackgroundColor="Transparent"
                     TabType="Fixed">
 
-                    <tabs:BottomTabItem Label="Home" IconImageSource="home_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
-                    <tabs:BottomTabItem Label="Calendar" IconImageSource="calendar_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
+                    <tabs:BottomTabItem Label="Manage" IconImageSource="home_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
+                    <tabs:BottomTabItem Label="Schedule" IconImageSource="calendar_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
                     <tabs:BottomTabItem Label="Sales" IconImageSource="chart_icon.svg" UnselectedIconColor="{StaticResource NeutralBase}" SelectedTabColor="{StaticResource Primary500}" />
                 </tabs:TabHostView>
             </Border>

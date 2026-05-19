@@ -19,7 +19,7 @@
                 <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.1"/>
             </Border.Shadow>
             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
-                <Label Text="Welcome!" FontSize="22" FontAttributes="Bold"
+                <Label Text="Active Bookings" FontSize="22" FontAttributes="Bold"
                        TextColor="#212121" VerticalOptions="Center"/>
                 <Button x:Name="EditButton" Grid.Column="1"
                         ImageSource="edit_pencil_icon.svg" BackgroundColor="Transparent"
@@ -75,7 +75,7 @@
                                         <!-- Image -->
                                         <Border BackgroundColor="{StaticResource Primary50}" StrokeThickness="0" Padding="0">
                                             <Border.StrokeShape>
-                                                <RoundRectangle CornerRadius="18,0,0,18"/>
+                                                <RoundRectangle CornerRadius="0,0,0,0"/>
                                             </Border.StrokeShape>
                                             <Image Source="{Binding ImgUrl}" Aspect="AspectFill"/>
                                         </Border>

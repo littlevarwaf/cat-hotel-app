@@ -19,4 +19,9 @@ public interface IBookingRepository
     Task<int> DeleteBookingAsync(Booking booking);
     Task<int> DeleteBookingItemAsync(BookingItem item);
     Task<int> DeleteBookingCatAsync(BookingCat bookingCat);
+
+    /// <summary>
+    /// Gets all bookings for a specific date range with Room objects loaded.
+    /// </summary>
+    Task<List<Booking>> GetBookingsForDateRangeWithRoomsAsync(DateTime startDate, DateTime endDate);
 }

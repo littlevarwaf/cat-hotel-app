@@ -11,4 +11,15 @@ public interface IRoomRepository
     Task<int> AddRoomAsync(Room room);
     Task<int> UpdateRoomAsync(Room room);
     Task<int> DeleteRoomAsync(Room room);
+
+    /// <summary>
+    /// Fetches all bookings that overlap with the specified date range.
+    /// Used to calculate room availability on the calendar.
+    /// </summary>
+    Task<List<Booking>> GetBookingsForDateRangeAsync(DateTime startDate, DateTime endDate);
+
+    /// <summary>
+    /// Gets the count of booked rooms for a specific date.
+    /// </summary>
+    Task<int> GetBookedRoomsCountForDateAsync(DateTime date);
 }

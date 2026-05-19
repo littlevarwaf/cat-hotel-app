@@ -12,6 +12,8 @@ public class MockRoomRepository : IRoomRepository
         new Room("MID001",   RoomStatus.Available, RoomTypes.Medium, 2, 800, DateTime.Now.AddYears(1), "") { Id = 4 },
         new Room("MID002",   RoomStatus.Unavailable, RoomTypes.Medium, 2, 800, DateTime.Now.AddYears(1), "") { Id = 5 },
     };
+
+    private readonly List<Booking> _bookings = new();
     private int _nextId = 6;
 
     public Task<List<Room>> GetAllRoomsAsync() =>
@@ -25,6 +27,21 @@ public class MockRoomRepository : IRoomRepository
 
     public Task<Room?> GetRoomByIdAsync(int id) =>
         Task.FromResult(_rooms.FirstOrDefault(r => r.Id == id));
+
+    public Task<List<Booking>> GetBookingsForDateRangeAsync(DateTime startDate, DateTime endDate) =>
+        Task.FromResult(_bookings
+            .Where(b => b.StartDate < endDate && b.EndDate > startDate)
+            .ToList());
+
+    public Task<int> GetBookedRoomsCountForDateAsync(DateTime date)
+    {
+        var count = _bookings
+            .Where(b => b.StartDate <= date && b.EndDate > date)
+            .Select(b => b.RoomId)
+            .Distinct()
+            .Count();
+        return Task.FromResult(count);
+    }
 
     public Task<int> AddRoomAsync(Room room)
     {

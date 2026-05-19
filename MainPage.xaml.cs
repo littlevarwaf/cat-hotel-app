@@ -26,7 +26,7 @@ namespace CatHotel
 
                 if (_vm.SelectedTabIndex == 1 && _lastActiveTab != 1)
                 {
-                    await Calendar.RefreshRoomsAsync();
+                    await Calendar.RefreshCalendarAndRoomsAsync();
                 }
 
                 if (_vm.SelectedTabIndex == 2 && _lastActiveTab != 2)

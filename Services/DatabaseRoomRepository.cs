@@ -2,15 +2,9 @@ using CatHotel.Models;
 
 namespace CatHotel.Services;
 
-/// <summary>
-/// IRoomRepository implementation ที่ดึง/เขียนข้อมูลจาก SQLite จริง
-/// ใช้ App.Database ที่ถูก initialize ไว้ใน App.xaml.cs แล้ว
-/// </summary>
 public class DatabaseRoomRepository : IRoomRepository
 {
     private CatHotel.Services.DatabaseService Db => App.Database;
-
-    // ---- Read ----
 
     public async Task<List<Room>> GetAllRoomsAsync()
     {
@@ -21,30 +15,30 @@ public class DatabaseRoomRepository : IRoomRepository
     public async Task<List<Room>> GetAvailableRoomsAsync()
     {
         await Db.InitializeAsync();
-        return await Db.Db.Table<Room>()
-            .Where(r => r.Status == RoomStatus.Available)
-            .ToListAsync();
+        return await Db.Db.Table<Room>().ToListAsync();
     }
 
     /// <summary>
-    /// คืนห้องที่ยังไม่มี Booking ทับวันที่เลือก
-    /// (StartDate &lt;= date &lt;= EndDate ของ Booking ที่มีอยู่)
+    /// Gets available rooms for a date by checking bookings, NOT room status.
+    /// Room.Status can get out of sync, so we only trust the Booking data.
     /// </summary>
     public async Task<List<Room>> GetAvailableRoomsForDateAsync(DateTime date)
     {
         await Db.InitializeAsync();
 
-        // ดึง booking ที่ครอบวันที่เลือก
-        var bookings = await Db.Db.Table<Booking>()
-            .Where(b => b.StartDate <= date && b.EndDate >= date)
-            .ToListAsync();
+        // Fetch ALL bookings and filter in memory
+        var allBookings = await Db.Db.Table<Booking>().ToListAsync();
 
-        var bookedRoomIds = bookings.Select(b => b.RoomId).ToHashSet();
+        // Get rooms that are booked on this date
+        var bookedRoomIds = allBookings
+            .Where(b => BookingDateHelper.IsBookingActiveOnDate(b.StartDate, b.EndDate, date))
+            .Select(b => b.RoomId)
+            .ToHashSet();
 
-        var allRooms = await Db.Db.Table<Room>()
-            .Where(r => r.Status == RoomStatus.Available)
-            .ToListAsync();
+        // Get all rooms
+        var allRooms = await Db.Db.Table<Room>().ToListAsync();
 
+        // Return only rooms that are NOT booked
         return allRooms
             .Where(r => !bookedRoomIds.Contains(r.Id))
             .ToList();
@@ -58,7 +52,29 @@ public class DatabaseRoomRepository : IRoomRepository
             .FirstOrDefaultAsync();
     }
 
-    // ---- Write ----
+    public async Task<List<Booking>> GetBookingsForDateRangeAsync(DateTime startDate, DateTime endDate)
+    {
+        await Db.InitializeAsync();
+        
+        var allBookings = await Db.Db.Table<Booking>().ToListAsync();
+        
+        return allBookings
+            .Where(b => BookingDateHelper.IsBookingOverlappingDateRange(b.StartDate, b.EndDate, startDate, endDate))
+            .ToList();
+    }
+
+    public async Task<int> GetBookedRoomsCountForDateAsync(DateTime date)
+    {
+        await Db.InitializeAsync();
+
+        var allBookings = await Db.Db.Table<Booking>().ToListAsync();
+
+        return allBookings
+            .Where(b => BookingDateHelper.IsBookingActiveOnDate(b.StartDate, b.EndDate, date))
+            .Select(b => b.RoomId)
+            .Distinct()
+            .Count();
+    }
 
     public async Task<int> AddRoomAsync(Room room)
     {

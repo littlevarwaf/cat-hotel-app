@@ -52,6 +52,24 @@ public class DatabaseBookingRepository : IBookingRepository
             .ToListAsync();
     }
 
+    public async Task<List<Booking>> GetBookingsForDateRangeWithRoomsAsync(DateTime startDate, DateTime endDate)
+    {
+        await Db.InitializeAsync();
+        var bookings = await Db.Db.Table<Booking>()
+            .Where(b => b.StartDate < endDate && b.EndDate > startDate)
+            .ToListAsync();
+
+        // Load Room objects for all bookings
+        foreach (var booking in bookings)
+        {
+            booking.Room = await Db.Db.Table<Room>()
+                .Where(r => r.Id == booking.RoomId)
+                .FirstOrDefaultAsync();
+        }
+
+        return bookings;
+    }
+
     // ---- BookingItem Read ----
 
     public async Task<List<BookingItem>> GetBookingItemsByBookingIdAsync(int bookingId)

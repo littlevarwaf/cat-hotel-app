@@ -76,7 +76,7 @@
                                                 <RoundRectangle CornerRadius="0,0,0,0"/>
                                             </Border.StrokeShape>
                                             <Grid HeightRequest="156" WidthRequest="156">
-                                                <Image Source="{Binding ImgUrl}" Aspect="AspectFill"/>
+                                                <Image HeightRequest="156" WidthRequest="156" Source="{Binding ImgUrl}" Aspect="AspectFill"/>
                                             </Grid>
                                         </Border>
                                     </Grid>
