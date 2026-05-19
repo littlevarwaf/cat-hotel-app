@@ -7,7 +7,7 @@ public partial class ShopItemAddView : ContentView
 {
     private readonly DatabaseService _db;
     private string _selectedImagePath = string.Empty;
-    private bool _isAvailable = false;
+    private ItemStatus _itemStatus = ItemStatus.Unavailable;
 
     public ShopItemAddView()
     {
@@ -51,7 +51,9 @@ public partial class ShopItemAddView : ContentView
     {
         if (sender is RadioButton rb && e.Value)
         {
-            _isAvailable = rb.Value?.ToString() == "Available";
+            _itemStatus = rb.Value?.ToString() == "Available" 
+                ? ItemStatus.Available 
+                : ItemStatus.Unavailable;
         }
     }
 
@@ -94,6 +96,7 @@ public partial class ShopItemAddView : ContentView
             Description = description ?? string.Empty,
             ItemPrice = price,
             ItemType = itemType,
+            ItemStatus = _itemStatus,
             ImgUrl = savedImgPath,
             CreatedAt = DateTime.Now
         };
@@ -113,6 +116,8 @@ public partial class ShopItemAddView : ContentView
         ItemTypePicker.SelectedIndex = -1;
         _selectedImagePath = string.Empty;
         ItemPhotoPreview.Source = "placeholder_item.png";
+        UnavailableRadio.IsChecked = true;
+        _itemStatus = ItemStatus.Unavailable;
     }
 
     private async void OnEditRoomTabTapped(object sender, TappedEventArgs e)

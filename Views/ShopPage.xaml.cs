@@ -32,7 +32,9 @@ public partial class ShopPage : ContentView
         try
         {
             await App.Database.InitializeAsync();
-            var items = await App.Database.Db.Table<ShopItem>().ToListAsync();
+            var items = await App.Database.Db.Table<ShopItem>()
+                .Where(item => item.ItemStatus == ItemStatus.Available)
+                .ToListAsync();
 
             ShopCollection.ItemsSource = items;
         }

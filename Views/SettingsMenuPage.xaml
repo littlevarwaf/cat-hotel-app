@@ -130,7 +130,7 @@
                     </Border.GestureRecognizers>
                 </Border>
 
-                <!-- Income -->
+                <!-- Outcome -->
                 <Border BackgroundColor="{StaticResource NeutralWhite}" 
                         Stroke="{StaticResource Primary100}" 
                         StrokeThickness="1"
@@ -146,7 +146,7 @@
                                HeightRequest="40" 
                                WidthRequest="40" 
                                HorizontalOptions="Center"/>
-                        <Label Text="Income"
+                        <Label Text="Outcome Settings"
                                FontSize="16" 
                                FontAttributes="Bold"
                                TextColor="{StaticResource Neutral950}"
